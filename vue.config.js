@@ -1,3 +1,4 @@
 module.exports = {
-    publicPath: '/uma-emu',
-}
+  publicPath:
+    process.env.NODE_ENV === "production" ? "/uma-race-simulate/" : "/",
+};

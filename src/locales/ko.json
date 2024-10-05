@@ -120,7 +120,9 @@
 
     "uniqueLv0Hint": "(Lv0에서 불발 취급)",
     "evoSkill": "진화 스킬",
-    "evoHint": "(고유 선택으로 대응하는 진화 스킬을 표시)"
+    "evoHint": "(고유 선택으로 대응하는 진화 스킬을 표시)",
+    "lastUpdate": "최종 업데이트",
+    "releaseNote": "릴리즈 노트"
   },
   "emulatorType": {
     "teamRace": "팀 레이스",

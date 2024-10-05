@@ -646,6 +646,7 @@ export default {
       this.season = -1;
       this.weather = -1;
       this.oonige = false;
+      this.lastOnzonCheckFrame = -1;
     },
     initCondition() {
       if (this.umaStatus.condition <= 4) {
@@ -740,6 +741,18 @@ export default {
         ) {
           this.temptationModeStart = this.frameElapsed;
           this.temptationSection = -1;
+        }
+
+        const preservedSp = this.applyOnzonSystem(this.frameElapsed);
+        if (preservedSp > 0) {
+          console.log(
+            `온존 시스템 발동: ${preservedSp.toFixed(2)} SP 보존 (프레임: ${
+              this.frameElapsed
+            }, 시간: ${(this.frameElapsed * this.frameLength).toFixed(2)}초)`
+          );
+
+          // 그래프 데이터에 온존 시스템 발동 정보 추가
+          this.frames[this.frameElapsed].onzonPreservedSp = preservedSp;
         }
 
         this.move(this.frameLength);
@@ -853,6 +866,37 @@ export default {
         this.updateStartDash();
       }
     },
+    //2주년 온존시스템
+    applyOnzonSystem(currentFrame) {
+      const framesPerTwoSeconds = 2 / this.frameLength;
+      if (this.lastOnzonCheckFrame === -1) {
+        this.lastOnzonCheckFrame = currentFrame;
+        return 0; // 첫 번째 체크는 스킵
+      }
+      if (currentFrame - this.lastOnzonCheckFrame < framesPerTwoSeconds) {
+        return 0; // 시뮬레이션 상 2초가 지나지 않았으면 체크하지 않음
+      }
+
+      this.lastOnzonCheckFrame = currentFrame;
+
+      const requiredSp = this.calcRequiredSp(this.currentSpeed);
+      const minPreserveSp = requiredSp * 1.035;
+      const maxPreserveSp = requiredSp * 1.04;
+      const preserveAmount =
+        Math.random() * (maxPreserveSp - minPreserveSp) + minPreserveSp;
+
+      if (this.sp < preserveAmount) {
+        if (
+          Math.random() <
+          0.3 *
+            (this.modifiedWisdom / 1000 + Math.pow(this.modifiedWisdom, 0.03))
+        ) {
+          // 온존 시스템이 발동되면 현재 SP를 반환
+          return this.sp;
+        }
+      }
+      return 0;
+    },
     updateSelfSpeed(elapsedTime) {
       let newSpeed;
       if (this.currentSpeed < this.targetSpeed) {
@@ -888,12 +932,6 @@ export default {
       if (this.isStartDash && this.currentSpeed >= this.v0) {
         this.isStartDash = false;
       }
-    },
-    //2주년 온존시스템
-    calcHpGain(wisdom) {
-      const baseHpGain = 1.035 + wisdom / 5000;
-      const maxHpGain = 1.04;
-      return Math.min(baseHpGain, maxHpGain);
     },
 
     calcSpurtParameter(isReCalc) {
@@ -1355,6 +1393,7 @@ export default {
       const dataSp = [];
       const dataPosition = [];
       const annotations = [];
+      const dataOnzon = []; // 온존 시스템 데이터 배열 추가
       let skillYAdjust = 0;
       const nextSkillYAdjust = function () {
         skillYAdjust += 25;
@@ -1434,6 +1473,12 @@ export default {
         dataSpeed.push(frame.speed);
         dataSp.push(frame.sp);
         dataPosition.push(frame.startPosition.toFixed(2));
+        // 온존 시스템 데이터 추가
+        if (frame.onzonPreservedSp) {
+          dataOnzon.push(frame.sp);
+        } else {
+          dataOnzon.push(null); // 온존 시스템이 발동되지 않은 경우 null 추가
+        }
         for (
           let mi = index;
           mi < index + step && mi < this.frames.length;
@@ -1751,6 +1796,18 @@ export default {
             yAxisID: "position",
             borderColor: "rgb(215, 255, 215)",
             data: dataPosition,
+          },
+          {
+            fill: false,
+            label: this.$t("chart.onzonPreservedSp"),
+            yAxisID: "sp",
+            borderColor: "rgb(255, 99, 132)",
+            backgroundColor: "rgb(255, 99, 132)", // 점의 배경색 설정
+            pointRadius: 6, // 점 크기 증가
+            pointHoverRadius: 8, // 호버 시 점 크기 증가
+            pointStyle: "circle", // 점 스타일을 원형으로 설정
+            pointBorderWidth: 2, // 점 테두리 두께 설정
+            data: dataOnzon,
           },
         ],
       };

@@ -6,13 +6,13 @@
         data-ad-client="ca-pub-4611969396217909"
         data-ad-slot="6969023753"
       >
-      </Adsense>-->
+      </Adsense>
       <adfit-banner
         v-if="production"
         class="kakao_ad_area"
         data-ad-unit="DAN-C9EPw6PZoltqZXj6"
       >
-      </adfit-banner>
+      </adfit-banner>-->
     </p>
     <el-form class="input-form" :inline="true">
       <el-form-item>
@@ -298,13 +298,13 @@
       data-ad-client="ca-pub-4611969396217909"
       data-ad-slot="6969023753"
     >
-    </Adsense>-->
+    </Adsense>
     <adfit-banner
       v-if="production"
       class="kakao_ad_area"
       data-ad-unit="DAN-1Gtqq8rtCdn36qKa"
     >
-    </adfit-banner>
+    </adfit-banner>-->
     <div>
       <h3>{{ $t("message.emulationResult") }}</h3>
       <table border="1" class="emulation-result">
