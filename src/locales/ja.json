@@ -147,6 +147,7 @@
     "downSlope": "下り坂",
     "spurt": "スパート開始",
     "hp": "耐力",
+    "conservation": "耐力",
     "speed": "走行速度",
     "position": "位置",
     "hintBackground": "背景色の意味：",
