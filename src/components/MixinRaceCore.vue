@@ -646,7 +646,7 @@ export default {
       this.season = -1;
       this.weather = -1;
       this.oonige = false;
-      this.lastOnzonCheckFrame = -1;
+      this.lastConservationCheckFrame = -1;
     },
     initCondition() {
       if (this.umaStatus.condition <= 4) {
@@ -1694,10 +1694,16 @@ export default {
               onClick: function () {},
             });
           }
+          // console.log("index", index);
+          // console.log("step", step);
+          // console.log("step", step);
+          // console.log("this.frames[index + step]", this.frames[index + step]);
+          // console.log(isInFinalCorner);
           const isInFinalCorner = this.isInFinalCorner(
             this.frames[index + step].startPosition
           );
           if (isInFinalCorner && !this.isInFinalCorner(frame.startPosition)) {
+            console.log("isInFinalCorner", isInFinalCorner);
             annotations.push({
               type: "line",
               label: {
