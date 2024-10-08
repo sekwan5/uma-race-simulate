@@ -4,6 +4,9 @@
       <el-button @click="executeIndicated" type="success">
         {{ $t("message.emulateStart") }}
       </el-button>
+      <el-button @click="makeMashinToTsv" type="success">
+        {{ "마신표 제작" }}
+      </el-button>
     </el-form-item>
     <el-form-item :label="$t('message.testTime')">
       <el-input-number value="20" v-model="indicatedMaxEpoch"></el-input-number>
@@ -16,18 +19,9 @@
 
     <el-form-item :label="$t('message.skillActivateAdjustment')">
       <el-select v-model="skillActivateAdjustment" style="width: 130px">
-        <el-option
-          :label="$t('message.skillActivateAdjustment0')"
-          value="0"
-        ></el-option>
-        <el-option
-          :label="$t('message.skillActivateAdjustment1')"
-          value="1"
-        ></el-option>
-        <el-option
-          :label="$t('message.skillActivateAdjustment2')"
-          value="2"
-        ></el-option>
+        <el-option :label="$t('message.skillActivateAdjustment0')" value="0"></el-option>
+        <el-option :label="$t('message.skillActivateAdjustment1')" value="1"></el-option>
+        <el-option :label="$t('message.skillActivateAdjustment2')" value="2"></el-option>
       </el-select>
     </el-form-item>
 
@@ -44,9 +38,7 @@
 
     <el-dialog :visible.sync="emulating" style="text-align: center">
       {{ $t("message.emulating") }}
-      <el-progress
-        :percentage="Math.min(100, Math.floor((100 * epoch) / runMaxEpoch))"
-      ></el-progress>
+      <el-progress :percentage="Math.min(100, Math.floor((100 * epoch) / runMaxEpoch))"></el-progress>
       <p>
         <!--<Adsense v-if="$parent.production"
                  data-ad-client="ca-pub-4611969396217909"
@@ -65,7 +57,7 @@
 <script>
 export default {
   name: "ExecuteBlock",
-  props: ["execFunction"],
+  props: ["execFunction", "execMakeMashinToTsv"], // execMakeMashinToTsv 추가
   data() {
     return {
       epoch: 0,
@@ -100,6 +92,11 @@ export default {
       this.emulating = true;
       this.epoch = 0;
       this.execFunction(this.runMaxEpoch);
+    },
+    makeMashinToTsv() {
+      // this.emulating = true;
+      this.epoch = 0;
+      this.execMakeMashinToTsv(); // MixinRaceCore의 execMakeMashinToTsv 함수 호출
     },
   },
 };
