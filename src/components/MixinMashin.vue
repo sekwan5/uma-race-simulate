@@ -150,6 +150,11 @@ export default {
       //   //다 끝났으니 고유기 없음 클릭
       //   this.selectedUnique = 1;
       // }
+      for (const data of this.uniqueSkillData.slice(1)) {
+        this.selectedUnique = await data.id;
+        console.log("this.selectedUnique", this.selectedUnique);
+        console.log("this.availableSkills.evo", this.availableSkills.evo);
+      }
 
       // result["고유기"] = [
       //   ...(await this.makeSkillMashin(910061, "unique", "unique", "크리스마스 이브의 미라클 런!")),
