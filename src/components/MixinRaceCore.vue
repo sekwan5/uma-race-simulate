@@ -125,9 +125,7 @@ export default {
         const CHECK_KEYS = ["", "speed", "stamina", "power", "guts", "wisdom"];
         for (const c of check) {
           let bonus;
-          const status =
-            this.umaStatus[CHECK_KEYS[c]] *
-            this.condCoef[this.modifiedCondition];
+          const status = this.umaStatus[CHECK_KEYS[c]] * this.condCoef[this.modifiedCondition];
           if (status <= 300) {
             bonus = 0.05;
           } else if (status <= 600) {
@@ -143,37 +141,27 @@ export default {
       }
 
       const ret =
-        this.calcExceedStatus(this.umaStatus.speed) *
-          statusCheckModifier *
-          this.condCoef[this.modifiedCondition] +
-        this.surfaceSpeedModify[this.trackDetail.surface][
-          this.track.surfaceCondition
-        ] +
+        this.calcExceedStatus(this.umaStatus.speed) * statusCheckModifier * this.condCoef[this.modifiedCondition] +
+        this.surfaceSpeedModify[this.trackDetail.surface][this.track.surfaceCondition] +
         this.passiveBonus.speed;
       return ret > 0 ? ret : 1;
     },
     modifiedStamina() {
       return (
-        this.calcExceedStatus(this.umaStatus.stamina) *
-          this.condCoef[this.modifiedCondition] +
+        this.calcExceedStatus(this.umaStatus.stamina) * this.condCoef[this.modifiedCondition] +
         this.passiveBonus.stamina
       );
     },
     modifiedPower() {
       const ret =
-        this.calcExceedStatus(this.umaStatus.power) *
-          this.condCoef[this.modifiedCondition] +
-        this.surfacePowerModify[this.trackDetail.surface][
-          this.track.surfaceCondition
-        ] +
+        this.calcExceedStatus(this.umaStatus.power) * this.condCoef[this.modifiedCondition] +
+        this.surfacePowerModify[this.trackDetail.surface][this.track.surfaceCondition] +
         this.passiveBonus.power;
       return ret > 0 ? ret : 1;
     },
     modifiedGuts() {
       return (
-        this.calcExceedStatus(this.umaStatus.guts) *
-          this.condCoef[this.modifiedCondition] +
-        this.passiveBonus.guts
+        this.calcExceedStatus(this.umaStatus.guts) * this.condCoef[this.modifiedCondition] + this.passiveBonus.guts
       );
     },
     modifiedWisdom() {
@@ -185,10 +173,7 @@ export default {
       );
     },
     spMax() {
-      return (
-        this.trackDetail.distance +
-        0.8 * this.modifiedStamina * this.styleSpCoef[this.runningStyle]
-      );
+      return this.trackDetail.distance + 0.8 * this.modifiedStamina * this.styleSpCoef[this.runningStyle];
     },
     spurtSpCoef() {
       return 1 + 200 / Math.sqrt(600 * this.modifiedGuts);
@@ -200,10 +185,7 @@ export default {
       if (this.fixRandom) {
         return 0;
       } else {
-        return (
-          Math.pow(6.5 / Math.log10(0.1 * this.modifiedWisdom + 1), 2) +
-          this.passiveBonus.temptationRate
-        );
+        return Math.pow(6.5 / Math.log10(0.1 * this.modifiedWisdom + 1), 2) + this.passiveBonus.temptationRate;
       }
     },
     currentPhase() {
@@ -227,32 +209,24 @@ export default {
       }
       let baseTargetSpeed;
       // スパート中
-      if (
-        this.spurtParameters &&
-        this.position + this.spurtParameters.distance >= this.courseLength
-      ) {
+      if (this.spurtParameters && this.position + this.spurtParameters.distance >= this.courseLength) {
         baseTargetSpeed = this.spurtParameters.speed;
       } else {
         switch (this.currentPhase) {
           case 0:
           case 1:
-            baseTargetSpeed =
-              this.baseSpeed *
-              this.styleSpeedCoef[this.runningStyle][this.currentPhase];
+            baseTargetSpeed = this.baseSpeed * this.styleSpeedCoef[this.runningStyle][this.currentPhase];
             break;
           case 2:
           case 3:
           default:
             baseTargetSpeed =
               this.baseSpeed * this.styleSpeedCoef[this.runningStyle][2] +
-              Math.sqrt(this.modifiedSpeed / 500.0) *
-                this.distanceFitSpeedCoef[this.umaStatus.distanceFit];
-            baseTargetSpeed +=
-              Math.pow(this.modifiedGuts * 450, 0.597) * 0.0001;
+              Math.sqrt(this.modifiedSpeed / 500.0) * this.distanceFitSpeedCoef[this.umaStatus.distanceFit];
+            baseTargetSpeed += Math.pow(this.modifiedGuts * 450, 0.597) * 0.0001;
             break;
         }
-        baseTargetSpeed +=
-          this.baseSpeed * this.sectionTargetSpeedRandoms[this.currentSection];
+        baseTargetSpeed += this.baseSpeed * this.sectionTargetSpeedRandoms[this.currentSection];
       }
       // 根性補正
       let ret = baseTargetSpeed;
@@ -320,22 +294,18 @@ export default {
     },
     maxSpurtSpeed() {
       // 1. 기본 속도 계산
-      let baseSpeedCalc =
-        this.baseSpeed * (this.styleSpeedCoef[this.runningStyle][2] + 0.01);
+      let baseSpeedCalc = this.baseSpeed * (this.styleSpeedCoef[this.runningStyle][2] + 0.01);
 
       // 2. 거리 적성에 따른 속도 보너스 계산
       let distanceFitBonus =
-        Math.sqrt(this.modifiedSpeed / 500) *
-        this.distanceFitSpeedCoef[this.umaStatus.distanceFit];
+        Math.sqrt(this.modifiedSpeed / 500) * this.distanceFitSpeedCoef[this.umaStatus.distanceFit];
 
       // 3. 기본 속도와 거리 적성 보너스를 합치고 5% 증가
       let initialSpeed = (baseSpeedCalc + distanceFitBonus) * 1.05;
 
       // 4. 추가 속도 보너스 계산 (수정된 속도와 거리 적성 기반)
       let additionalSpeedBonus =
-        Math.sqrt(500 * this.modifiedSpeed) *
-        this.distanceFitSpeedCoef[this.umaStatus.distanceFit] *
-        0.002;
+        Math.sqrt(500 * this.modifiedSpeed) * this.distanceFitSpeedCoef[this.umaStatus.distanceFit] * 0.002;
 
       // 5. 근성(Guts) 기반 추가 보너스 계산
       let gutsBonus = Math.pow(450 * this.modifiedGuts, 0.597) * 0.0001;
@@ -344,10 +314,7 @@ export default {
       return initialSpeed + additionalSpeedBonus + gutsBonus;
     },
     isInTemptation() {
-      if (
-        this.temptationModeStart == null ||
-        this.frameElapsed < this.temptationModeStart
-      ) {
+      if (this.temptationModeStart == null || this.frameElapsed < this.temptationModeStart) {
         return false;
       }
       if (this.temptationModeEnd == null) {
@@ -365,8 +332,7 @@ export default {
       return (
         this.baseSpeed *
         (this.styleSpeedCoef[this.runningStyle][0] + // 달리기 스타일에 따른 초반 속도 계수
-          (this.modifiedWisdom * Math.log10(this.modifiedWisdom / 10)) /
-            550000 - // 지능에 따른 속도 보정
+          (this.modifiedWisdom * Math.log10(this.modifiedWisdom / 10)) / 550000 - // 지능에 따른 속도 보정
           0.00325)
       );
     },
@@ -376,8 +342,7 @@ export default {
       return (
         this.baseSpeed *
         (this.styleSpeedCoef[this.runningStyle][1] + // 달리기 스타일에 따른 중반 속도 계수
-          (this.modifiedWisdom * Math.log10(this.modifiedWisdom / 10)) /
-            550000 - // 지능에 따른 속도 보정
+          (this.modifiedWisdom * Math.log10(this.modifiedWisdom / 10)) / 550000 - // 지능에 따른 속도 보정
           0.00325)
       );
     },
@@ -387,8 +352,7 @@ export default {
       return (
         this.baseSpeed *
           (this.styleSpeedCoef[this.runningStyle][2] + // 달리기 스타일에 따른 후반 속도 계수
-            (this.modifiedWisdom * Math.log10(this.modifiedWisdom / 10)) /
-              550000 - // 지능에 따른 속도 보정
+            (this.modifiedWisdom * Math.log10(this.modifiedWisdom / 10)) / 550000 - // 지능에 따른 속도 보정
             0.00325) +
         Math.sqrt(this.modifiedSpeed / 500) * // 스피드 능력에 따른 추가 속도
           this.distanceFitSpeedCoef[this.umaStatus.distanceFit] // 거리 적성에 따른 속도 계수
@@ -621,16 +585,14 @@ export default {
     progressEpoch(callback) {
       const runBatch = () => {
         const target = this.$refs.executeBlock.epoch + this.maxEpoch / 5;
-        console.log(
-          "루프 시작:",
-          this.$refs.executeBlock.epoch,
-          "목표:",
-          target
-        ); // 로그 추가
-        while (
-          this.$refs.executeBlock.epoch < Math.min(target, this.maxEpoch)
-        ) {
+        console.log("루프 시작:", this.$refs.executeBlock.epoch, "목표:", target); // 로그 추가
+        while (this.$refs.executeBlock.epoch < Math.min(target, this.maxEpoch)) {
           console.log("start() 호출"); // start가 호출되는지 확인하는 로그
+          console.log("availableSkills", this.availableSkills);
+          console.log("hasSkills", this.hasSkills);
+          console.log("selectedUnique", this.selectedUnique);
+          console.log("uniqueLevel", this.uniqueLevel);
+          console.log("uniqueLevel", this.uniqueSkillData);
           this.start();
           this.$refs.executeBlock.epoch++;
         }
@@ -751,8 +713,7 @@ export default {
         if (this.isInSlope("down") && !this.fixRandom) {
           // 1초마다 체크
           if (
-            Math.floor(this.frameElapsed * this.frameLength) !==
-            Math.floor((this.frameElapsed + 1) * this.frameLength)
+            Math.floor(this.frameElapsed * this.frameLength) !== Math.floor((this.frameElapsed + 1) * this.frameLength)
           ) {
             if (this.downSlopeModeStart == null) {
               // 내리막길 모드 진입 확률 계산
@@ -773,11 +734,8 @@ export default {
         // 방해(걸림) 처리
         if (this.isInTemptation) {
           // 방해 종료 판정
-          const temptationDuration =
-            (this.frameElapsed - this.temptationModeStart) * this.frameLength;
-          const prevTemptationDuration =
-            (this.frameElapsed - 1 - this.temptationModeStart) *
-            this.frameLength;
+          const temptationDuration = (this.frameElapsed - this.temptationModeStart) * this.frameLength;
+          const prevTemptationDuration = (this.frameElapsed - 1 - this.temptationModeStart) * this.frameLength;
           for (let j = 3; j < 12; j += 3) {
             if (prevTemptationDuration < j && temptationDuration >= j) {
               if (Math.random() < 0.55) {
@@ -790,10 +748,7 @@ export default {
           }
         }
         // 방해 시작
-        if (
-          this.temptationSection > 0 &&
-          this.currentSection === this.temptationSection
-        ) {
+        if (this.temptationSection > 0 && this.currentSection === this.temptationSection) {
           this.temptationModeStart = this.frameElapsed;
           this.temptationSection = -1;
         }
@@ -826,16 +781,11 @@ export default {
             const rcp_dis_style_coef = this.rcp_dis_running_style_coef();
             // 가속도 계산: √((실제 파워-1200)×130)×0.001 x 각질 거리 계수
             const rcp_accel =
-              Math.sqrt(
-                (this.modifiedPower - 1200) *
-                  RCP.RELEASE_CONSERVE_POWER_DECEL_COEF
-              ) *
+              Math.sqrt((this.modifiedPower - 1200) * RCP.RELEASE_CONSERVE_POWER_DECEL_COEF) *
               RCP.RELEASE_CONSERVE_POWER_ACCEL_COEF *
               rcp_dis_style_coef;
             // 지속 시간 계산 (거리에 따른 보정)
-            const rcp_dur =
-              (RCP.RELEASE_CONSERVE_POWER_INITIAL_DURATION_SEC * 1000) /
-              this.trackDetail.distance;
+            const rcp_dur = (RCP.RELEASE_CONSERVE_POWER_INITIAL_DURATION_SEC * 1000) / this.trackDetail.distance;
 
             // '다릿심 충분' 스킬 추가
             this.operatingSkills.push({
@@ -848,12 +798,12 @@ export default {
             });
 
             // 디버그 정보 출력
-            console.log("modifiedPower :", this.modifiedPower);
-            console.log("rcp_accel :", rcp_accel);
-            console.log("del :", RCP.RELEASE_CONSERVE_POWER_DECEL_COEF);
-            console.log("acc :", RCP.RELEASE_CONSERVE_POWER_ACCEL_COEF);
-            console.log(rcp_dis_style_coef);
-            console.log(rcp_dur);
+            // console.log("modifiedPower :", this.modifiedPower);
+            // console.log("rcp_accel :", rcp_accel);
+            // console.log("del :", RCP.RELEASE_CONSERVE_POWER_DECEL_COEF);
+            // console.log("acc :", RCP.RELEASE_CONSERVE_POWER_ACCEL_COEF);
+            // console.log(rcp_dis_style_coef);
+            // console.log(rcp_dur);
           }
           this.frame_enter_phase_2 = this.frameElapsed;
         }
@@ -866,8 +816,7 @@ export default {
         // 다음 프레임의 목표 속도 계산 및 회복/피로 처리
         const skillTriggered = this.checkSkillTrigger(startPosition);
         const spurting =
-          this.spurtParameters != null &&
-          this.position + this.spurtParameters.distance >= this.courseLength;
+          this.spurtParameters != null && this.position + this.spurtParameters.distance >= this.courseLength;
         this.frames.push({
           skills: skillTriggered,
           spurting,
@@ -876,13 +825,8 @@ export default {
         // 지속 시간이 끝난 스킬 제거
         for (let i = 0; i < this.operatingSkills.length; i++) {
           const operatingSkill = this.operatingSkills[i];
-          const duration =
-            operatingSkill.data.durationOverwrite ??
-            operatingSkill.data.duration;
-          if (
-            (this.frameElapsed - operatingSkill.startFrame) * this.frameLength >
-            duration * this.timeCoef
-          ) {
+          const duration = operatingSkill.data.durationOverwrite ?? operatingSkill.data.duration;
+          if ((this.frameElapsed - operatingSkill.startFrame) * this.frameLength > duration * this.timeCoef) {
             this.operatingSkills.splice(i, 1);
             i--; // 이 줄이 없으면 다음 요소를 건너뛰게 됨
             break;
@@ -919,12 +863,7 @@ export default {
         const baseSpeed = this.isStartDash ? this.currentSpeed : this.baseSpeed;
 
         // 체력 소모량을 계산합니다
-        let consume =
-          this.consumePerSecond(
-            baseSpeed,
-            this.currentSpeed,
-            this.currentPhase
-          ) * elapsedTime;
+        let consume = this.consumePerSecond(baseSpeed, this.currentSpeed, this.currentPhase) * elapsedTime;
 
         // 내리막길이면 체력 소모가 줄어듭니다
         if (this.downSlopeModeStart != null) {
@@ -955,10 +894,7 @@ export default {
       }
 
       const framesPerTwoSeconds = 2 / this.frameLength;
-      if (
-        currentFrame - this.lastConservationCheckFrame <
-        framesPerTwoSeconds
-      ) {
+      if (currentFrame - this.lastConservationCheckFrame < framesPerTwoSeconds) {
         return 0;
       }
 
@@ -974,44 +910,32 @@ export default {
       const remainingDistance = this.courseLength - phase3StartPosition;
 
       // 마장 상태에 따른 체력 소모 계수
-      const surfaceCoef =
-        this.spConsumptionCoef[this.trackDetail.surface][
-          this.track.surfaceCondition
-        ];
+      const surfaceCoef = this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition];
 
       // 기본 계수
       const baseCoef = 20 * surfaceCoef * this.spurtSpCoef;
 
       // 현재 속도에서 종반 시작까지의 체력 소모량
       const consumption =
-        (distanceToPhase3 *
-          baseCoef *
-          Math.pow(this.currentSpeed - this.baseSpeed + 12, 2)) /
-        (144 * this.v3);
+        (distanceToPhase3 * baseCoef * Math.pow(this.currentSpeed - this.baseSpeed + 12, 2)) / (144 * this.v3);
 
       // v3 속도에서의 기본 체력 소모
       const v3Consumption =
-        (remainingDistance *
-          baseCoef *
-          Math.pow(this.v3 - this.baseSpeed + 12, 2)) /
-        (144 * this.v3);
+        (remainingDistance * baseCoef * Math.pow(this.v3 - this.baseSpeed + 12, 2)) / (144 * this.v3);
 
       // 목표 속도(v)와 v3 속도의 차이에 따른 추가 체력 소모
       const additionalConsumption =
         remainingDistance *
         baseCoef *
-        (Math.pow(this.maxSpurtSpeed - this.baseSpeed + 12, 2) /
-          (144 * this.maxSpurtSpeed) -
+        (Math.pow(this.maxSpurtSpeed - this.baseSpeed + 12, 2) / (144 * this.maxSpurtSpeed) -
           Math.pow(this.v3 - this.baseSpeed + 12, 2) / (144 * this.v3));
 
       // 총 필요 SP 계산 (현재부터 종반 시작까지 + 종반 스퍼트)
-      const totalRequiredSp =
-        consumption + v3Consumption + additionalConsumption;
+      const totalRequiredSp = consumption + v3Consumption + additionalConsumption;
 
       const minPreserveSp = totalRequiredSp * 1.035;
       const maxPreserveSp = totalRequiredSp * 1.04;
-      const preserveAmount =
-        Math.random() * (maxPreserveSp - minPreserveSp) + minPreserveSp;
+      const preserveAmount = Math.random() * (maxPreserveSp - minPreserveSp) + minPreserveSp;
 
       // console.log("Current SP:", this.sp);
       // console.log("Required SP to Phase 3:", consumption);
@@ -1020,11 +944,7 @@ export default {
       // console.log("Preserve Amount:", preserveAmount);
 
       if (this.sp < preserveAmount) {
-        if (
-          Math.random() <
-          0.3 *
-            (this.modifiedWisdom / 1000 + Math.pow(this.modifiedWisdom, 0.03))
-        ) {
+        if (Math.random() < 0.3 * (this.modifiedWisdom / 1000 + Math.pow(this.modifiedWisdom, 0.03))) {
           // 온존 시스템 발동
           return this.sp;
         }
@@ -1036,15 +956,9 @@ export default {
     updateSelfSpeed(elapsedTime) {
       let newSpeed;
       if (this.currentSpeed < this.targetSpeed) {
-        newSpeed = Math.min(
-          this.currentSpeed + elapsedTime * this.acceleration,
-          this.targetSpeed
-        );
+        newSpeed = Math.min(this.currentSpeed + elapsedTime * this.acceleration, this.targetSpeed);
       } else {
-        newSpeed = Math.max(
-          this.currentSpeed + elapsedTime * this.deceleration,
-          this.targetSpeed
-        );
+        newSpeed = Math.max(this.currentSpeed + elapsedTime * this.deceleration, this.targetSpeed);
       }
       if (this.isStartDash && newSpeed > this.v0) {
         newSpeed = this.v0;
@@ -1177,17 +1091,13 @@ export default {
         (this.sp -
           ((this.courseLength - this.position - 60) *
             20 *
-            this.spConsumptionCoef[this.trackDetail.surface][
-              this.track.surfaceCondition
-            ] *
+            this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition] *
             this.spurtSpCoef *
             Math.pow(this.v3 - this.baseSpeed + 12, 2)) /
             144 /
             this.v3) /
           (20 *
-            this.spConsumptionCoef[this.trackDetail.surface][
-              this.track.surfaceCondition
-            ] *
+            this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition] *
             this.spurtSpCoef *
             (Math.pow(v - this.baseSpeed + 12, 2) / 144 / v -
               Math.pow(this.v3 - this.baseSpeed + 12, 2) / 144 / this.v3)) +
@@ -1205,20 +1115,14 @@ export default {
       const remainingDistance = this.courseLength - this.position - 60;
 
       // 트랙 표면 상태에 따른 체력 소모 계수
-      const surfaceCoef =
-        this.spConsumptionCoef[this.trackDetail.surface][
-          this.track.surfaceCondition
-        ];
+      const surfaceCoef = this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition];
 
       // 기본 계수
       const baseCoef = 20 * surfaceCoef * this.spurtSpCoef;
 
       // v3 속도에서의 기본 체력 소모
       const v3Consumption =
-        (remainingDistance *
-          baseCoef *
-          Math.pow(this.v3 - this.baseSpeed + 12, 2)) /
-        (144 * this.v3);
+        (remainingDistance * baseCoef * Math.pow(this.v3 - this.baseSpeed + 12, 2)) / (144 * this.v3);
 
       // 목표 속도(v)와 v3 속도의 차이에 따른 추가 체력 소모
       const additionalConsumption =
@@ -1242,9 +1146,7 @@ export default {
       // 기본 체력 소모량 계산
       let ret =
         (20.0 *
-          this.spConsumptionCoef[this.trackDetail.surface][
-            this.track.surfaceCondition
-          ] *
+          this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition] *
           Math.pow(v - baseSpeed + 12, 2)) /
         144;
 
@@ -1260,13 +1162,11 @@ export default {
         position = this.position;
       }
       return (
-        (direction === "up" && this.getSlope(position) >= 1) ||
-        (direction === "down" && this.getSlope(position) <= -1)
+        (direction === "up" && this.getSlope(position) >= 1) || (direction === "down" && this.getSlope(position) <= -1)
       );
     },
     goal() {
-      const excessTime =
-        (this.position - this.courseLength) / this.currentSpeed;
+      const excessTime = (this.position - this.courseLength) / this.currentSpeed;
       const raceTime = this.frameElapsed * this.frameLength - excessTime;
       const raceTimeDelta = raceTime - this.trackDetail.finishTimeMax / 1.18;
 
@@ -1339,10 +1239,7 @@ export default {
         } else if (scope === "notMax" && e.maxSpurt) {
           continue;
         }
-        if (
-          (dir === "best" && e[field] < ret) ||
-          (dir === "worst" && e[field] > ret)
-        ) {
+        if ((dir === "best" && e[field] < ret) || (dir === "worst" && e[field] > ret)) {
           ret = e[field];
         }
       }
@@ -1452,14 +1349,12 @@ export default {
       return true;
     },
     exportUma() {
-      navigator.clipboard
-        .writeText(JSON.stringify(this.saveUmaToObject()))
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: `クリップボードへのエクスポートに成功しました。`,
-          });
+      navigator.clipboard.writeText(JSON.stringify(this.saveUmaToObject())).then(() => {
+        this.$message({
+          type: "success",
+          message: `クリップボードへのエクスポートに成功しました。`,
         });
+      });
     },
     importUma(command) {
       switch (command) {
@@ -1486,16 +1381,12 @@ export default {
       });
     },
     importUmaFromGame() {
-      this.$prompt(
-        "race_horse_data もしくは trained_chara (の JSON) をここに貼り付けてください",
-        "",
-        {
-          confirmButtonText: "インポート",
-          cancelButtonText: "キャンセル",
-          inputPattern: /.+/,
-          inputErrorMessage: "",
-        }
-      ).then(({ value }) => {
+      this.$prompt("race_horse_data もしくは trained_chara (の JSON) をここに貼り付けてください", "", {
+        confirmButtonText: "インポート",
+        cancelButtonText: "キャンセル",
+        inputPattern: /.+/,
+        inputErrorMessage: "",
+      }).then(({ value }) => {
         const raceHorseData = JSON.parse(value);
 
         this.umaStatus.stamina = raceHorseData["stamina"];
@@ -1510,29 +1401,19 @@ export default {
         const uniqueSkills = skills.filter((s) => s["skill_id"] < 200000);
         if (uniqueSkills.length === 1) {
           const uniqueSkill = uniqueSkills[0];
-          const matchedSkill = this.uniqueSkillData.filter(
-            (skill) => skill.id === uniqueSkill["skill_id"]
-          )[0];
+          const matchedSkill = this.uniqueSkillData.filter((skill) => skill.id === uniqueSkill["skill_id"])[0];
           if (matchedSkill !== undefined) {
             this.selectedUnique = matchedSkill.name;
             this.uniqueLevel = uniqueSkill["level"];
           }
         }
 
-        const nonUniqueSkillIds = new Set(
-          skills
-            .filter((s) => s["skill_id"] >= 200000)
-            .map((s) => s["skill_id"])
-        );
+        const nonUniqueSkillIds = new Set(skills.filter((s) => s["skill_id"] >= 200000).map((s) => s["skill_id"]));
         this.resetHasSkills();
 
         for (const type in this.skills) {
           for (const rarity in this.skills[type]) {
-            for (
-              let skillIdx = 0;
-              skillIdx < this.skills[type][rarity].length;
-              skillIdx++
-            ) {
+            for (let skillIdx = 0; skillIdx < this.skills[type][rarity].length; skillIdx++) {
               const skill = this.skills[type][rarity][skillIdx];
               if (skill.id !== undefined) {
                 if (nonUniqueSkillIds.has(skill.id)) {
@@ -1587,10 +1468,7 @@ export default {
     initSectionTargetSpeedRandoms() {
       const ret = [];
       for (let i = 0; i < 24; i++) {
-        const max =
-          (this.modifiedWisdom / 5500.0) *
-          Math.log10(this.modifiedWisdom * 0.1) *
-          0.01;
+        const max = (this.modifiedWisdom / 5500.0) * Math.log10(this.modifiedWisdom * 0.1) * 0.01;
         if (this.fixRandom) {
           ret.push(max - 0.00325);
         } else {
@@ -1618,11 +1496,7 @@ export default {
           skillYAdjust = 0;
         }
       };
-      const PHASE_NAMES = [
-        this.$t("chart.phase1"),
-        this.$t("chart.phase2"),
-        this.$t("chart.phase3"),
-      ];
+      const PHASE_NAMES = [this.$t("chart.phase1"), this.$t("chart.phase2"), this.$t("chart.phase3")];
       const SKILL_COLORS = {
         heal: "cyan",
         decel: "darkred",
@@ -1638,10 +1512,7 @@ export default {
       annotations.push({
         type: "line",
         label: {
-          content:
-            this.startDelay >= 0.08
-              ? this.$t("chart.lateStart")
-              : this.$t("chart.start"),
+          content: this.startDelay >= 0.08 ? this.$t("chart.lateStart") : this.$t("chart.start"),
           position: "bottom",
           enabled: true,
           xAdjust: -30,
@@ -1668,8 +1539,7 @@ export default {
           onClick: function () {
             thiz.$message(
               `掛かり：${
-                (thiz.temptationModeEnd - thiz.temptationModeStart) *
-                thiz.frameLength
+                (thiz.temptationModeEnd - thiz.temptationModeStart) * thiz.frameLength
               }秒、余分耐力消耗：${thiz.temptationWaste.toFixed(1)}`
             );
           },
@@ -1696,11 +1566,7 @@ export default {
         } else {
           dataConservation.push(null); // 온존 시스템이 발동되지 않은 경우 null 추가
         }
-        for (
-          let mi = index;
-          mi < index + step && mi < this.frames.length;
-          mi++
-        ) {
+        for (let mi = index; mi < index + step && mi < this.frames.length; mi++) {
           /*rcp:脚色十分畫圖，通過記錄進入後期時間找到脚色十分生效幀*/
           if (this.modifiedPower > 1200 && mi === this.frame_enter_phase_2) {
             annotations.push({
@@ -1740,9 +1606,7 @@ export default {
                   if ("waste" in skill.detail) {
                     if (skill.detail.waste > 0) {
                       thiz.$message(
-                        `耐力${skill.detail.heal.toFixed(
-                          1
-                        )}回復(${skill.detail.waste.toFixed(1)}が溢れた)`
+                        `耐力${skill.detail.heal.toFixed(1)}回復(${skill.detail.waste.toFixed(1)}が溢れた)`
                       );
                     } else {
                       thiz.$message(`耐力${skill.detail.heal.toFixed(1)}回復`);
@@ -1758,16 +1622,12 @@ export default {
           // コーナー
           if (
             !this.isInCorner(this.frames[index].startPosition) &&
-            this.isInCorner(
-              this.frames[index].startPosition + this.frames[index].movement
-            )
+            this.isInCorner(this.frames[index].startPosition + this.frames[index].movement)
           ) {
             cornerStart = index;
           } else if (
             this.isInCorner(this.frames[index].startPosition) &&
-            !this.isInCorner(
-              this.frames[index].startPosition + this.frames[index].movement
-            )
+            !this.isInCorner(this.frames[index].startPosition + this.frames[index].movement)
           ) {
             annotations.push({
               type: "box",
@@ -1789,16 +1649,12 @@ export default {
         // 直線
         if (
           !this.isInStraight(this.frames[index].startPosition) &&
-          this.isInStraight(
-            this.frames[index].startPosition + this.frames[index].movement
-          )
+          this.isInStraight(this.frames[index].startPosition + this.frames[index].movement)
         ) {
           straightStart = index;
         } else if (
           this.isInStraight(this.frames[index].startPosition) &&
-          !this.isInStraight(
-            this.frames[index].startPosition + this.frames[index].movement
-          )
+          !this.isInStraight(this.frames[index].startPosition + this.frames[index].movement)
         ) {
           annotations.push({
             type: "box",
@@ -1815,18 +1671,12 @@ export default {
         // 上り坂
         if (
           !this.isInSlope("up", this.frames[index].startPosition) &&
-          this.isInSlope(
-            "up",
-            this.frames[index].startPosition + this.frames[index].movement
-          )
+          this.isInSlope("up", this.frames[index].startPosition + this.frames[index].movement)
         ) {
           upSlopeStart = index;
         } else if (
           this.isInSlope("up", this.frames[index].startPosition) &&
-          !this.isInSlope(
-            "up",
-            this.frames[index].startPosition + this.frames[index].movement
-          )
+          !this.isInSlope("up", this.frames[index].startPosition + this.frames[index].movement)
         ) {
           annotations.push({
             type: "box",
@@ -1843,18 +1693,12 @@ export default {
         // 下り坂
         if (
           !this.isInSlope("down", this.frames[index].startPosition) &&
-          this.isInSlope(
-            "down",
-            this.frames[index].startPosition + this.frames[index].movement
-          )
+          this.isInSlope("down", this.frames[index].startPosition + this.frames[index].movement)
         ) {
           downSlopeStart = index;
         } else if (
           this.isInSlope("down", this.frames[index].startPosition) &&
-          !this.isInSlope(
-            "down",
-            this.frames[index].startPosition + this.frames[index].movement
-          )
+          !this.isInSlope("down", this.frames[index].startPosition + this.frames[index].movement)
         ) {
           annotations.push({
             type: "box",
@@ -1909,9 +1753,7 @@ export default {
             });
           }
 
-          const isInFinalCorner = this.isInFinalCorner(
-            this.frames[index + step].startPosition
-          );
+          const isInFinalCorner = this.isInFinalCorner(this.frames[index + step].startPosition);
           if (isInFinalCorner && !this.isInFinalCorner(frame.startPosition)) {
             annotations.push({
               type: "line",
@@ -2057,9 +1899,9 @@ export default {
     rcp_dis_running_style_coef() {
       this.isDistanceType();
       /**脚質是字串**/
-      console.log("style:", this.umaStatus.style);
+      // console.log("style:", this.umaStatus.style);
       /**距離是int**/
-      console.log("raceType:", this.getDistanceTypeByDis());
+      // console.log("raceType:", this.getDistanceTypeByDis());
 
       if (this.getDistanceTypeByDis() === 1) {
         if (this.umaStatus.style === "1") {
