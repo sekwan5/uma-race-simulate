@@ -36,20 +36,18 @@
       </el-select>
     </el-form-item>
 
+    <!-- 기존 팝업 -->
     <el-dialog :visible.sync="emulating" style="text-align: center">
       {{ $t("message.emulating") }}
       <el-progress :percentage="Math.min(100, Math.floor((100 * epoch) / runMaxEpoch))"></el-progress>
-      <p>
-        <!--<Adsense v-if="$parent.production"
-                 data-ad-client="ca-pub-4611969396217909"
-                 data-ad-slot="6969023753">
-        </Adsense>
-        <adfit-banner
-          v-if="$parent.production"
-          class="kakao_ad_area"
-          data-ad-unit="DAN-vJ9rL4rqJ1hzbVdW">
-        </adfit-banner>-->
-      </p>
+    </el-dialog>
+
+    <!-- 새로운 마신 계산 진행 팝업 -->
+    <el-dialog :visible.sync="calculatingMashin" title="마신 계산 진행 중" width="30%">
+      <div style="text-align: center">
+        <p>{{ progressMessage }}</p>
+        <el-progress :percentage="progressPercentage"></el-progress>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -57,16 +55,30 @@
 <script>
 export default {
   name: "ExecuteBlock",
-  props: ["execFunction", "execMakeMashinToTsv"], // execMakeMashinToTsv 추가
+  props: ["execFunction", "execMakeMashinToTsv"],
   data() {
     return {
+      // 기존 데이터
       epoch: 0,
       indicatedMaxEpoch: 50,
       runMaxEpoch: 50,
       emulating: false,
       skillActivateAdjustment: "0",
       randomPosition: "0",
+
+      // 새로운 데이터
+      calculatingMashin: false,
+      completedSkills: 0,
+      totalSkills: 0,
     };
+  },
+  computed: {
+    progressPercentage() {
+      return this.totalSkills > 0 ? Math.min(100, Math.floor((100 * this.completedSkills) / this.totalSkills)) : 0;
+    },
+    progressMessage() {
+      return `스킬 시뮬레이션 진행 중... ${this.completedSkills}/${this.totalSkills}`;
+    },
   },
   created() {
     this.indicatedMaxEpoch = localStorage.getItem("maxEpoch");
@@ -94,10 +106,21 @@ export default {
       this.execFunction(this.runMaxEpoch);
     },
     makeMashinToTsv() {
-      // this.emulating = true;
-      this.epoch = 0;
-      this.execMakeMashinToTsv(); // MixinRaceCore의 execMakeMashinToTsv 함수 호출
+      this.calculatingMashin = true;
+      this.completedSkills = 0;
+      this.totalSkills = 0;
+      this.execMakeMashinToTsv();
     },
+  },
+  mounted() {
+    this.$parent.$on("progress-update", ({ completed, total }) => {
+      this.completedSkills = completed;
+      this.totalSkills = total;
+    });
+
+    this.$parent.$on("mashin-calculation-complete", () => {
+      this.calculatingMashin = false;
+    });
   },
 };
 </script>
