@@ -587,12 +587,13 @@ export default {
         const target = this.$refs.executeBlock.epoch + this.maxEpoch / 5;
         console.log("루프 시작:", this.$refs.executeBlock.epoch, "목표:", target); // 로그 추가
         while (this.$refs.executeBlock.epoch < Math.min(target, this.maxEpoch)) {
-          console.log("start() 호출"); // start가 호출되는지 확인하는 로그
-          console.log("availableSkills", this.availableSkills);
-          console.log("hasSkills", this.hasSkills);
-          console.log("selectedUnique", this.selectedUnique);
-          console.log("uniqueLevel", this.uniqueLevel);
-          console.log("uniqueLevel", this.uniqueSkillData);
+          // console.log("start() 호출"); // start가 호출되는지 확인하는 로그
+          // console.log("availableSkills", this.availableSkills);
+          // console.log("umaStatus", this.umaStatus);
+          // console.log("hasSkills", this.hasSkills);
+          // console.log("selectedUnique", this.selectedUnique);
+          // console.log("uniqueLevel", this.uniqueLevel);
+          // console.log("uniqueLevel", this.uniqueSkillData);
           this.start();
           this.$refs.executeBlock.epoch++;
         }

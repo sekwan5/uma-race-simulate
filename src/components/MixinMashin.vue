@@ -56,12 +56,39 @@ export default {
         return "장거리";
       }
     },
+    getStyleName(value) {
+      const strValue = value.toString();
+
+      switch (strValue) {
+        case "1":
+          return "도주";
+        case "2":
+          return "선행";
+        case "3":
+          return "선입";
+        case "4":
+          return "추입";
+      }
+    },
+    getSurfaceName(value) {
+      const strValue = value.toString();
+      switch (strValue) {
+        case "1":
+          return "양호";
+        case "2":
+          return "다습";
+        case "3":
+          return "포화";
+        case "4":
+          return "불량";
+      }
+    },
 
     async execMakeMashinToTsv() {
       console.log("makeMashinToTsv 시작");
 
       this.makeMashinStatus();
-      this.maxEpoch = 1;
+      this.maxEpoch = 500;
       this.originHasSkills = this.hasSkills;
       this.originHasEvoSkills = this.hasEvoSkills;
       this.originUniqueLevel = this.uniqueLevel;
@@ -73,12 +100,15 @@ export default {
           this.selectedSkillIds.push(...this.hasSkills[key][detailKey]);
         }
       }
+      const nameKr = this.$i18n.messages.ko;
+      const courseNames = nameKr.course;
+      const courseData = this.courseList[this.track.course]; // 코스정보
       await this.runEmulation();
       // console.log("this.hasSkills", this.hasSkills);
       this.baseAvgRaceTime = this.avgRaceTime;
       console.log("기본 평균 레이스 시간:", this.baseAvgRaceTime);
 
-      let result = { 적성: [], 녹딱: [], 일반기: [], 고유기: [] };
+      let result = { 적성: [], 녹딱: [], 일반기: [], 고유기: [], 진화: [] };
 
       for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 2; j++) {
@@ -90,9 +120,16 @@ export default {
           let row = {};
           row["희귀"] = "적성";
           row["분류"] = "적성";
-          row["마신"] = ((this.baseAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
-          row["스킬명"] =
-            this.getDistanceName(this.courseLength) + this.fitRanks[i] + " " + "경기장" + this.fitRanks[j];
+          row["마신"] =
+            this.umaStatus.distanceFit === "A" && this.umaStatus.surfaceFit === "A"
+              ? 0
+              : ((this.baseAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
+          row["스킬명(나무)"] =
+            this.getDistanceName(this.courseLength) +
+            this.fitRanks[i] +
+            " " +
+            nameKr.surface[courseData.surface] +
+            this.fitRanks[j];
           row["예상 출시일"] = "2022년 6월 20일";
           result.적성.push(row);
         }
@@ -111,51 +148,63 @@ export default {
 
       // 3. 녹딱 마신 계산
       console.log("녹딱 마신계산 시작");
-      // result["녹딱"].push(...(await this.makeSkillMashin(200271, "passive", "rare", "스피드 80", true))); //단독◎
-      // result["녹딱"].push(...(await this.makeSkillMashin(200301, "passive", "rare", "스피드 60", true))); //복병◎
-      // result["녹딱"].push(...(await this.makeSkillMashin(-200174, "passive", "rare", "스피드 파워 60", true))); //첫 봄바람
-      // result["녹딱"].push(...(await this.makeSkillMashin(200281, "passive", "rare", "파워 60", true))); //대항의식◎
-      // result["녹딱"].push(...(await this.makeSkillMashin(200291, "passive", "rare", "근성 60", true))); //집중마크◎
-      // result["녹딱"].push(...(await this.makeSkillMashin(202441, "passive", "rare", "승부사", false))); //승부사
-      // result["녹딱"].push(...(await this.makeSkillMashin(200302, "passive", "normal", "스피드 40", true))); //복병○
-      // result["녹딱"].push(...(await this.makeSkillMashin(200282, "passive", "normal", "파워 40", true))); //대항의식○
-      // result["녹딱"].push(...(await this.makeSkillMashin(200292, "passive", "normal", "근성 40", true))); //집중마크○
-      // result["녹딱"].push(...(await this.makeSkillMashin(202442, "passive", "normal", "모험심", false))); //모험심
+      result["녹딱"].push(...(await this.makeSkillMashin(200271, "passive", "rare", "스피드 80", true))); //단독◎
+      result["녹딱"].push(...(await this.makeSkillMashin(200301, "passive", "rare", "스피드 60", true))); //복병◎
+      result["녹딱"].push(...(await this.makeSkillMashin(-200174, "passive", "rare", "스피드 파워 60", true))); //첫 봄바람
+      result["녹딱"].push(...(await this.makeSkillMashin(200281, "passive", "rare", "파워 60", true))); //대항의식◎
+      result["녹딱"].push(...(await this.makeSkillMashin(200291, "passive", "rare", "근성 60", true))); //집중마크◎
+      result["녹딱"].push(...(await this.makeSkillMashin(202441, "passive", "rare", "승부사", false))); //승부사
+      result["녹딱"].push(...(await this.makeSkillMashin(200302, "passive", "normal", "스피드 40", true))); //복병○
+      result["녹딱"].push(...(await this.makeSkillMashin(200282, "passive", "normal", "파워 40", true))); //대항의식○
+      result["녹딱"].push(...(await this.makeSkillMashin(200292, "passive", "normal", "근성 40", true))); //집중마크○
+      result["녹딱"].push(...(await this.makeSkillMashin(202442, "passive", "normal", "모험심", false))); //모험심
 
       // 3. 일반기 마신 계산
       console.log("일반기 마신계산 시작");
       //3-1 계승기 마신 계산
-      // let inherit = [
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.speed.inherit, "speed", "inherit")),
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.acceleration.inherit, "acceleration", "inherit")),
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.composite.inherit, "composite", "inherit")),
-      // ];
+      let inherit = [
+        ...(await this.makeSkillMashinMulti(this.availableSkills.speed.inherit, "speed", "inherit")),
+        ...(await this.makeSkillMashinMulti(this.availableSkills.acceleration.inherit, "acceleration", "inherit")),
+        ...(await this.makeSkillMashinMulti(this.availableSkills.composite.inherit, "composite", "inherit")),
+      ];
       //3-1 일반기+계승기
-      // result["일반기"] = [
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.speed.rare, "speed", "rare")),
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.speed.normal, "speed", "normal")),
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.acceleration.rare, "acceleration", "rare")),
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.acceleration.normal, "acceleration", "normal")),
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.composite.rare, "composite", "rare")),
-      //   ...(await this.makeSkillMashinMulti(this.availableSkills.composite.normal, "composite", "normal")),
-      //   ...inherit,
-      // ];
+      result["일반기"] = [
+        ...(await this.makeSkillMashinMulti(this.availableSkills.speed.rare, "speed", "rare")),
+        ...(await this.makeSkillMashinMulti(this.availableSkills.speed.normal, "speed", "normal")),
+        ...(await this.makeSkillMashinMulti(this.availableSkills.acceleration.rare, "acceleration", "rare")),
+        ...(await this.makeSkillMashinMulti(this.availableSkills.acceleration.normal, "acceleration", "normal")),
+        ...(await this.makeSkillMashinMulti(this.availableSkills.composite.rare, "composite", "rare")),
+        ...(await this.makeSkillMashinMulti(this.availableSkills.composite.normal, "composite", "normal")),
+        ...inherit,
+      ];
 
-      //4. 고유기를 선택하지 않았을때만 고유기 마신 계산
-      console.log("고유기 마신계산 시작");
+      //4. 고유기 마신 계산
+      console.log("고유기및 핑딱 마신계산 시작");
 
-      // if (typeof this.selectedUnique == "string" || this.selectedUnique == 1) {
-      //   const tmpUniqueSkills = this.uniqueSkillData.slice(1);
-      //   result["고유기"] = [...(await this.makeSkillMashinMulti(tmpUniqueSkills, "unique", "unique"))];
-      //   //다 끝났으니 고유기 없음 클릭
-      //   this.selectedUnique = 1;
-      // }
-      for (const data of this.uniqueSkillData.slice(1)) {
-        this.selectedUnique = await data.id;
-        console.log("this.selectedUnique", this.selectedUnique);
-        console.log("this.availableSkills.evo", this.availableSkills.evo);
+      if (typeof this.selectedUnique == "string" || this.selectedUnique == 1) {
+        // const tmpUniqueSkills = this.uniqueSkillData.slice(1);
+        for (const skill of this.uniqueSkillData.slice(1)) {
+          this.selectedUnique = await skill.id;
+          result["고유기"].push(...(await this.makeSkillMashin(skill.id, "unique", "unique", skill.name)));
+          if (this.availableSkills.evo.length > 0) {
+            for (const evoSkill of this.availableSkills.evo) {
+              result["진화"].push(...(await this.makeSkillMashin(evoSkill.id, "evo", "evo", evoSkill.name)));
+            }
+          }
+        }
+
+        // result["고유기"] = [...(await this.makeSkillMashinMulti(tmpUniqueSkills, "unique", "unique"))];
+        //다 끝났으니 고유기 없음 클릭
+        this.selectedUnique = 1;
+      } else {
+        if (this.availableSkills.evo.length > 0) {
+          for (const evoSkill of this.availableSkills.evo) {
+            result["진화"].push(...(await this.makeSkillMashin(evoSkill.id, "evo", "evo", evoSkill.name)));
+          }
+        }
       }
 
+      //test
       // result["고유기"] = [
       //   ...(await this.makeSkillMashin(910061, "unique", "unique", "크리스마스 이브의 미라클 런!")),
       //   ...(await this.makeSkillMashin(110041, "unique", "unique", "뭉클하게♪Chu")),
@@ -163,6 +212,45 @@ export default {
       // const tsvData = this.generateTsvData(result_Final);
       // this.downloadTsv(tsvData, "result_Final.tsv"); // 파일 이름 지정
       console.log("result_Final", result);
+
+      //5.파일명 생성 및 데이터 정리
+
+      const uniqueSkillName = this.uniqueSkillData.find(
+        (skill) => skill.id === this.selectedUnique && skill.id !== 1
+      )?.name; //고유기이름
+      const { style, speed, power, stamina, guts, wisdom, styleFit, distanceFit, surfaceFit } = this.umaStatus;
+      const hasSkillNames = [];
+
+      const skillCategories = ["speed", "acceleration", "composite"];
+      skillCategories.forEach((category) => {
+        if (this.hasSkills[category].inherit.length > 0) {
+          const skillNames = this.hasSkills[category].inherit
+            .map((skillId) => this.availableSkills[category].inherit.find((v) => v.id === skillId)?.name)
+            .filter(Boolean); // undefined 값 제거
+          hasSkillNames.push(...skillNames);
+        }
+      });
+
+      let filename = `${this.getStyleName(style)} - ${courseNames[this.track.location]} ${
+        nameKr.surface[courseData.surface] + courseData.distance + this.courseNameSuffix(courseData.name)
+      } ${this.getSurfaceName(this.track.surfaceCondition)}`;
+      if (uniqueSkillName) filename += ` (고유 ${uniqueSkillName})`;
+      if (hasSkillNames.length > 0) filename += ` (일반 ${hasSkillNames.join(", ")})`;
+
+      let firstLine = `${courseNames[this.track.location]}\t${nameKr.surface[courseData.surface]}\t${
+        courseData.distance
+      }\t${this.getDistanceName(courseData.distance)}\t${this.getSurfaceName(
+        this.track.surfaceCondition
+      )}\t${this.getStyleName(style)}\t${
+        speed + "/" + power + "/" + stamina + "/" + guts + "/" + wisdom
+      }\t${distanceFit}\t${surfaceFit}\t${styleFit}\t${"최상"}\t${this.uniqueLevel}\t${
+        this.maxEpoch
+      }\t${this.courseNameSuffix(courseData.name)}`;
+
+      firstLine += uniqueSkillName ? `\t${uniqueSkillName}` : "\t";
+      firstLine += hasSkillNames.length > 0 ? `\t${hasSkillNames.join(", ")}` : "\t";
+      const data = [...result["적성"], ...result["녹딱"], ...result["고유기"], ...result["진화"], ...result["일반기"]];
+      this.downloadTSV(data, filename, firstLine);
       console.log("makeMashinToTsv 완료");
     },
 
@@ -193,7 +281,7 @@ export default {
         }
       }
       //유저가 선택한 고유기의 계승기면 스킵
-      if (this.selectedUnique.toString() === "1" + skillId.toString().slice(1)) {
+      if (!skillId.toString().startsWith("1") && this.selectedUnique.toString() === "1" + skillId.toString().slice(1)) {
         console.log("이미 선택한 고유기");
         return [];
       }
@@ -303,13 +391,17 @@ export default {
           skillData["표준 편차"] = (this.timeStandardDeviation * 10).toFixed(2) * 1;
         } else {
           await this.runEmulation();
+          skillData["마신"] = ((this.baseAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
+          skillData["표준 편차"] = (this.timeStandardDeviation * 10).toFixed(2) * 1;
           let randomPosition = [];
           randomPosition.push(this.bestTime);
           randomPosition.push(this.worstTime);
           const mashinArray = this.allRaceTime.map((time) => ((this.baseAvgRaceTime - time) * 10).toFixed(2) * 1);
           for (let i = 1; i < 6; i++) {
             this.$refs.executeBlock.randomPosition = i.toString();
+            this.maxEpoch = 1;
             await this.runEmulation();
+            this.maxEpoch = 500;
             randomPosition.push(this.avgRaceTime);
           }
           const best = Math.min(...randomPosition);
@@ -432,6 +524,9 @@ export default {
     },
 
     makeMashinStatus() {
+      this.umaStatus.distanceFit = "A";
+      this.umaStatus.styleFit = "A";
+      this.umaStatus.surfaceFit = "A";
       this.umaStatus.condition = "0";
       this.umaStatus.speed = 1200;
       this.umaStatus.stamina = 1000;
@@ -462,12 +557,23 @@ export default {
       runBatch();
     },
 
-    downloadTsv(tsvData, fileName) {
-      const blob = new Blob([tsvData], { type: "text/tab-separated-values" });
+    downloadTSV(dictionaryArray, filename, firstLine) {
+      let longest = dictionaryArray[0];
+      for (let i = 1; i < dictionaryArray.length; i++) {
+        if (Object.keys(dictionaryArray[i]).length > Object.keys(longest).length) {
+          longest = dictionaryArray[i];
+        }
+      }
+      const keys = Object.keys(longest);
+      const rows = [keys, ...dictionaryArray.map((obj) => keys.map((key) => (obj[key] !== undefined ? obj[key] : "")))];
+      const tsv = firstLine + "\n" + rows.map((row) => row.join("\t")).join("\n");
+      const blob = new Blob([tsv], { type: "text/tab-separated-values" });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = fileName;
+      link.download = `${filename}.tsv`;
+      link.href = url;
       link.click();
+      URL.revokeObjectURL(url);
     },
   },
 
