@@ -112,7 +112,7 @@ export default {
 
       // 진행 상황 업데이트 함수
       this.makeMashinStatus();
-      this.maxEpoch = 1;
+      this.maxEpoch = 1000;
       this.originHasSkills = JSON.parse(JSON.stringify(this.hasSkills));
       this.originHasEvoSkills = JSON.parse(JSON.stringify(this.hasEvoSkills));
       this.originUniqueLevel = JSON.parse(JSON.stringify(this.uniqueLevel));
@@ -213,6 +213,7 @@ export default {
           this.selectedUnique = await skill.id;
           result["고유기"].push(...(await this.makeSkillMashin(skill.id, "unique", "unique", skill.name)));
           if (this.availableSkills.evo.length > 0) {
+            this.$refs.executeBlock.totalSkills += this.availableSkills.evo.length;
             for (const evoSkill of this.availableSkills.evo) {
               result["진화"].push(...(await this.makeSkillMashin(evoSkill.id, "evo", "evo", evoSkill.name)));
             }
@@ -221,6 +222,7 @@ export default {
         this.selectedUnique = 1;
       } else {
         if (this.availableSkills.evo.length > 0) {
+          this.$refs.executeBlock.totalSkills += this.availableSkills.evo.length;
           for (const evoSkill of this.availableSkills.evo) {
             result["진화"].push(...(await this.makeSkillMashin(evoSkill.id, "evo", "evo", evoSkill.name)));
           }
@@ -413,7 +415,7 @@ export default {
             this.$refs.executeBlock.randomPosition = i.toString();
             this.maxEpoch = 1;
             await this.runEmulation();
-            this.maxEpoch = 1;
+            this.maxEpoch = 1000;
             randomPosition.push(this.avgRaceTime);
           }
           const best = Math.min(...randomPosition);

@@ -1258,19 +1258,19 @@ export default {
       return ret;
     },
     saveUma() {
-      this.$prompt("ウマ名を入力して下さい", "", {
+      this.$prompt("말 이름을 입력해 주세요", "", {
         inputValue: this.umaToLoad,
-        confirmButtonText: "セーブ",
-        cancelButtonText: "キャンセル",
+        confirmButtonText: "저장",
+        cancelButtonText: "취소",
         inputPattern: /.+/,
-        inputErrorMessage: "名前を入力して下さい。",
+        inputErrorMessage: "이름을 입력해 주세요.",
       }).then(({ value }) => {
         const umas = JSON.parse(localStorage.getItem("umas") || "{}");
         umas[value] = this.saveUmaToObject();
         localStorage.setItem("umas", JSON.stringify(umas));
         this.$message({
           type: "success",
-          message: `${value}をセーブしました。`,
+          message: `${value}을(를) 저장했습니다.`,
         });
         this.updateSavedUmas();
         this.umaToLoad = value;
@@ -1304,19 +1304,18 @@ export default {
         if (this.loadUmaFromObject(umaData)) {
           this.$message({
             type: "success",
-            // message: `${this.umaToLoad}をロードしました。`,
-            message: `${this.umaToLoad}을 로드했습니다.`,
+            message: `${this.umaToLoad}을(를) 로드했습니다.`,
           });
         } else {
           this.$message({
             type: "failed",
-            message: `${this.umaToLoad}は旧データで読み込めませんでした。`,
+            message: `${this.umaToLoad}은(는) 구 데이터라서 불러올 수 없었습니다.`,
           });
         }
       } else {
         this.$message({
           type: "warning",
-          message: `${this.umaToLoad}のデータが見つかりませんでした。`,
+          message: `${this.umaToLoad}의 데이터를 찾을 수 없었습니다.`,
         });
       }
     },
