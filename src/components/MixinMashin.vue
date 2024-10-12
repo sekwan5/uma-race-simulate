@@ -107,15 +107,17 @@ export default {
         this.availableSkills.composite.inherit.length +
         this.uniqueSkillData.length -
         1 +
-        this.availableSkills.evo.length;
+        this.availableSkills.evo.length +
+        120;
 
       // 진행 상황 업데이트 함수
       this.makeMashinStatus();
-      this.maxEpoch = 500;
+      this.maxEpoch = 1;
       this.originHasSkills = JSON.parse(JSON.stringify(this.hasSkills));
       this.originHasEvoSkills = JSON.parse(JSON.stringify(this.hasEvoSkills));
       this.originUniqueLevel = JSON.parse(JSON.stringify(this.uniqueLevel));
       this.selectedSkillIds.push(...this.hasEvoSkills);
+      this.selectedSkillIds.push(this.selectedUnique);
       const keys = Object.keys(this.hasSkills);
       const detailKeys = ["all", "rare", "normal", "inherit"];
       for (const key of keys) {
@@ -200,6 +202,8 @@ export default {
         ...inherit,
       ];
 
+      // result["일반기"] = [...(await this.makeSkillMashin(200642, "acceleration", "rare", "직선 주파"))];
+      // result["일반기"] = [...(await this.makeSkillMashin(900201, "acceleration", "rare", "직선 주파"))];
       //4. 고유기 마신 계산
       console.log("고유기및 핑딱 마신계산 시작");
 
@@ -223,11 +227,7 @@ export default {
         }
       }
 
-      //test
-      // result["고유기"] = [
-      //   ...(await this.makeSkillMashin(910061, "unique", "unique", "크리스마스 이브의 미라클 런!")),
-      //   ...(await this.makeSkillMashin(110041, "unique", "unique", "뭉클하게♪Chu")),
-      // ];
+      // result["고유기"] = [...(await this.makeSkillMashin(100201, "unique", "unique", "앵글링"))];
       console.log("result_Final", result);
 
       //5.파일명 생성 및 데이터 정리
@@ -249,7 +249,7 @@ export default {
       });
 
       let filename = `${this.getStyleName(style)} - ${courseNames[this.track.location]} ${
-        nameKr.surface[courseData.surface] + courseData.distance + this.courseNameSuffix(courseData.name)
+        nameKr.surface[courseData.surface] + courseData.distance + "m" + this.courseNameSuffix(courseData.name)
       } ${this.getSurfaceName(this.track.surfaceCondition)}`;
       if (uniqueSkillName) filename += ` (고유 ${uniqueSkillName})`;
       if (hasSkillNames.length > 0) filename += ` (일반 ${hasSkillNames.join(", ")})`;
@@ -269,6 +269,7 @@ export default {
       const data = [...result["적성"], ...result["녹딱"], ...result["고유기"], ...result["진화"], ...result["일반기"]];
       this.downloadTSV(data, filename, firstLine);
       this.$emit("mashin-calculation-complete");
+      this.selectedSkillIds = [];
       this.$refs.executeBlock.calculatingMashin = false;
     },
 
@@ -293,22 +294,23 @@ export default {
       }
       //선택한 스킬의 하위 스킬이면 스킵
       for (const upperSkillId of upperSkillIds) {
-        if (this.selectedSkillIds.includes(upperSkillId)) {
+        if (this.selectedSkillIds.includes(Number(upperSkillId))) {
           console.log("이미 선택한 상위 스킬");
           return [];
         }
       }
+
       //유저가 선택한 고유기의 계승기면 스킵
       if (!skillId.toString().startsWith("1") && this.selectedUnique.toString() === "1" + skillId.toString().slice(1)) {
         console.log("이미 선택한 고유기");
         return [];
       }
+
       //유저가 선택한 계승기의 고유기면 스킵
-      if (rarity === "inherit") {
-        for (const lowerSkillId of lowerSkillIds) {
-          if (this.selectedSkillIds.includes(lowerSkillId)) {
-            return [];
-          }
+      for (const lowerSkillId of lowerSkillIds) {
+        if (this.selectedSkillIds.includes(Number(lowerSkillId))) {
+          console.log("유저가 선택한 계승기의 고유기면 스킵");
+          return [];
         }
       }
 
@@ -321,13 +323,6 @@ export default {
         };
         console.log("스킬DB에 없는 스킬");
         skillDataArray.push(newSkillData);
-      }
-
-      if (typeof this.selectedUnique !== "string" || this.selectedUnique !== 1) {
-        if (this.availableSkills.evo.length > 0) {
-          console.log("this.availableSkills.evo", this.availableSkills.evo);
-          // resultSkillDataArray.push(...(await this.makeSkillMashinMulti(this.availableSkills.evo, "evo", "evo")));
-        }
       }
 
       for (const skillData of skillDataArray) {
@@ -402,7 +397,6 @@ export default {
           this.hasSkills[skillType][rarity].push(skillId);
         }
 
-        // console.log("randomPosition", this.$refs.executeBlock.randomPosition);
         if (once) {
           await this.runEmulation();
           skillData["마신"] = ((this.baseAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
@@ -419,13 +413,12 @@ export default {
             this.$refs.executeBlock.randomPosition = i.toString();
             this.maxEpoch = 1;
             await this.runEmulation();
-            this.maxEpoch = 500;
+            this.maxEpoch = 1;
             randomPosition.push(this.avgRaceTime);
           }
           const best = Math.min(...randomPosition);
           const worst = Math.max(...randomPosition);
 
-          // console.log("randomPosition", randomPosition);
           this.$refs.executeBlock.randomPosition = "0";
           skillData["최대"] = ((this.baseAvgRaceTime - best) * 10).toFixed(2) * 1;
           skillData["최소"] = ((this.baseAvgRaceTime - worst) * 10).toFixed(2) * 1;
@@ -439,13 +432,21 @@ export default {
             skillData[key] = ratio;
           }
         }
+        if (!this.triggeredSkills.includes(skillId)) {
+          skillData["마신"] = 0;
+          skillData["표준 편차"] = 0;
+          skillData["최대"] = 0;
+          skillData["최소"] = 0;
+          skillData["중앙"] = 0;
+        }
+
+        this.triggeredSkills = [];
         this.hasSkills = JSON.parse(JSON.stringify(this.originHasSkills));
         this.hasEvoSkills = [...this.originHasEvoSkills];
         this.$refs.executeBlock.randomPosition = "0";
         this.uniqueLevel = this.originUniqueLevel;
 
         resultSkillDataArray.push(skillData);
-        // console.log("resultSkillDataArray", resultSkillDataArray);
       }
 
       return resultSkillDataArray; // 결과 배열 반환
@@ -541,6 +542,7 @@ export default {
     },
 
     makeMashinStatus() {
+      this.$refs.executeBlock.skillActivateAdjustment = "1";
       this.umaStatus.distanceFit = "A";
       this.umaStatus.styleFit = "A";
       this.umaStatus.surfaceFit = "A";

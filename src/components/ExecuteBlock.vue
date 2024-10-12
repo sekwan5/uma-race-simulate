@@ -4,7 +4,7 @@
       <el-button @click="executeIndicated" type="success">
         {{ $t("message.emulateStart") }}
       </el-button>
-      <el-button @click="makeMashinToTsv" type="success">
+      <el-button v-if="isAdmin" @click="makeMashinToTsv" type="success">
         {{ "마신표 제작" }}
       </el-button>
     </el-form-item>
@@ -68,6 +68,8 @@ export default {
       calculatingMashin: false,
       completedSkills: 0,
       totalSkills: 0,
+
+      isAdmin: false,
     };
   },
   computed: {
@@ -109,8 +111,19 @@ export default {
       this.totalSkills = 0;
       this.execMakeMashinToTsv();
     },
+    checkAdminStatus() {
+      const hash = window.location.hash;
+      const searchParams = new URLSearchParams(hash.split("?")[1]);
+      this.isAdmin = searchParams.get("admin") === "true";
+    },
   },
-  mounted() {},
+  mounted() {
+    this.checkAdminStatus();
+    // 라우트 변경 시에도 관리자 상태를 확인합니다
+    this.$router.afterEach(() => {
+      this.checkAdminStatus();
+    });
+  },
   beforeDestroy() {},
 };
 </script>
