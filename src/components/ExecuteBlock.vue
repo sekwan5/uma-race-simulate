@@ -43,11 +43,9 @@
     </el-dialog>
 
     <!-- 새로운 마신 계산 진행 팝업 -->
-    <el-dialog :visible.sync="calculatingMashin" title="마신 계산 진행 중" width="30%">
-      <div style="text-align: center">
-        <p>{{ progressMessage }}</p>
-        <el-progress :percentage="progressPercentage"></el-progress>
-      </div>
+    <el-dialog :visible.sync="calculatingMashin" style="text-align: center">
+      {{ `스킬 시뮬레이션 진행 중... ${this.completedSkills}/${this.totalSkills}` }}
+      <el-progress :percentage="Math.min(100, Math.floor((100 * completedSkills) / totalSkills))"></el-progress>
     </el-dialog>
   </div>
 </template>
@@ -112,16 +110,8 @@ export default {
       this.execMakeMashinToTsv();
     },
   },
-  mounted() {
-    this.$parent.$on("progress-update", ({ completed, total }) => {
-      this.completedSkills = completed;
-      this.totalSkills = total;
-    });
-
-    this.$parent.$on("mashin-calculation-complete", () => {
-      this.calculatingMashin = false;
-    });
-  },
+  mounted() {},
+  beforeDestroy() {},
 };
 </script>
 

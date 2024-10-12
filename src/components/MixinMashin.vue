@@ -16,6 +16,8 @@ export default {
       selectedSkillIds: [],
       originUniqueLevel: 0,
       originHasEvoSkills: [],
+      totalTasks: 0,
+      completedTasks: 0,
     };
   },
   methods: {
@@ -87,11 +89,32 @@ export default {
     async execMakeMashinToTsv() {
       console.log("makeMashinToTsv 시작");
 
+      let result = { 적성: [], 녹딱: [], 일반기: [], 고유기: [], 진화: [] };
+
+      // 전체 작업 수 계산
+      this.$refs.executeBlock.totalSkills =
+        2 +
+        2 +
+        10 +
+        this.availableSkills.speed.rare.length +
+        this.availableSkills.speed.normal.length +
+        this.availableSkills.acceleration.rare.length +
+        this.availableSkills.acceleration.normal.length +
+        this.availableSkills.composite.rare.length +
+        this.availableSkills.composite.normal.length +
+        this.availableSkills.speed.inherit.length +
+        this.availableSkills.acceleration.inherit.length +
+        this.availableSkills.composite.inherit.length +
+        this.uniqueSkillData.length -
+        1 +
+        this.availableSkills.evo.length;
+
+      // 진행 상황 업데이트 함수
       this.makeMashinStatus();
       this.maxEpoch = 500;
-      this.originHasSkills = this.hasSkills;
-      this.originHasEvoSkills = this.hasEvoSkills;
-      this.originUniqueLevel = this.uniqueLevel;
+      this.originHasSkills = JSON.parse(JSON.stringify(this.hasSkills));
+      this.originHasEvoSkills = JSON.parse(JSON.stringify(this.hasEvoSkills));
+      this.originUniqueLevel = JSON.parse(JSON.stringify(this.uniqueLevel));
       this.selectedSkillIds.push(...this.hasEvoSkills);
       const keys = Object.keys(this.hasSkills);
       const detailKeys = ["all", "rare", "normal", "inherit"];
@@ -107,8 +130,6 @@ export default {
       // console.log("this.hasSkills", this.hasSkills);
       this.baseAvgRaceTime = this.avgRaceTime;
       console.log("기본 평균 레이스 시간:", this.baseAvgRaceTime);
-
-      let result = { 적성: [], 녹딱: [], 일반기: [], 고유기: [], 진화: [] };
 
       for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 2; j++) {
@@ -132,6 +153,7 @@ export default {
             this.fitRanks[j];
           row["예상 출시일"] = "2022년 6월 20일";
           result.적성.push(row);
+          this.$refs.executeBlock.completedSkills++;
         }
       }
 
@@ -192,9 +214,6 @@ export default {
             }
           }
         }
-
-        // result["고유기"] = [...(await this.makeSkillMashinMulti(tmpUniqueSkills, "unique", "unique"))];
-        //다 끝났으니 고유기 없음 클릭
         this.selectedUnique = 1;
       } else {
         if (this.availableSkills.evo.length > 0) {
@@ -209,8 +228,6 @@ export default {
       //   ...(await this.makeSkillMashin(910061, "unique", "unique", "크리스마스 이브의 미라클 런!")),
       //   ...(await this.makeSkillMashin(110041, "unique", "unique", "뭉클하게♪Chu")),
       // ];
-      // const tsvData = this.generateTsvData(result_Final);
-      // this.downloadTsv(tsvData, "result_Final.tsv"); // 파일 이름 지정
       console.log("result_Final", result);
 
       //5.파일명 생성 및 데이터 정리
@@ -251,12 +268,13 @@ export default {
       firstLine += hasSkillNames.length > 0 ? `\t${hasSkillNames.join(", ")}` : "\t";
       const data = [...result["적성"], ...result["녹딱"], ...result["고유기"], ...result["진화"], ...result["일반기"]];
       this.downloadTSV(data, filename, firstLine);
-      console.log("makeMashinToTsv 완료");
+      this.$emit("mashin-calculation-complete");
+      this.$refs.executeBlock.calculatingMashin = false;
     },
 
     async makeSkillMashin(skillId, skillType, rarity, custom_skillName = "", sOnes = false) {
       console.log("skillId", skillId);
-
+      this.$refs.executeBlock.completedSkills++;
       const skillDataArray = this.skillDB.filter((skill) => skill["스킬 id"] == Math.abs(skillId)) ?? [];
       // console.log("skillDataArray", skillDataArray);
       const resultSkillDataArray = [];
@@ -421,8 +439,7 @@ export default {
             skillData[key] = ratio;
           }
         }
-
-        this.hasSkills = { ...this.originHasSkills };
+        this.hasSkills = JSON.parse(JSON.stringify(this.originHasSkills));
         this.hasEvoSkills = [...this.originHasEvoSkills];
         this.$refs.executeBlock.randomPosition = "0";
         this.uniqueLevel = this.originUniqueLevel;
@@ -528,11 +545,31 @@ export default {
       this.umaStatus.styleFit = "A";
       this.umaStatus.surfaceFit = "A";
       this.umaStatus.condition = "0";
-      this.umaStatus.speed = 1200;
-      this.umaStatus.stamina = 1000;
-      this.umaStatus.power = 1000;
-      this.umaStatus.guts = 400;
-      this.umaStatus.wisdom = 400;
+      if (this.courseLength < 2000) {
+        this.umaStatus.speed = 1500;
+        this.umaStatus.stamina = 1200;
+        this.umaStatus.power = 1300;
+        this.umaStatus.guts = 1200;
+        this.umaStatus.wisdom = 1300;
+      } else if (this.courseLength <= 2400) {
+        this.umaStatus.speed = 1500;
+        this.umaStatus.stamina = 1200;
+        this.umaStatus.power = 1250;
+        this.umaStatus.guts = 1200;
+        this.umaStatus.wisdom = 1250;
+      } else {
+        this.umaStatus.speed = 1500;
+        this.umaStatus.stamina = 1300;
+        this.umaStatus.power = 1250;
+        this.umaStatus.guts = 1200;
+        this.umaStatus.wisdom = 1250;
+      }
+
+      //       장거리 = 1500 1300 1250 1200 1250 ( 혹은 여기에 금힐 하나 확정발동으로 넣어서)
+
+      // 중거리 = 1500 1200 1250 1200 1250
+
+      // 단 마일 = 1500 1200 1300 1300 1300
     },
 
     progressEpochForMashin(callback) {
