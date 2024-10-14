@@ -166,7 +166,8 @@
     "phaseSeparators": "중반 진입: {0}m | 종반 진입: {1}m",
     "firstSlopes": "첫번째 오르막: {0} | 내리막: {1}",
     "finalCorner": "최종 코너",
-    "releasePower": "다릿심 충분"
+    "releasePower": "다릿심 충분",
+    "staminaCompetition": "스태미너 승부"
   },
   "course": {
     "10001": "삿포로",

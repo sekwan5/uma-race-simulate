@@ -159,7 +159,8 @@
     "phaseSeparators": "中盤入り：{0}m | 終盤入り：{1}m",
     "firstSlopes": "最初の上り坂：{0} | 下り坂：{1}",
     "finalCorner": "最終コーナー",
-    "releasePower": "脚色十分"
+    "releasePower": "脚色十分",
+    "staminaCompetition": "スタミナ勝負"
   },
   "course": {
     "10001": "札幌",

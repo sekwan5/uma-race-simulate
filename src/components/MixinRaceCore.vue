@@ -75,8 +75,10 @@ export default {
       fitRanks: ["S", "A", "B", "C", "D", "E", "F", "G"],
       // Special cases
       oonige: false,
-      /**記錄進入phase2的時間**/
+      /** 2단계(phase 2) 진입 시간 기록 **/
       frame_enter_phase_2: 0,
+      //스태미너승부 진입 시점
+      frame_spurt_start: 0,
       triggeredSkills: [],
     };
   },
@@ -86,9 +88,9 @@ export default {
     if (!this.production) {
       this.umaToLoad = "test";
       this.loadUma();
-      if (this.$refs.executeBlock.indicatedMaxEpoch === 1) {
-        this.exec();
-      }
+      // if (this.$refs.executeBlock.indicatedMaxEpoch === 1) {
+      //   this.exec();
+      // }
     }
   },
   computed: {
@@ -199,65 +201,75 @@ export default {
       return 20 - (this.trackDetail.distance - 2000) / 1000.0;
     },
     targetSpeed() {
-      // 耐力枯渇
+      // 체력이 완전히 소진된 경우
       if (this.sp <= 0) {
-        return this.vMin;
+        return this.vMin; // 최소 속도 반환
       }
-      // スタート時
-      // 他に0.85倍の基準速度を下回る可能性がない（耐力枯渇してもこれよりは高い）
+
+      // 출발 직후 상황
+      // 기준 속도의 85%보다 현재 속도가 낮은 경우 (체력이 소진되어도 이보다는 빠름)
       if (this.currentSpeed < this.v0) {
-        return this.v0;
+        return this.v0; // 초기 속도 반환
       }
+
       let baseTargetSpeed;
-      // スパート中
+
+      // 스퍼트 중인 경우
       if (this.spurtParameters && this.position + this.spurtParameters.distance >= this.courseLength) {
-        baseTargetSpeed = this.spurtParameters.speed;
+        baseTargetSpeed = this.spurtParameters.speed; // 스퍼트 속도 사용
       } else {
+        // 현재 경주 단계에 따른 기본 목표 속도 계산
         switch (this.currentPhase) {
-          case 0:
-          case 1:
+          case 0: // 초반
+          case 1: // 중반
             baseTargetSpeed = this.baseSpeed * this.styleSpeedCoef[this.runningStyle][this.currentPhase];
             break;
-          case 2:
-          case 3:
+          case 2: // 후반
+          case 3: // 마지막
           default:
+            // 기본 속도에 달리기 스타일, 속도, 거리 적성을 고려한 보정 적용
             baseTargetSpeed =
               this.baseSpeed * this.styleSpeedCoef[this.runningStyle][2] +
               Math.sqrt(this.modifiedSpeed / 500.0) * this.distanceFitSpeedCoef[this.umaStatus.distanceFit];
+            // 근성에 따른 추가 보정
             baseTargetSpeed += Math.pow(this.modifiedGuts * 450, 0.597) * 0.0001;
             break;
         }
+        // 현재 구간에 따른 랜덤 속도 변동 적용
         baseTargetSpeed += this.baseSpeed * this.sectionTargetSpeedRandoms[this.currentSection];
       }
-      // 根性補正
+
+      // 최종 목표 속도 계산
       let ret = baseTargetSpeed;
 
-      // 坂
+      // 오르막길 처리
       const upSlope = this.isInSlope("up");
       if (upSlope) {
-        ret -= (Math.abs(this.currentSlope) * 200.0) / this.modifiedPower;
+        ret -= (Math.abs(this.currentSlope) * 200.0) / this.modifiedPower; // 파워에 따른 속도 감소
       }
+
+      // 내리막길 처리
       const downSlope = this.isInSlope("down");
       if (downSlope) {
         if (this.downSlopeModeStart != null) {
-          ret += Math.abs(this.currentSlope) / 10.0 + 0.3;
+          ret += Math.abs(this.currentSlope) / 10.0 + 0.3; // 속도 증가
         }
       }
 
-      // 持続中スキル
+      // 현재 발동 중인 스킬 효과 적용
       for (const skill of this.operatingSkills) {
         if (skill.data.targetSpeed) {
-          ret += skill.data.targetSpeed;
+          ret += skill.data.targetSpeed; // 목표 속도 증가 스킬
         }
         if (skill.data.speedWithDecel) {
-          ret += skill.data.speedWithDecel;
+          ret += skill.data.speedWithDecel; // 감속 포함 속도 변경 스킬
         }
-        // 減速スキルの目標速度低下分
         if (skill.data.speed) {
-          ret += skill.data.speed;
+          ret += skill.data.speed; // 감속 스킬의 목표 속도 감소분
         }
       }
-      return ret;
+
+      return ret; // 최종 계산된 목표 속도 반환
     },
     acceleration() {
       const c = this.isInSlope("up") ? 0.0004 : 0.0006;
@@ -586,7 +598,6 @@ export default {
     progressEpoch(callback) {
       const runBatch = () => {
         const target = this.$refs.executeBlock.epoch + this.maxEpoch / 5;
-        console.log("루프 시작:", this.$refs.executeBlock.epoch, "목표:", target); // 로그 추가
         while (this.$refs.executeBlock.epoch < Math.min(target, this.maxEpoch)) {
           // console.log("start() 호출"); // start가 호출되는지 확인하는 로그
           // console.log("availableSkills", this.availableSkills);
@@ -798,18 +809,44 @@ export default {
               },
               startFrame: this.frameElapsed,
             });
-
-            // 디버그 정보 출력
-            // console.log("modifiedPower :", this.modifiedPower);
-            // console.log("rcp_accel :", rcp_accel);
-            // console.log("del :", RCP.RELEASE_CONSERVE_POWER_DECEL_COEF);
-            // console.log("acc :", RCP.RELEASE_CONSERVE_POWER_ACCEL_COEF);
-            // console.log(rcp_dis_style_coef);
-            // console.log(rcp_dur);
           }
           this.frame_enter_phase_2 = this.frameElapsed;
         }
 
+        //2.5주년 스태미너승부
+        const epsilon = 0.000001;
+        if (Math.abs(this.currentSpeed - this.maxSpurtSpeed) < epsilon) {
+          console.log("this.currentSpeed", this.currentSpeed);
+          // 스태미나가 1200을 초과하는 경우에만 적용
+          if (this.modifiedStamina > 1200) {
+            // DistanceFactor 계산
+            let distanceFactor;
+            if (this.trackDetail.distance < 2101) distanceFactor = 0.0;
+            else if (this.trackDetail.distance < 2201) distanceFactor = 0.5;
+            else if (this.trackDetail.distance < 2401) distanceFactor = 1.0;
+            else if (this.trackDetail.distance < 2601) distanceFactor = 1.2;
+            else distanceFactor = 1.5;
+
+            // RandomFactor는 1로 고정
+            const randomFactor = 1;
+
+            // TargetSpeedBuff 계산
+            const targetSpeedBuff = Math.sqrt(this.modifiedStamina - 1200) * 0.0085 * distanceFactor * randomFactor;
+
+            // 스태미나 승부 스킬을 operatingSkills에 추가
+            this.operatingSkills.push({
+              data: {
+                name: "스태미나 승부",
+                targetSpeed: targetSpeedBuff,
+                duration: 100, // 지속 시간을 무한으로 설정 (레이스 끝까지 유지)
+              },
+              startFrame: this.frameElapsed,
+            });
+            // this.currentSpeed += targetSpeedBuff;
+            console.log("적용된 속도 버프:", targetSpeedBuff);
+            this.frame_spurt_start = this.frameElapsed;
+          }
+        }
         // 결승선 통과 체크
         if (this.position >= this.courseLength) {
           break;
@@ -1575,7 +1612,7 @@ export default {
           dataConservation.push(null); // 온존 시스템이 발동되지 않은 경우 null 추가
         }
         for (let mi = index; mi < index + step && mi < this.frames.length; mi++) {
-          /*rcp:脚色十分畫圖，通過記錄進入後期時間找到脚色十分生效幀*/
+          /* rcp: 다릿심 충분 그래프 그리기, 후반기 진입 시간을 기록하여 다릿심 충분 효과가 발동하는 프레임 찾기 */
           if (this.modifiedPower > 1200 && mi === this.frame_enter_phase_2) {
             annotations.push({
               type: "line",
@@ -1589,6 +1626,26 @@ export default {
               scaleID: "x-axis-0",
               value: label,
               borderColor: SKILL_COLORS["acceleration"],
+              borderWidth: 2,
+              onClick: function () {},
+            });
+            nextSkillYAdjust(skillYAdjust);
+          }
+
+          // 2.5주년 스태미너승부 발동 프레임
+          if (this.modifiedStamina > 1200 && mi === this.frame_spurt_start) {
+            annotations.push({
+              type: "line",
+              label: {
+                content: this.$t("chart.staminaCompetition"),
+                position: "top",
+                enabled: true,
+                yAdjust: skillYAdjust,
+              },
+              mode: "vertical",
+              scaleID: "x-axis-0",
+              value: label,
+              borderColor: SKILL_COLORS["speed"],
               borderWidth: 2,
               onClick: function () {},
             });

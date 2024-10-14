@@ -158,7 +158,8 @@
     "phaseSeparators": "Phase 1 starts at {0}m, phase 2 starts at {1}m",
     "firstSlopes": "First up slope：{0} | down slope：{1}",
     "finalCorner": "FinalCorner",
-    "releasePower": "Release Power"
+    "releasePower": "Release Power",
+    "staminaCompetition": "Stamina Competition"
   },
   "course": {
     "10001": "Sapporo",

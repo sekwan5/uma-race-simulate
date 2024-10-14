@@ -67,13 +67,10 @@ function toInheritValues(invoke) {
       const value = invoke[effect];
       let newValue = map[value];
       if (newValue == null) {
-        console.error(
-          `Unknown ${effect} value ${value} in ${JSON.stringify(invoke)}`
-        );
+        console.error(`Unknown ${effect} value ${value} in ${JSON.stringify(invoke)}`);
       }
       ret[effect] = newValue;
-    }
-    else if (effect === "duration" && invoke[effect]) {
+    } else if (effect === "duration" && invoke[effect]) {
       ret[effect] = invoke[effect] * 0.6;
     }
   }
@@ -95,12 +92,10 @@ function rewriteInheritValues(inherit) {
       const value = inherit[effect];
       let newValue = map[value];
       if (newValue == null) {
-        console.error(
-          `Unknown ${effect} value ${value} in ${JSON.stringify(inherit)}`
-        );
+        console.error(`Unknown ${effect} value ${value} in ${JSON.stringify(inherit)}`);
       }
       // special case for Tomakomai
-      if (effect === 'acceleration' && [100991].includes(inherit.id)) {
+      if (effect === "acceleration" && [100991].includes(inherit.id)) {
         newValue = 0.07;
       }
       variant[effect] = newValue;
@@ -142,24 +137,8 @@ export default {
       skillTriggerCount: [0, 0, 0, 0],
       healTriggerCount: 0,
       skills: {},
-      passiveBonusKeys: [
-        "speed",
-        "stamina",
-        "power",
-        "guts",
-        "wisdom",
-        "temptationRate",
-      ],
-      types: [
-        "passive",
-        "heal",
-        "speed",
-        "acceleration",
-        "composite",
-        "gate",
-        "decel",
-        "fatigue",
-      ],
+      passiveBonusKeys: ["speed", "stamina", "power", "guts", "wisdom", "temptationRate"],
+      types: ["passive", "heal", "speed", "acceleration", "composite", "gate", "decel", "fatigue"],
       effects,
     };
   },
@@ -193,9 +172,9 @@ export default {
       for (const skill of origin) {
         this.localizeSkill(skill, undefined, newSkillNames);
       }
-      if (Object.keys(newSkillNames).length > 0) {
-        console.log(JSON.stringify(newSkillNames));
-      }
+      // if (Object.keys(newSkillNames).length > 0) {
+      //   console.log(JSON.stringify(newSkillNames));
+      // }
       return origin.sort((a, b) => {
         if (a.name < b.name) return -1;
         if (a.name > b.name) return 1;
@@ -219,14 +198,9 @@ export default {
         if (skill.type === "unique") {
           continue;
         }
-        if (
-          skill.emulatorTypeLimit &&
-          skill.emulatorTypeLimit.indexOf(this.emulatorType) < 0
-        ) {
+        if (skill.emulatorTypeLimit && skill.emulatorTypeLimit.indexOf(this.emulatorType) < 0) {
           continue;
         }
-
-        
 
         if (!this.isDistanceType(skill.conditions?.distance_type)) {
           continue;
@@ -265,9 +239,7 @@ export default {
           if (skill.courseLimit) {
             let notMatch = true;
             for (const limit in skill.courseLimit) {
-              if (
-                skill.courseLimit[limit].indexOf(this.trackDetail[limit]) >= 0
-              ) {
+              if (skill.courseLimit[limit].indexOf(this.trackDetail[limit]) >= 0) {
                 notMatch = false;
                 break;
               }
@@ -277,10 +249,7 @@ export default {
             }
           }
           if (skill.surfaceConditionLimit) {
-            if (
-              skill.surfaceConditionLimit.indexOf(this.track.surfaceCondition) <
-              0
-            ) {
+            if (skill.surfaceConditionLimit.indexOf(this.track.surfaceCondition) < 0) {
               continue;
             }
           }
@@ -379,7 +348,7 @@ export default {
         }
         for (const invoke of invokes) {
           if (Math.random() * 100 < invokeRate) {
-            const copy = {...invoke};
+            const copy = { ...invoke };
             if (copy.init) {
               copy.init();
             }
@@ -415,11 +384,9 @@ export default {
           }
         case "hp_per":
           if (value.startsWith(">=")) {
-            return () =>
-              thiz.sp >= parseInt(value.substring(2)) * 0.01 * thiz.spMax;
+            return () => thiz.sp >= parseInt(value.substring(2)) * 0.01 * thiz.spMax;
           } else if (value.startsWith("<=")) {
-            return () =>
-              thiz.sp <= parseInt(value.substring(2)) * 0.01 * thiz.spMax;
+            return () => thiz.sp <= parseInt(value.substring(2)) * 0.01 * thiz.spMax;
           } else {
             console.error("Unknown hp_per value", value);
             return null;
@@ -427,8 +394,7 @@ export default {
         case "activate_count_heal":
           return () => thiz.healTriggerCount >= value;
         case "activate_count_all":
-          return () =>
-            thiz.skillTriggerCount.reduce((pre, cur) => pre + cur, 0) >= value;
+          return () => thiz.skillTriggerCount.reduce((pre, cur) => pre + cur, 0) >= value;
         case "activate_count_start":
           return () => thiz.skillTriggerCount[0] >= value;
         case "accumulatetime":
@@ -447,25 +413,19 @@ export default {
           return () => thiz.temptationSection < 0;
         case "remain_distance":
           if (typeof value === "number") {
-            return (startPosition) =>
-              thiz.isContainsRemainingDistance(value, startPosition);
+            return (startPosition) => thiz.isContainsRemainingDistance(value, startPosition);
           } else if (typeof value === "string") {
             if (value.startsWith(">=")) {
-              return (startPosition) =>
-                startPosition <=
-                thiz.toPosition(parseInt(value.toString().substring(2)));
+              return (startPosition) => startPosition <= thiz.toPosition(parseInt(value.toString().substring(2)));
             } else if (value.startsWith("<=")) {
-              return (startPosition) =>
-                startPosition >=
-                thiz.toPosition(parseInt(value.toString().substring(2)));
+              return (startPosition) => startPosition >= thiz.toPosition(parseInt(value.toString().substring(2)));
             } else {
               console.error("Unknown remain_distance value", value);
               return null;
             }
           } else if (Array.isArray(value)) {
             return (startPosition) =>
-              startPosition >= thiz.toPosition(value[1]) &&
-              startPosition <= thiz.toPosition(value[0]);
+              startPosition >= thiz.toPosition(value[1]) && startPosition <= thiz.toPosition(value[0]);
           } else {
             console.error("Unknown remain_distance value", value);
             return null;
@@ -577,8 +537,7 @@ export default {
             return () => thiz.isInCorner(thiz.position, value);
           }
         case "is_activate_any_skill":
-          return () =>
-            thiz.skillTriggerCount[SKILL_TRIGGER_COUNT_YUMENISIKI] >= 1;
+          return () => thiz.skillTriggerCount[SKILL_TRIGGER_COUNT_YUMENISIKI] >= 1;
         case "is_lastspurt":
           if (value == 0) {
             return () => !thiz.isInSpurt;
@@ -588,9 +547,7 @@ export default {
         case "lastspurt":
           switch (value) {
             case 1:
-              return () =>
-                thiz.isInSpurt &&
-                thiz.spurtParameters.speed < thiz.maxSpurtSpeed;
+              return () => thiz.isInSpurt && thiz.spurtParameters.speed < thiz.maxSpurtSpeed;
             case 2:
               return () => thiz.spurtParameters?.speed == thiz.maxSpurtSpeed;
           }
@@ -631,9 +588,7 @@ export default {
             if (res[0].start !== undefined) {
               // Randoms
               skill.randoms = res;
-              checks.push((startPosition) =>
-                thiz.isInRandom(skill.randoms, startPosition)
-              );
+              checks.push((startPosition) => thiz.isInRandom(skill.randoms, startPosition));
             } else if (res[0] instanceof Function) {
               // Multiple conditions
               checks.push(...res);
@@ -728,9 +683,7 @@ export default {
       if (this.isInFinalCorner() && this.currentPhase >= 2) {
         this.skillTriggerCount[SKILL_TRIGGER_COUNT_YUMENISIKI]++;
       }
-      const coolDownId = skill.invokeNo
-        ? `${skill.id}-${skill.invokeNo}`
-        : skill.id;
+      const coolDownId = skill.invokeNo ? `${skill.id}-${skill.invokeNo}` : skill.id;
       this.coolDownMap[coolDownId] = this.frameElapsed;
       return skillDetail;
     },
@@ -828,17 +781,12 @@ export default {
     initSlopeRandom(dir) {
       let ret;
       if (!this.getSlopes()) return [];
-      const slopes = this.getSlopes().filter(
-        (s) => (s.slope > 0 && dir == "up") || (s.slope < 0 && dir == "down")
-      );
+      const slopes = this.getSlopes().filter((s) => (s.slope > 0 && dir == "up") || (s.slope < 0 && dir == "down"));
       if (slopes.length === 0) {
         return [];
       }
       const chosen = Math.floor(Math.random() * slopes.length);
-      ret = this.chooseRandom(
-        slopes[chosen].start,
-        slopes[chosen].start + slopes[chosen].length
-      );
+      ret = this.chooseRandom(slopes[chosen].start, slopes[chosen].start + slopes[chosen].length);
       return [ret];
     },
     initPhaseRandom(phase, options) {
@@ -871,8 +819,7 @@ export default {
     },
     initFinalCornerRandom() {
       const ret = [];
-      const corner =
-        this.trackDetail.corners[this.trackDetail.corners.length - 1];
+      const corner = this.trackDetail.corners[this.trackDetail.corners.length - 1];
       if (!corner) {
         return [];
       }
@@ -921,14 +868,11 @@ export default {
     },
     initFinalStraightRandom() {
       const ret = [];
-      const finalCorner =
-        this.trackDetail.corners[this.trackDetail.corners.length - 1];
+      const finalCorner = this.trackDetail.corners[this.trackDetail.corners.length - 1];
       if (!finalCorner) {
         return [];
       }
-      ret.push(
-        this.chooseRandom(this.cornerEnd(finalCorner), this.courseLength)
-      );
+      ret.push(this.chooseRandom(this.cornerEnd(finalCorner), this.courseLength));
       return ret;
     },
     initIntervalRandom(startRate, endRate) {
@@ -975,9 +919,7 @@ export default {
       if (!position) position = this.position;
       for (const straight of this.trackDetail.straights) {
         if (position >= straight.start && position <= straight.end) {
-          const rIndex =
-            this.trackDetail.straights.length -
-            this.trackDetail.straights.indexOf(straight);
+          const rIndex = this.trackDetail.straights.length - this.trackDetail.straights.indexOf(straight);
           return rIndex % 2 == 1 ? 1 : 2;
         }
       }
@@ -1021,12 +963,12 @@ export default {
       }
       return position >= lastStraight.start;
       */
-      const fc = this.trackDetail.corners[this.trackDetail.corners.length - 1]
+      const fc = this.trackDetail.corners[this.trackDetail.corners.length - 1];
       if (!fc) {
         // 千直、最終直線は仕様上存在しないことになっている
-        return false
+        return false;
       }
-      return position > this.cornerEnd(fc)
+      return position > this.cornerEnd(fc);
     },
     //replace isInFinalCorner() || isInFinalStraight(). is_finalcorner should not activate when finalcorner doesn't exist.
     isFinalCorner(position) {
@@ -1040,16 +982,10 @@ export default {
       return position >= fc.start;
     },
     isContainsRemainingDistance(remain, startPosition) {
-      return (
-        startPosition <= this.toPosition(remain) &&
-        this.position >= this.toPosition(remain)
-      );
+      return startPosition <= this.toPosition(remain) && this.position >= this.toPosition(remain);
     },
     isInDistanceRate(startRate, endRate) {
-      return (
-        this.position >= this.courseLength * startRate &&
-        this.position <= this.courseLength * endRate
-      );
+      return this.position >= this.courseLength * startRate && this.position <= this.courseLength * endRate;
     },
     isSPInRange(minRate, maxRate) {
       return this.sp >= this.spMax * minRate && this.sp <= this.spMax * maxRate;
@@ -1062,10 +998,7 @@ export default {
         case 2:
           for (const i in this.trackDetail.straights) {
             const straight = this.trackDetail.straights[i];
-            if (
-              this.position >= straight.start &&
-              this.position <= straight.end
-            ) {
+            if (this.position >= straight.start && this.position <= straight.end) {
               return i == this.trackDetail.straights.length - 2;
             }
           }
@@ -1073,22 +1006,14 @@ export default {
       }
     },
     isInInterval(start, end) {
-      return (
-        this.position >= this.courseLength * start &&
-        this.position <= this.courseLength * end
-      );
+      return this.position >= this.courseLength * start && this.position <= this.courseLength * end;
     },
     isInCoolDown(skill) {
-      const coolDownId = skill.invokeNo
-        ? `${skill.id}-${skill.invokeNo}`
-        : skill.id;
+      const coolDownId = skill.invokeNo ? `${skill.id}-${skill.invokeNo}` : skill.id;
       if (!(coolDownId in this.coolDownMap)) {
         return false;
       }
-      return (
-        (this.frameElapsed - this.coolDownMap[coolDownId]) / 15.0 <
-        skill.cd * this.timeCoef
-      );
+      return (this.frameElapsed - this.coolDownMap[coolDownId]) / 15.0 < skill.cd * this.timeCoef;
     },
     doHeal(value) {
       let detail;
@@ -1171,8 +1096,7 @@ export default {
       for (const effect of this.effects) {
         if (copy[effect]) {
           if (!copy.tooltip) copy.tooltip = "";
-          copy.tooltip += ` | ${effect}: ${Math.round(copy[effect] * 100) / 100
-            }`;
+          copy.tooltip += ` | ${effect}: ${Math.round(copy[effect] * 100) / 100}`;
         }
       }
 
@@ -1220,18 +1144,11 @@ export default {
           return thiz.doHeal(-copy.fatigue);
         });
       }
-      const passiveStatus = [
-        "passiveSpeed",
-        "passiveStamina",
-        "passivePower",
-        "passiveGuts",
-        "passiveWisdom",
-      ];
+      const passiveStatus = ["passiveSpeed", "passiveStamina", "passivePower", "passiveGuts", "passiveWisdom"];
       for (const status of passiveStatus) {
         if (copy[status]) {
           triggers.push(() => {
-            thiz.passiveBonus[status.substring(7).toLowerCase()] +=
-              copy[status];
+            thiz.passiveBonus[status.substring(7).toLowerCase()] += copy[status];
           });
         }
       }
@@ -1318,8 +1235,7 @@ export default {
       if (localName.startsWith("skill.")) {
         newSkillNames[jaName] = "";
       }
-      skill.name =
-        localName && !localName.startsWith("skill.") ? localName : jaName;
+      skill.name = localName && !localName.startsWith("skill.") ? localName : jaName;
 
       const tooltipKey = `tooltip.${skill.id}`;
       if (this.$te(tooltipKey)) {
