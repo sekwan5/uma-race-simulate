@@ -112,7 +112,7 @@ export default {
 
       // 진행 상황 업데이트 함수
       this.makeMashinStatus();
-      this.maxEpoch = 1000;
+      this.maxEpoch = 500;
       this.originHasSkills = JSON.parse(JSON.stringify(this.hasSkills));
       this.originHasEvoSkills = JSON.parse(JSON.stringify(this.hasEvoSkills));
       this.originUniqueLevel = JSON.parse(JSON.stringify(this.uniqueLevel));
@@ -400,10 +400,12 @@ export default {
         }
 
         if (once) {
+          this.maxEpoch = 1;
           await this.runEmulation();
           skillData["마신"] = ((this.baseAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
           skillData["표준 편차"] = (this.timeStandardDeviation * 10).toFixed(2) * 1;
         } else {
+          this.maxEpoch = 500;
           await this.runEmulation();
           skillData["마신"] = ((this.baseAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
           skillData["표준 편차"] = (this.timeStandardDeviation * 10).toFixed(2) * 1;
@@ -415,7 +417,6 @@ export default {
             this.$refs.executeBlock.randomPosition = i.toString();
             this.maxEpoch = 1;
             await this.runEmulation();
-            this.maxEpoch = 1000;
             randomPosition.push(this.avgRaceTime);
           }
           const best = Math.min(...randomPosition);
