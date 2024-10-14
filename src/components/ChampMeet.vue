@@ -20,11 +20,12 @@
       </el-form-item>
       <el-form-item>
         <el-select v-model="umaToLoad" :placeholder="$t('message.umaToLoad')">
+          <el-option v-for="(_, key) in savedUmas" :label="key" :value="key" :key="key"></el-option>
           <el-option
-            v-for="(_, key) in savedUmas"
-            :label="key"
-            :value="key"
-            :key="key"
+            v-if="Object.keys(savedUmas).length === 0"
+            :value="null"
+            :label="'데이터 없음'"
+            disabled
           ></el-option>
         </el-select>
       </el-form-item>
@@ -56,18 +57,11 @@
       <el-form-item>
         <el-button @click="exportUma">{{ $t("message.exportUma") }}</el-button>
         <el-dropdown @command="importUma">
-          <el-button>
-            {{ $t("message.importUma")
-            }}<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
+          <el-button> {{ $t("message.importUma") }}<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="tool">{{
-              $t("message.importUmaFromTool")
-            }}</el-dropdown-item>
+            <el-dropdown-item command="tool">{{ $t("message.importUmaFromTool") }}</el-dropdown-item>
             <el-tooltip content="race_horse_data / trained_chara">
-              <el-dropdown-item command="game">{{
-                $t("message.importUmaFromGame")
-              }}</el-dropdown-item>
+              <el-dropdown-item command="game">{{ $t("message.importUmaFromGame") }}</el-dropdown-item>
             </el-tooltip>
           </el-dropdown-menu>
         </el-dropdown>
@@ -99,40 +93,21 @@
       </el-form-item>
       <el-form-item :label="$t('message.distanceFit')">
         <el-select v-model="umaStatus.distanceFit" style="width: 70px">
-          <el-option
-            v-for="rank in fitRanks"
-            :label="rank"
-            :value="rank"
-            :key="rank"
-          ></el-option>
+          <el-option v-for="rank in fitRanks" :label="rank" :value="rank" :key="rank"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('message.surfaceFit')">
         <el-select v-model="umaStatus.surfaceFit" style="width: 70px">
-          <el-option
-            v-for="rank in fitRanks"
-            :label="rank"
-            :value="rank"
-            :key="rank"
-          ></el-option>
+          <el-option v-for="rank in fitRanks" :label="rank" :value="rank" :key="rank"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('message.styleFit')">
         <el-select v-model="umaStatus.styleFit" style="width: 70px">
-          <el-option
-            v-for="rank in fitRanks"
-            :label="rank"
-            :value="rank"
-            :key="rank"
-          ></el-option>
+          <el-option v-for="rank in fitRanks" :label="rank" :value="rank" :key="rank"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('message.mood')">
-        <el-select
-          v-model="umaStatus.condition"
-          @change="initCondition"
-          style="width: 130px"
-        >
+        <el-select v-model="umaStatus.condition" @change="initCondition" style="width: 130px">
           <el-option :label="$t('message.mood0')" value="0"></el-option>
           <el-option :label="$t('message.mood1')" value="1"></el-option>
           <el-option :label="$t('message.mood2')" value="2"></el-option>
@@ -143,11 +118,7 @@
       </el-form-item>
       <br />
       <el-form-item :label="$t('message.course')">
-        <el-select
-          v-model="track.location"
-          @change="locationChanged"
-          style="width: 120px"
-        >
+        <el-select v-model="track.location" @change="locationChanged" style="width: 120px">
           <el-option
             v-for="(_, trackId) in this.trackData"
             :label="$t(`course.${trackId}`)"
@@ -155,16 +126,10 @@
             :key="trackId"
           ></el-option>
         </el-select>
-        <el-select
-          v-model="track.course"
-          @change="courseChanged"
-          style="width: 170px"
-        >
+        <el-select v-model="track.course" @change="courseChanged" style="width: 170px">
           <el-option
             v-for="(obj, key) in courseList"
-            :label="`${$t('surface.' + obj.surface)}${
-              obj.distance
-            }m${courseNameSuffix(obj.name)}`"
+            :label="`${$t('surface.' + obj.surface)}${obj.distance}m${courseNameSuffix(obj.name)}`"
             :value="key"
             :key="key"
           >
@@ -173,41 +138,20 @@
       </el-form-item>
       <el-form-item :label="$t('message.surfaceCondition')">
         <el-select v-model="track.surfaceCondition" style="width: 90px">
-          <el-option
-            :label="$t('message.surfaceCondition1')"
-            value="1"
-          ></el-option>
-          <el-option
-            :label="$t('message.surfaceCondition2')"
-            value="2"
-          ></el-option>
-          <el-option
-            :label="$t('message.surfaceCondition3')"
-            value="3"
-          ></el-option>
-          <el-option
-            :label="$t('message.surfaceCondition4')"
-            value="4"
-          ></el-option>
+          <el-option :label="$t('message.surfaceCondition1')" value="1"></el-option>
+          <el-option :label="$t('message.surfaceCondition2')" value="2"></el-option>
+          <el-option :label="$t('message.surfaceCondition3')" value="3"></el-option>
+          <el-option :label="$t('message.surfaceCondition4')" value="4"></el-option>
         </el-select>
       </el-form-item>
       <br />
       <el-form-item :label="$t('message.uniqueSkill')">
         <el-select v-model="selectedUnique">
-          <el-option
-            v-for="skill in this.uniqueSkillData"
-            :label="skill.name"
-            :value="skill.id"
-            :key="skill.id"
-          />
+          <el-option v-for="skill in this.uniqueSkillData" :label="skill.name" :value="skill.id" :key="skill.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="Lv">
-        <el-input-number
-          :max="6"
-          :min="0"
-          v-model="uniqueLevel"
-        ></el-input-number>
+        <el-input-number :max="6" :min="0" v-model="uniqueLevel"></el-input-number>
         &emsp;{{ $t("message.uniqueLv0Hint") }}
       </el-form-item>
       <br />
@@ -231,22 +175,10 @@
       </el-form-item>
       <br />
       <el-collapse v-model="skillGroups">
-        <el-collapse-item
-          v-for="menu in skillMenu"
-          :title="menu.title"
-          :name="menu.type"
-          :key="menu.title"
-        >
+        <el-collapse-item v-for="menu in skillMenu" :title="menu.title" :name="menu.type" :key="menu.title">
           <div v-for="rarity in raritySections" :key="menu.type + rarity">
-            <el-collapse
-              v-if="
-                rarity === 'inherit' &&
-                ['speed', 'composite'].includes(menu.type)
-              "
-            >
-              <el-collapse-item
-                :title="menu.title + '：' + $t(rarityString[rarity])"
-              >
+            <el-collapse v-if="rarity === 'inherit' && ['speed', 'composite'].includes(menu.type)">
+              <el-collapse-item :title="menu.title + '：' + $t(rarityString[rarity])">
                 <el-checkbox-group v-model="hasSkills[menu.type][rarity]">
                   <el-tooltip
                     v-for="skill in availableSkills[menu.type][rarity]"
@@ -263,12 +195,7 @@
               </el-collapse-item>
             </el-collapse>
 
-            <div
-              v-if="
-                rarity !== 'inherit' ||
-                !['speed', 'composite'].includes(menu.type)
-              "
-            >
+            <div v-if="rarity !== 'inherit' || !['speed', 'composite'].includes(menu.type)">
               <h3 v-if="availableSkills[menu.type][rarity].length > 0">
                 {{ $t(rarityString[rarity]) }}
               </h3>
@@ -290,11 +217,7 @@
         </el-collapse-item>
       </el-collapse>
       <br />
-      <ExecuteBlock
-        ref="executeBlock"
-        :exec-function="this.exec"
-        :exec-make-mashin-to-tsv="this.execMakeMashinToTsv"
-      />
+      <ExecuteBlock ref="executeBlock" :exec-function="this.exec" :exec-make-mashin-to-tsv="this.execMakeMashinToTsv" />
     </el-form>
     <el-divider />
     <!--<Adsense
@@ -363,9 +286,7 @@
       </div>
     </div>
     <el-divider />
-    <h3>
-      {{ $t("message.latestRaceTime") }}({{ formatTime(latestRaceTime, 3) }})
-    </h3>
+    <h3>{{ $t("message.latestRaceTime") }}({{ formatTime(latestRaceTime, 3) }})</h3>
     <chart-hint />
     <race-graph :chart-data="chartData" :options="chartOptions" />
     <course-info :track="this.track" />

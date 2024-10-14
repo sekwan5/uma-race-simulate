@@ -1397,7 +1397,7 @@ export default {
       navigator.clipboard.writeText(JSON.stringify(this.saveUmaToObject())).then(() => {
         this.$message({
           type: "success",
-          message: `クリップボードへのエクスポートに成功しました。`,
+          message: `클립보드로 내보내기에 성공했습니다.`,
         });
       });
     },
@@ -1412,23 +1412,23 @@ export default {
       }
     },
     importUmaFromTool() {
-      this.$prompt("データをここに貼り付けてください", "", {
-        confirmButtonText: "インポート",
-        cancelButtonText: "キャンセル",
+      this.$prompt("데이터를 여기에 붙여넣기 해주세요", "", {
+        confirmButtonText: "가져오기",
+        cancelButtonText: "취소",
         inputPattern: /.+/,
         inputErrorMessage: "",
       }).then(({ value }) => {
         this.loadUmaFromObject(JSON.parse(value));
         this.$message({
           type: "success",
-          message: `インポートに成功しました。`,
+          message: `가져오기에 성공했습니다.`,
         });
       });
     },
     importUmaFromGame() {
-      this.$prompt("race_horse_data もしくは trained_chara (の JSON) をここに貼り付けてください", "", {
-        confirmButtonText: "インポート",
-        cancelButtonText: "キャンセル",
+      this.$prompt("race_horse_data 또는 trained_chara (의 JSON)를 여기에 붙여넣기 해주세요", "", {
+        confirmButtonText: "가져오기",
+        cancelButtonText: "취소",
         inputPattern: /.+/,
         inputErrorMessage: "",
       }).then(({ value }) => {
@@ -1442,7 +1442,7 @@ export default {
 
         const skills = raceHorseData["skill_array"];
 
-        this.selectedUnique = "なし／発動しない"; // Reset it to unselected first
+        this.selectedUnique = "없음/발동하지 않음"; // Reset it to unselected first
         const uniqueSkills = skills.filter((s) => s["skill_id"] < 200000);
         if (uniqueSkills.length === 1) {
           const uniqueSkill = uniqueSkills[0];
@@ -1473,7 +1473,7 @@ export default {
         this.initCondition();
         this.$message({
           type: "success",
-          message: `インポートに成功しました。脚質と適性を調整してください。`,
+          message: `가져오기에 성공했습니다. 각질과 적성을 조정해 주세요.`,
         });
       });
     },
@@ -1483,7 +1483,7 @@ export default {
       localStorage.setItem("umas", JSON.stringify(umas));
       this.$message({
         type: "success",
-        message: `${this.umaToLoad}を削除しました。`,
+        message: `${this.umaToLoad}을(를) 삭제했습니다.`,
       });
       this.updateSavedUmas();
     },
