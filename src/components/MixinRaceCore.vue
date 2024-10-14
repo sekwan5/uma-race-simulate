@@ -88,9 +88,9 @@ export default {
     if (!this.production) {
       this.umaToLoad = "test";
       this.loadUma();
-      // if (this.$refs.executeBlock.indicatedMaxEpoch === 1) {
-      //   this.exec();
-      // }
+      if (this.$refs.executeBlock.indicatedMaxEpoch === 1) {
+        this.exec();
+      }
     }
   },
   computed: {
@@ -816,7 +816,6 @@ export default {
         //2.5주년 스태미너승부
         const epsilon = 0.000001;
         if (Math.abs(this.currentSpeed - this.maxSpurtSpeed) < epsilon) {
-          console.log("this.currentSpeed", this.currentSpeed);
           // 스태미나가 1200을 초과하는 경우에만 적용
           if (this.modifiedStamina > 1200) {
             // DistanceFactor 계산
@@ -843,7 +842,6 @@ export default {
               startFrame: this.frameElapsed,
             });
             // this.currentSpeed += targetSpeedBuff;
-            console.log("적용된 속도 버프:", targetSpeedBuff);
             this.frame_spurt_start = this.frameElapsed;
           }
         }
@@ -858,7 +856,6 @@ export default {
           for (const skill of skillTriggered) {
             this.triggeredSkills.push(skill.data.id);
           }
-          console.log("skillTriggered", skillTriggered);
         }
 
         const spurting =

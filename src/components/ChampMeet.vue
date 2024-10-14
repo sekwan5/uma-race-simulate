@@ -21,12 +21,12 @@
       <el-form-item>
         <el-select v-model="umaToLoad" :placeholder="$t('message.umaToLoad')">
           <el-option v-for="(_, key) in savedUmas" :label="key" :value="key" :key="key"></el-option>
-          <el-option
+          <!-- <el-option
             v-if="Object.keys(savedUmas).length === 0"
             :value="null"
             :label="'데이터 없음'"
             disabled
-          ></el-option>
+          ></el-option> -->
         </el-select>
       </el-form-item>
       <el-form-item>

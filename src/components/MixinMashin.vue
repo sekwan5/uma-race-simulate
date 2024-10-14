@@ -240,7 +240,7 @@ export default {
       const { style, speed, power, stamina, guts, wisdom, styleFit, distanceFit, surfaceFit } = this.umaStatus;
       const hasSkillNames = [];
 
-      const skillCategories = ["speed", "acceleration", "composite"];
+      const skillCategories = ["speed", "acceleration", "composite", "passive"];
       skillCategories.forEach((category) => {
         if (this.hasSkills[category].inherit.length > 0) {
           const skillNames = this.hasSkills[category].inherit
