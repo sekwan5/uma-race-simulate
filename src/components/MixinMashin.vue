@@ -167,6 +167,9 @@ export default {
         });
       }
 
+      this.umaStatus = { ...this.umaStatus };
+      this.umaStatus.distanceFit = "S";
+
       // 3. 녹딱 마신 계산
       console.log("녹딱 마신계산 시작");
       result["녹딱"].push(...(await this.makeSkillMashin(200271, "passive", "rare", "스피드 80", true))); //단독◎
@@ -334,7 +337,9 @@ export default {
           continue; // 스킵된 스킬은 건너뜀
         }
 
-        skillData["스킬명(한섭)"] = custom_skillName ? custom_skillName : skillData["스킬명(한섭)"];
+        skillData["스킬명(한섭)"] = custom_skillName
+          ? custom_skillName
+          : skillData["스킬명(한섭)"] || skillData["스킬명(나무)"];
 
         // TODO 트리거 추가
         //트리거가 적혀있으면 다 활성화
@@ -547,7 +552,7 @@ export default {
 
     makeMashinStatus() {
       this.$refs.executeBlock.skillActivateAdjustment = "2";
-      this.umaStatus.distanceFit = "A";
+      this.umaStatus.distanceFit = "S";
       this.umaStatus.styleFit = "A";
       this.umaStatus.surfaceFit = "A";
       this.umaStatus.condition = "0";
@@ -570,12 +575,6 @@ export default {
         this.umaStatus.guts = 1200;
         this.umaStatus.wisdom = 1250;
       }
-
-      //       장거리 = 1500 1300 1250 1200 1250 ( 혹은 여기에 금힐 하나 확정발동으로 넣어서)
-
-      // 중거리 = 1500 1200 1250 1200 1250
-
-      // 단 마일 = 1500 1200 1300 1300 1300
     },
 
     progressEpochForMashin(callback) {
