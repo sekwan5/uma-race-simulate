@@ -107,12 +107,12 @@ export default {
         this.availableSkills.composite.inherit.length +
         this.uniqueSkillData.length -
         1 +
-        this.availableSkills.evo.length +
-        120;
+        this.availableSkills.evo.length;
+      // +120;
 
       // 진행 상황 업데이트 함수
       this.makeMashinStatus();
-      this.maxEpoch = 500;
+      this.maxEpoch = 1;
       this.originHasSkills = JSON.parse(JSON.stringify(this.hasSkills));
       this.originHasEvoSkills = JSON.parse(JSON.stringify(this.hasEvoSkills));
       this.originUniqueLevel = JSON.parse(JSON.stringify(this.uniqueLevel));
@@ -167,9 +167,6 @@ export default {
         });
       }
 
-      this.umaStatus = { ...this.umaStatus };
-      this.umaStatus.distanceFit = "S";
-
       // 3. 녹딱 마신 계산
       console.log("녹딱 마신계산 시작");
       result["녹딱"].push(...(await this.makeSkillMashin(200271, "passive", "rare", "스피드 80", true))); //단독◎
@@ -202,7 +199,7 @@ export default {
         ...inherit,
       ];
 
-      // result["일반기"] = [...(await this.makeSkillMashin(200642, "acceleration", "rare", "직선 주파"))];
+      // result["일반기"] = [...(await this.makeSkillMashin(200542, "speed", "normal", "빠른 걸음"))];
       // result["일반기"] = [...(await this.makeSkillMashin(900201, "acceleration", "rare", "직선 주파"))];
       //4. 고유기 마신 계산
       console.log("고유기및 핑딱 마신계산 시작");
@@ -240,15 +237,18 @@ export default {
       const { style, speed, power, stamina, guts, wisdom, styleFit, distanceFit, surfaceFit } = this.umaStatus;
       const hasSkillNames = [];
 
+      console.log("hasSkills", this.hasSkills);
       const skillCategories = ["speed", "acceleration", "composite", "passive"];
+      const skillRates = ["all", "rare", "normal", "inherit"];
       skillCategories.forEach((category) => {
-        if (this.hasSkills[category].inherit.length > 0) {
-          const skillNames = this.hasSkills[category].inherit
-            .map((skillId) => this.availableSkills[category].inherit.find((v) => v.id === skillId)?.name)
+        for (const rate of skillRates) {
+          const skillNames = this.hasSkills[category][rate]
+            .map((skillId) => this.availableSkills[category][rate].find((v) => v.id === skillId)?.name)
             .filter(Boolean); // undefined 값 제거
           hasSkillNames.push(...skillNames);
         }
       });
+      // console.log("hasSkillNames", hasSkillNames);
 
       let filename = `${this.getStyleName(style)} - ${courseNames[this.track.location]} ${
         nameKr.surface[courseData.surface] + courseData.distance + "m" + this.courseNameSuffix(courseData.name)
@@ -277,6 +277,7 @@ export default {
 
     async makeSkillMashin(skillId, skillType, rarity, custom_skillName = "", sOnes = false) {
       console.log("skillId", skillId);
+      console.log("hasSkills", this.hasSkills);
       this.$refs.executeBlock.completedSkills++;
       const skillDataArray = this.skillDB.filter((skill) => skill["스킬 id"] == Math.abs(skillId)) ?? [];
       // console.log("skillDataArray", skillDataArray);
@@ -435,15 +436,15 @@ export default {
             skillData[key] = ratio;
           }
         }
-        if (!this.triggeredSkills.includes(skillId)) {
-          skillData["마신"] = 0;
-          skillData["표준 편차"] = 0;
-          skillData["최대"] = 0;
-          skillData["최소"] = 0;
-          skillData["중앙"] = 0;
-        }
+        // if (!this.triggeredSkills.includes(skillId) && skillType !== "passive") {
+        //   skillData["마신"] = 0;
+        //   skillData["표준 편차"] = 0;
+        //   skillData["최대"] = 0;
+        //   skillData["최소"] = 0;
+        //   skillData["중앙"] = 0;
+        // }
 
-        this.triggeredSkills = [];
+        // this.triggeredSkills = [];
         this.hasSkills = JSON.parse(JSON.stringify(this.originHasSkills));
         this.hasEvoSkills = [...this.originHasEvoSkills];
         this.$refs.executeBlock.randomPosition = "0";
@@ -545,7 +546,7 @@ export default {
     },
 
     makeMashinStatus() {
-      this.$refs.executeBlock.skillActivateAdjustment = "1";
+      this.$refs.executeBlock.skillActivateAdjustment = "2";
       this.umaStatus.distanceFit = "A";
       this.umaStatus.styleFit = "A";
       this.umaStatus.surfaceFit = "A";

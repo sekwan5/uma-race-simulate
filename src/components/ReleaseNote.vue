@@ -34,7 +34,7 @@ export default {
         },
         {
           content: "스태미너 승부 추가 , 선택한 패시브 파일명 표시 ",
-          timestamp: "2024-10-14",
+          timestamp: "2024-10-15",
         },
       ],
     };

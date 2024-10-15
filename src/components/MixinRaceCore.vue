@@ -852,11 +852,11 @@ export default {
 
         // 다음 프레임의 목표 속도 계산 및 회복/피로 처리
         const skillTriggered = this.checkSkillTrigger(startPosition);
-        if (skillTriggered.length > 0) {
-          for (const skill of skillTriggered) {
-            this.triggeredSkills.push(skill.data.id);
-          }
-        }
+        // if (skillTriggered.length > 0) {
+        //   for (const skill of skillTriggered) {
+        //     this.triggeredSkills.push(skill.data.id);
+        //   }
+        // }
 
         const spurting =
           this.spurtParameters != null && this.position + this.spurtParameters.distance >= this.courseLength;
