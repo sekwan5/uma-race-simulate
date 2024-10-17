@@ -224,7 +224,9 @@ export default {
         if (this.availableSkills.evo.length > 0) {
           this.$refs.executeBlock.totalSkills += this.availableSkills.evo.length;
           for (const evoSkill of this.availableSkills.evo) {
-            result["진화"].push(...(await this.makeSkillMashin(evoSkill.id, "evo", "evo", evoSkill.name)));
+            result["진화"].push(
+              ...(await this.makeSkillMashin(evoSkill.id, "evo", "evo", evoSkill.name, false, false))
+            );
           }
         }
       }
@@ -278,7 +280,7 @@ export default {
       this.$refs.executeBlock.calculatingMashin = false;
     },
 
-    async makeSkillMashin(skillId, skillType, rarity, custom_skillName = "", sOnes = false) {
+    async makeSkillMashin(skillId, skillType, rarity, custom_skillName = "", sOnes = false, resetUnique = true) {
       console.log("skillId", skillId);
       console.log("hasSkills", this.hasSkills);
       this.$refs.executeBlock.completedSkills++;
@@ -371,7 +373,7 @@ export default {
         }
 
         //진화스킬이면 고유기 레벨 0
-        if (rarity === "evo") {
+        if (rarity === "evo" && resetUnique) {
           this.uniqueLevel = 0;
         }
 
@@ -530,24 +532,6 @@ export default {
         // 배열의 길이가 홀수인 경우
         return array[middleIndex];
       }
-    },
-
-    generateTsvData(result) {
-      const rows = [];
-      // 헤더 추가
-      rows.push(["희귀", "분류", "마신", "스킬명(한섭)", "예상 출시일"].join("\t"));
-
-      // 적성 데이터 추가
-      for (const row of result.적성) {
-        rows.push([row["희귀"], row["분류"], row["마신"], row["스킬명(한섭)"], row["예상 출시일"]].join("\t"));
-      }
-
-      // 녹딱 데이터 추가
-      for (const row of result.녹딱) {
-        rows.push([row["희귀"], row["분류"], row["마신"], row["스킬명(한섭)"], row["예상 출시일"]].join("\t"));
-      }
-
-      return rows.join("\n"); // TSV 형식으로 문자열 반환
     },
 
     makeMashinStatus() {
