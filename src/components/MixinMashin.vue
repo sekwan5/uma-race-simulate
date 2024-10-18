@@ -12,6 +12,7 @@ export default {
     return {
       skillDB: [], // skillDB를 빈 배열로 초기화
       baseAvgRaceTime: 0,
+      fitAvgRaceTime: 0,
       originHasSkills: {},
       selectedSkillIds: [],
       originUniqueLevel: 0,
@@ -111,8 +112,11 @@ export default {
       // +120;
 
       // 진행 상황 업데이트 함수
-      this.makeMashinStatus();
       this.maxEpoch = 1;
+
+      this.makeMashinStatus();
+      await this.runEmulation();
+      this.fitAvgRaceTime = this.avgRaceTime;
       this.originHasSkills = JSON.parse(JSON.stringify(this.hasSkills));
       this.originHasEvoSkills = JSON.parse(JSON.stringify(this.hasEvoSkills));
       this.originUniqueLevel = JSON.parse(JSON.stringify(this.uniqueLevel));
@@ -128,10 +132,6 @@ export default {
       const nameKr = this.$i18n.messages.ko;
       const courseNames = nameKr.course;
       const courseData = this.courseList[this.track.course]; // 코스정보
-      await this.runEmulation();
-      // console.log("this.hasSkills", this.hasSkills);
-      this.baseAvgRaceTime = this.avgRaceTime;
-      console.log("기본 평균 레이스 시간:", this.baseAvgRaceTime);
 
       for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 2; j++) {
@@ -146,7 +146,7 @@ export default {
           row["마신"] =
             this.umaStatus.distanceFit === "A" && this.umaStatus.surfaceFit === "A"
               ? 0
-              : ((this.baseAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
+              : ((this.fitAvgRaceTime - this.avgRaceTime) * 10).toFixed(2) * 1;
           row["스킬명(나무)"] =
             this.getDistanceName(this.courseLength) +
             this.fitRanks[i] +
@@ -159,16 +159,21 @@ export default {
         }
       }
 
-      let lastBashin = result["적성"][result["적성"].length - 1]["마신"];
-      if (lastBashin < 0) {
-        result["적성"].forEach((row) => {
-          row["마신"] += -lastBashin;
-          row["마신"] = row["마신"].toFixed(2) * 1;
-        });
-      }
+      // let lastBashin = result["적성"][result["적성"].length - 1]["마신"];
+      // if (lastBashin < 0) {
+      //   result["적성"].forEach((row) => {
+      //     row["마신"] += -lastBashin;
+      //     row["마신"] = row["마신"].toFixed(2) * 1;
+      //   });
+      // }
 
       this.umaStatus = { ...this.umaStatus };
       this.umaStatus.distanceFit = "S";
+
+      await this.runEmulation();
+      // console.log("this.hasSkills", this.hasSkills);
+      this.baseAvgRaceTime = this.avgRaceTime;
+      console.log("기본 평균 레이스 시간:", this.baseAvgRaceTime);
 
       // 3. 녹딱 마신 계산
       console.log("녹딱 마신계산 시작");
@@ -536,7 +541,7 @@ export default {
 
     makeMashinStatus() {
       this.$refs.executeBlock.skillActivateAdjustment = "2";
-      this.umaStatus.distanceFit = "S";
+      this.umaStatus.distanceFit = "A";
       this.umaStatus.styleFit = "A";
       this.umaStatus.surfaceFit = "A";
       this.umaStatus.condition = "0";
