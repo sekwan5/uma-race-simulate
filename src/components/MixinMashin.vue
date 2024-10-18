@@ -267,9 +267,9 @@ export default {
         this.track.surfaceCondition
       )}\t${this.getStyleName(style)}\t${
         speed + "/" + power + "/" + stamina + "/" + guts + "/" + wisdom
-      }\t${distanceFit}\t${surfaceFit}\t${styleFit}\t${"최상"}\t${this.uniqueLevel}\t${
-        this.maxEpoch
-      }\t${this.courseNameSuffix(courseData.name)}`;
+      }\t${distanceFit}\t${surfaceFit}\t${styleFit}\t${"최상"}\t${this.uniqueLevel}\t${500}\t${this.courseNameSuffix(
+        courseData.name
+      )}`;
 
       firstLine += uniqueSkillName ? `\t${uniqueSkillName}` : "\t";
       firstLine += hasSkillNames.length > 0 ? `\t${hasSkillNames.join(", ")}` : "\t";

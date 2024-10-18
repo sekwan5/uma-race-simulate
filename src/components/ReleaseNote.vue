@@ -37,8 +37,8 @@ export default {
           timestamp: "2024-10-15",
         },
         {
-          content: "고유기선택시 진화스킬 마신계산 오류수정 ",
-          timestamp: "2024-10-17",
+          content: "고유기선택시 진화스킬 마신계산 오류수정,마신표 제작시 거리적성 S ",
+          timestamp: "2024-10-18",
         },
       ],
     };
