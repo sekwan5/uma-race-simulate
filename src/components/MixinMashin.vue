@@ -114,12 +114,18 @@ export default {
       // 진행 상황 업데이트 함수
       this.maxEpoch = 1;
 
+      // 기본스탯및 설정
       this.makeMashinStatus();
+      // 마신 기준값 계산
       await this.runEmulation();
       this.fitAvgRaceTime = this.avgRaceTime;
+
+      // 기존 스킬 저장
+      // 원본데이터 오염방지를 위한 깊은복사
       this.originHasSkills = JSON.parse(JSON.stringify(this.hasSkills));
       this.originHasEvoSkills = JSON.parse(JSON.stringify(this.hasEvoSkills));
       this.originUniqueLevel = JSON.parse(JSON.stringify(this.uniqueLevel));
+      // 선택한 스킬 저장
       this.selectedSkillIds.push(...this.hasEvoSkills);
       this.selectedSkillIds.push(this.selectedUnique);
       const keys = Object.keys(this.hasSkills);
@@ -133,6 +139,7 @@ export default {
       const courseNames = nameKr.course;
       const courseData = this.courseList[this.track.course]; // 코스정보
 
+      //적성 마신 계산
       for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 2; j++) {
           this.umaStatus = { ...this.umaStatus };
@@ -167,11 +174,12 @@ export default {
       //   });
       // }
 
+      // 거리 s로 변경
       this.umaStatus = { ...this.umaStatus };
       this.umaStatus.distanceFit = "S";
 
+      // 거리 S기준 마신계산
       await this.runEmulation();
-      // console.log("this.hasSkills", this.hasSkills);
       this.baseAvgRaceTime = this.avgRaceTime;
       console.log("기본 평균 레이스 시간:", this.baseAvgRaceTime);
 
