@@ -236,6 +236,36 @@ function normalSkillData(thiz) {
       variants: [
         {
           rarity: "double",
+          id: 202731,
+          name: "ロンシャンレース場◎",
+          passiveStamina: 60,
+        },
+        {
+          rarity: "normal",
+          id: 202732,
+          name: "ロンシャンレース場○",
+          passiveStamina: 40,
+        },
+      ],
+      conditions: { track_id: 10201 },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 202734,
+          name: "ロンシャンの申し子",
+          passiveStamina: 60,
+          passiveWisdom: 60,
+          passiveSpeed: 60,
+        },
+      ],
+      conditions: { track_id: 10201 },
+    },
+    {
+      variants: [
+        {
+          rarity: "double",
           id: 200031,
           name: "東京レース場◎",
           passiveStamina: 60,
@@ -601,8 +631,25 @@ function normalSkillData(thiz) {
           passiveStamina: 80,
         },
       ],
-      tooltip: "発動率1/9として扱う(チャンピオンズミーティング基準)",
-      triggerRate: 0.1111111,
+      tooltip: "発動率2/9として扱う(チャンピオンズミーティング基準)",
+      triggerRate: 0.2222222,
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 210141,
+          name: "レースの真髄・心",
+          passiveStamina: 40,
+          passiveGuts: 40,
+          passiveWisdom: 40,
+          conditions: {
+            motivation: ">=4",
+          },
+          tooltip: "発動率92%として扱う",
+          triggerRate: 0.92,
+        },
+      ],
     },
     {
       variants: [
@@ -1351,7 +1398,7 @@ function normalSkillData(thiz) {
           rarity: "evo",
           id: 103602111,
           holder: 103602,
-          name: "Gluttony's Grip",
+          name: "Gluttony’s Grip",
           heal: 550,
         },
         { rarity: "rare", id: 201221, name: "スタミナグリード", heal: 350 },
@@ -1464,8 +1511,7 @@ function normalSkillData(thiz) {
       type: "heal",
       duration: 3,
       conditions: { distance_type: 3, accumulatetime: 20 },
-      tooltip:
-        "「スタート後20秒で発動」として扱う。大体そこら辺で内コースを取り始めるため。多分（ガバ）",
+      tooltip: "「スタート後20秒で発動」として扱う。大体そこら辺で内コースを取り始めるため。多分（ガバ）",
     },
     {
       variants: [
@@ -1750,6 +1796,80 @@ function normalSkillData(thiz) {
     {
       variants: [
         {
+          rarity: "normal",
+          id: 210091,
+          name: "レースの真髄・速",
+          targetSpeed: 0.15,
+          duration: 2,
+          conditions: {
+            phase_laterhalf_random: 1,
+          },
+        },
+      ],
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 210101,
+          name: "レースの真髄・体",
+          targetSpeed: 0.25,
+          heal: -200,
+          duration: 3,
+          conditions: {
+            phase_random: 3,
+            hp_per: ">=2",
+            is_lastspurt: 1,
+          },
+        },
+      ],
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 210111,
+          name: "レースの真髄・力",
+          targetSpeed: 0.15,
+          duration: 4,
+          conditions: {
+            phase: 3,
+            is_lastspurt: 1,
+          },
+        },
+      ],
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 210131,
+          name: "レースの真髄・賢",
+          targetSpeed: 0.15,
+          duration: 2,
+          conditions: {
+            distance_rate: ">=50",
+          },
+        },
+      ],
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 210121,
+          name: "レースの真髄・根",
+          acceleration: 0.2,
+          duration: 1.2,
+          conditions: {
+            is_finalstraight_random: 1,
+          },
+        },
+      ],
+    },
+    {
+      variants: [
+        {
           rarity: "evo",
           id: 106701111,
           holder: 106701,
@@ -2004,7 +2124,6 @@ function normalSkillData(thiz) {
             },
             {
               targetSpeed: 0.45,
-              duration: 3,
             },
           ],
           type: "speed",
@@ -2212,7 +2331,6 @@ function normalSkillData(thiz) {
           id: 104102211,
           holder: 104102,
           name: "驀進！爆進！バクシーン！",
-          speedWithDecel: 0.35,
           duration: 4,
         },
         {
@@ -3458,9 +3576,9 @@ function normalSkillData(thiz) {
       ],
       duration: 3,
       conditions: {
+        phase: ">=2",
         distance_type: 3,
-        is_lastspurt: 1,
-        corner: 0
+        is_last_straight: 1,
       },
     },
     {
@@ -3528,13 +3646,13 @@ function normalSkillData(thiz) {
         },
         {
           rarity: "rare",
-          id: 202021,
+          id: 202022,
           name: "強攻策",
           targetSpeed: 0.25,
         },
         {
           rarity: "normal",
-          id: 202022,
+          id: 202021,
           name: "早仕掛け",
           targetSpeed: 0.05,
         },
@@ -3633,7 +3751,7 @@ function normalSkillData(thiz) {
           rarity: "evo",
           id: 105301211,
           holder: 105301,
-          name: "押忍ッ！気合十分っス！",
+          name: "押忍ッ！気合十分ッス！",
           targetSpeed: 0.35,
           acceleration: 0.2,
         },
@@ -3995,12 +4113,7 @@ function normalSkillData(thiz) {
           targetSpeed: 0.35,
           duration: 4,
         },
-        {
-          rarity: "rare",
-          id: 202471,
-          name: "猛追",
-          targetSpeed: 0.35
-        },
+        { rarity: "rare", id: 202471, name: "猛追", targetSpeed: 0.35 },
         {
           rarity: "normal",
           id: 202472,
@@ -4021,12 +4134,7 @@ function normalSkillData(thiz) {
           targetSpeed: 0.35,
           duration: 4,
         },
-        {
-          rarity: "rare",
-          id: 202501,
-          name: "遮二無二",
-          targetSpeed: 0.35
-        },
+        { rarity: "rare", id: 202501, name: "遮二無二", targetSpeed: 0.35 },
         {
           rarity: "normal",
           id: 202502,
@@ -4541,9 +4649,7 @@ function normalSkillData(thiz) {
       conditions: { down_slope_random: 1, running_style: 2 },
     },
     {
-      variants: [
-        { rarity: "normal", id: 201581, name: "登山家", acceleration: 0.2 },
-      ],
+      variants: [{ rarity: "normal", id: 201581, name: "登山家", acceleration: 0.2 }],
       duration: 3,
       conditions: { up_slope_random: 1 },
     },
@@ -5306,61 +5412,45 @@ function normalSkillData(thiz) {
       type: "gate",
     },
     {
-      variants: [
-        { id: 200851, rarity: "all", name: "逃げためらい", speed: -0.15 },
-      ],
+      variants: [{ id: 200851, rarity: "all", name: "逃げためらい", speed: -0.15 }],
       duration: 3,
       conditions: { running_style: 1, phase_random: 2 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200851, name: "逃げためらいx2", speed: -0.3 },
-      ],
+      variants: [{ rarity: "all", id: -200851, name: "逃げためらいx2", speed: -0.3 }],
       duration: 3,
       conditions: { running_style: 1, phase_random: 2 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 200881, name: "先行ためらい", speed: -0.15 },
-      ],
+      variants: [{ rarity: "all", id: 200881, name: "先行ためらい", speed: -0.15 }],
       duration: 3,
       conditions: { running_style: 2, phase_random: 2 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200881, name: "先行ためらいx2", speed: -0.3 },
-      ],
+      variants: [{ rarity: "all", id: -200881, name: "先行ためらいx2", speed: -0.3 }],
       duration: 3,
       conditions: { running_style: 2, phase_random: 2 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 200911, name: "差しためらい", speed: -0.15 },
-      ],
+      variants: [{ rarity: "all", id: 200911, name: "差しためらい", speed: -0.15 }],
       duration: 3,
       conditions: { running_style: 3, phase_random: 2 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200911, name: "差しためらいx2", speed: -0.3 },
-      ],
+      variants: [{ rarity: "all", id: -200911, name: "差しためらいx2", speed: -0.3 }],
       duration: 3,
       conditions: { running_style: 3, phase_random: 2 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 200941, name: "追込ためらい", speed: -0.15 },
-      ],
+      variants: [{ rarity: "all", id: 200941, name: "追込ためらい", speed: -0.15 }],
       duration: 3,
       conditions: { running_style: 4, phase_random: 2 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200941, name: "追込ためらいx2", speed: -0.3 },
-      ],
+      variants: [{ rarity: "all", id: -200941, name: "追込ためらいx2", speed: -0.3 }],
       duration: 3,
       conditions: { running_style: 4, phase_random: 2 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
@@ -5376,9 +5466,7 @@ function normalSkillData(thiz) {
       conditions: { distance_type: 1, phase_random: 0 },
     },
     {
-      variants: [
-        { rarity: "all", id: -201082, name: "スピードイーター", speed: -0.15 },
-      ],
+      variants: [{ rarity: "all", id: -201082, name: "スピードイーター", speed: -0.15 }],
       duration: 3,
       conditions: { distance_type: 2, phase_random: 1 },
     },
@@ -5393,9 +5481,7 @@ function normalSkillData(thiz) {
       conditions: { distance_type: 3, phase_random: 2 },
     },
     {
-      variants: [
-        { rarity: "all", id: 201511, name: "熱いまなざし", speed: -0.25 },
-      ],
+      variants: [{ rarity: "all", id: 201511, name: "熱いまなざし", speed: -0.25 }],
       duration: 3,
       conditions: { phase_random: 2 },
     },
@@ -5429,9 +5515,7 @@ function normalSkillData(thiz) {
       conditions: { distance_rate_after_random: 50 },
     },
     {
-      variants: [
-        { rarity: "all", id: -201222, name: "スタミナイーター", fatigue: 50 },
-      ],
+      variants: [{ rarity: "all", id: -201222, name: "スタミナイーター", fatigue: 50 }],
       conditions: { distance_type: 4, phase_random: 1 },
     },
     {
@@ -5447,54 +5531,38 @@ function normalSkillData(thiz) {
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 200831, name: "逃げけん制", fatigue: 100 },
-      ],
+      variants: [{ rarity: "all", id: 200831, name: "逃げけん制", fatigue: 100 }],
       conditions: { running_style: 1, phase_random: 0, accumulatetime: 5 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200831, name: "逃げけん制x2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200831, name: "逃げけん制x2", fatigue: 200 }],
       conditions: { running_style: 1, phase_random: 0, accumulatetime: 5 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 200861, name: "先行けん制", fatigue: 100 },
-      ],
+      variants: [{ rarity: "all", id: 200871, name: "先行けん制", fatigue: 100 }],
       conditions: { running_style: 2, phase_random: 0, accumulatetime: 5 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200861, name: "先行けん制x2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200871, name: "先行けん制x2", fatigue: 200 }],
       conditions: { running_style: 2, phase_random: 0, accumulatetime: 5 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 200891, name: "差しけん制", fatigue: 100 },
-      ],
+      variants: [{ rarity: "all", id: 200891, name: "差しけん制", fatigue: 100 }],
       conditions: { running_style: 3, phase_random: 0, accumulatetime: 5 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200891, name: "差しけん制x2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200891, name: "差しけん制x2", fatigue: 200 }],
       conditions: { running_style: 3, phase_random: 0, accumulatetime: 5 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 200921, name: "追込けん制", fatigue: 100 },
-      ],
+      variants: [{ rarity: "all", id: 200921, name: "追込けん制", fatigue: 100 }],
       conditions: { running_style: 4, phase_random: 0, accumulatetime: 5 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200921, name: "追込けん制x2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200921, name: "追込けん制x2", fatigue: 200 }],
       conditions: { running_style: 4, phase_random: 0, accumulatetime: 5 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
@@ -5503,9 +5571,7 @@ function normalSkillData(thiz) {
       conditions: { running_style: 1, phase_random: 1 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200841, name: "逃げ焦りx2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200841, name: "逃げ焦りx2", fatigue: 200 }],
       conditions: { running_style: 1, phase_random: 1 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
@@ -5514,9 +5580,7 @@ function normalSkillData(thiz) {
       conditions: { running_style: 2, phase_random: 1 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200861, name: "先行焦りx2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200861, name: "先行焦りx2", fatigue: 200 }],
       conditions: { running_style: 2, phase_random: 1 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
@@ -5525,9 +5589,7 @@ function normalSkillData(thiz) {
       conditions: { running_style: 3, phase_random: 1 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200901, name: "差し焦りx2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200901, name: "差し焦りx2", fatigue: 200 }],
       conditions: { running_style: 3, phase_random: 1 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
@@ -5536,22 +5598,16 @@ function normalSkillData(thiz) {
       conditions: { running_style: 4, phase_random: 1 },
     },
     {
-      variants: [
-        { rarity: "all", id: -200931, name: "追込焦りx2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -200931, name: "追込焦りx2", fatigue: 200 }],
       conditions: { running_style: 4, phase_random: 1 },
       tooltip: "2回同時に喰らう。通常のと加算できる。",
     },
     {
-      variants: [
-        { rarity: "all", id: 201021, name: "逃亡禁止令", fatigue: 300 },
-      ],
+      variants: [{ rarity: "all", id: 201021, name: "逃亡禁止令", fatigue: 300 }],
       conditions: { distance_type: 1, phase_random: 0 },
     },
     {
-      variants: [
-        { rarity: "all", id: 201022, name: "抜け駆け禁止", fatigue: 100 },
-      ],
+      variants: [{ rarity: "all", id: 201022, name: "抜け駆け禁止", fatigue: 100 }],
       conditions: { distance_type: 1, phase_random: 0 },
     },
     {
@@ -5559,20 +5615,14 @@ function normalSkillData(thiz) {
       conditions: { distance_type: 3, phase_random: 1 },
     },
     {
-      variants: [
-        { rarity: "all", id: -201162, name: "ささやきx2", fatigue: 200 },
-      ],
+      variants: [{ rarity: "all", id: -201162, name: "ささやきx2", fatigue: 200 }],
       conditions: { distance_type: 3, phase_random: 1 },
     },
     {
-      variants: [
-        { rarity: "all", id: 201161, name: "魅惑のささやき", fatigue: 300 },
-      ],
+      variants: [{ rarity: "all", id: 201161, name: "魅惑のささやき", fatigue: 300 }],
     },
     {
-      variants: [
-        { rarity: "all", id: -201161, name: "魅惑のささやきx2", fatigue: 600 },
-      ],
+      variants: [{ rarity: "all", id: -201161, name: "魅惑のささやきx2", fatigue: 600 }],
     },
     {
       variants: [{ rarity: "all", id: 201442, name: "鋭い眼光", fatigue: 100 }],
@@ -5590,9 +5640,7 @@ function normalSkillData(thiz) {
       conditions: { phase_random: 2 },
     },
     {
-      variants: [
-        { rarity: "all", id: 201441, name: "八方にらみ", fatigue: 300 },
-      ],
+      variants: [{ rarity: "all", id: 201441, name: "八方にらみ", fatigue: 300 }],
       conditions: { phase_random: 2 },
     },
     {
@@ -5607,9 +5655,7 @@ function normalSkillData(thiz) {
       conditions: { phase_random: 2 },
     },
     {
-      variants: [
-        { rarity: "all", id: -201221, name: "スタミナグリード", fatigue: 100 },
-      ],
+      variants: [{ rarity: "all", id: -201221, name: "スタミナグリード", fatigue: 100 }],
       conditions: { distance_type: 4, phase_random: 1 },
     },
     {
@@ -5820,8 +5866,7 @@ function normalSkillData(thiz) {
       ],
       duration: 4,
       conditions: { distance_type: 3, phase_random: 2 },
-      tooltip:
-        "終盤前半ランダム位置として扱うが、要するに昔のノンストなのでゴミだよこれ",
+      tooltip: "終盤前半ランダム位置として扱うが、要するに昔のノンストなのでゴミだよこれ",
     },
     {
       variants: [
@@ -6265,7 +6310,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           holder: 110501,
-          id: 110501211,
+          id: 107601211,
           name: "星の海を駆けて",
           speedWithDecel: 0.35,
           duration: 4,
@@ -6647,129 +6692,13 @@ function normalSkillData(thiz) {
         phase_firstquarter_random: 2,
       },
     },
-    {
-      variants: [
-        {
-          rarity: "rare",
-          id: 210081,
-          name: "限界の先へ",
-          targetSpeed: 0.42,
-        },
-        {
-          rarity: "normal",
-          id: 210082,
-          name: "前だけ見据えて",
-          targetSpeed: 0.18,
-        },
-      ],
-      duration: 2.4,
-      conditions: {
-        is_lastspurt: 1,
-        phase_random: 3,
-      },
-      tooltip: "効果1.2倍(1100↑)として扱う",
-    },
-    {
-      variants: [
-        {
-          rarity: "normal",
-          id: 210091,
-          name: "レースの真髄・速",
-          targetSpeed: 0.15,
-        },
-      ],
-      duration: 2,
-      conditions: {
-        phase_laterhalf_random: 1,
-      },
-    },
-    {
-      variants: [
-        {
-          rarity: "normal",
-          id: 210101,
-          name: "レースの真髄・体",
-          targetSpeed: 0.25,
-          heal: -200,
-        },
-      ],
-      duration: 3,
-      conditions: {
-        phase_random: 3,
-        hp_per: ">=2",
-        is_lastspurt: 1,
-      },
-    },
-    {
-      variants: [
-        {
-          rarity: "normal",
-          id: 210111,
-          name: "レースの真髄・力",
-          targetSpeed: 0.15,
-        },
-      ],
-      duration: 4,
-      conditions: {
-        phase: 3,
-        is_lastspurt: 1,
-      },
-    },
-    {
-      variants: [
-        {
-          rarity: "normal",
-          id: 210121,
-          name: "レースの真髄・根",
-          acceleration: 0.2,
-        },
-      ],
-      duration: 1.2,
-      tooltip: "最終直線ランダム発動として扱う",
-      conditions: {
-        is_finalstraight_random: 1,
-      },
-    },
-    {
-      variants: [
-        {
-          rarity: "normal",
-          id: 210131,
-          name: "レースの真髄・賢",
-          targetSpeed: 0.15,
-        },
-      ],
-      duration: 2,
-      tooltip: "後半即発動として扱う",
-      conditions: {
-        //activate_count_later_half 구현 안되어있어서 대체
-        distance_rate: ">=50",
-      },
-    },
-    {
-      variants: [
-        {
-          rarity: "normal",
-          id: 210141,
-          name: "レースの真髄・心",
-          passiveStamina: 40,
-          passiveGuts: 40,
-          passiveWisdom: 40,
-        },
-      ],
-      //인게임은 지능 발동인데 얘만 예외처리 하는법 몰라
-      tooltip: "確定発動として扱う",
-      conditions: {
-        motivation: ">=4"
-      },
-    },
     // End of normal skills
   ];
 }
 
 const uniqueSkillData = (thiz) => [
   {
-    id: 1,
+    id: 0,
     name: "  なし／発動しない",
     noInherit: true,
     check: function () {
@@ -6785,10 +6714,7 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.25,
     tooltip: "3～4位(<=40%)",
     check: function () {
-      return (
-        thiz.position >= thiz.courseLength / 2.0 &&
-        thiz.isInCorner(thiz.position)
-      );
+      return thiz.position >= thiz.courseLength / 2.0 && thiz.isInCorner(thiz.position);
     },
   },
   {
@@ -6797,12 +6723,7 @@ const uniqueSkillData = (thiz) => [
     name: "ピュリティオブハート",
     heal: 750,
     tooltip: "2～4位(<=40%)",
-    init: function () {
-      thiz.randoms = thiz.initPhaseRandom(1);
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    conditions: { phase_random: 1 },
   },
   // {
   //   id: 10521,
@@ -6830,12 +6751,7 @@ const uniqueSkillData = (thiz) => [
     name: "ゲインヒール・スペリアー",
     heal: 750,
     tooltip: "中盤のどこかで発動として見なす。",
-    init: function () {
-      thiz.randoms = thiz.initPhaseRandom(1);
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    conditions: { phase_random: 1 },
   },
   {
     id: 110011,
@@ -6879,10 +6795,7 @@ const uniqueSkillData = (thiz) => [
     duration: 6,
     tooltip: "順位条件の<=50%は満たしていると見なす",
     check: function () {
-      return (
-        thiz.position >= thiz.courseLength * 0.5 &&
-        thiz.position <= thiz.courseLength * 0.6
-      );
+      return thiz.position >= thiz.courseLength * 0.5 && thiz.position <= thiz.courseLength * 0.6;
     },
   },
   {
@@ -6913,7 +6826,7 @@ const uniqueSkillData = (thiz) => [
   {
     id: 100261,
     holder: 102601,
-    name: "G00 1st.F∞;",
+    name: "G00 1st．F∞;",
     targetSpeed: 0.45,
     duration: 5,
     conditions: {
@@ -6933,12 +6846,6 @@ const uniqueSkillData = (thiz) => [
       is_finalcorner: 1,
     },
     tooltip: "「最終直線のどこか」として扱う。",
-    init: function () {
-      thiz.randoms = thiz.initFinalStraightRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
   },
   // {
   //   id: 10081,
@@ -6961,13 +6868,9 @@ const uniqueSkillData = (thiz) => [
     name: "カッティング×DRIVE！",
     targetSpeed: 0.35,
     duration: 5,
-    tooltip:
-      "「他面倒くさいの全部満たしたと見なして200mで発動する」として扱う。",
+    tooltip: "「他面倒くさいの全部満たしたと見なして200mで発動する」として扱う。",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(200) &&
-        thiz.position >= thiz.toPosition(200)
-      );
+      return startPosition <= thiz.toPosition(200) && thiz.position >= thiz.toPosition(200);
     },
   },
   {
@@ -6978,10 +6881,7 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "順位条件は満たしてると見なす",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(200) &&
-        thiz.position >= thiz.toPosition(200)
-      );
+      return startPosition <= thiz.toPosition(200) && thiz.position >= thiz.toPosition(200);
     },
   },
   {
@@ -7001,14 +6901,11 @@ const uniqueSkillData = (thiz) => [
     name: "ブレイズ・オブ・プライド",
     targetSpeed: 0.35,
     duration: 5,
-    tooltip:
-      "他面倒くさいの全部満たしたと見なし「最終コーナーのどこかで発動する」として扱う。",
-    init: function () {
-      thiz.randoms = thiz.initFinalCornerRandom();
+    conditions: {
+      is_finalcorner: 1,
+      corner: 1,
     },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    tooltip: "他面倒くさいの全部満たしたと見なし「最終コーナーのどこかで発動する」として扱う。",
   },
   {
     id: 100351,
@@ -7016,13 +6913,10 @@ const uniqueSkillData = (thiz) => [
     name: "勝利のチケットを、君にッ！",
     targetSpeed: 0.35,
     duration: 5,
-    tooltip:
-      "他面倒くさいの全部満たしたと見なし「最終直線のどこかで発動する」として扱う。",
-    init: function () {
-      thiz.randoms = thiz.initFinalStraightRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    tooltip: "他面倒くさいの全部満たしたと見なし「最終直線のどこかで発動する」として扱う。",
+    conditions: {
+      is_finalcorner: 1,
+      corner: 0,
     },
   },
   {
@@ -7047,12 +6941,7 @@ const uniqueSkillData = (thiz) => [
     acceleration: 0.1,
     duration: 5,
     tooltip: "「終盤のどこかで発動する」として扱う。",
-    init: function () {
-      thiz.randoms = thiz.initPhaseRandom(2);
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    conditions: { phase_random: 2 },
   },
   // {
   //   id: 10601,
@@ -7075,12 +6964,7 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "「ラストスパートのどこかで発動する」として扱う。",
-    init: function () {
-      thiz.randoms = thiz.initPhaseRandom(3);
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    conditions: { phase_random: 3 },
   },
   // {
   //   id: 10111,
@@ -7103,11 +6987,9 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "「最終直線のどこかで発動する」として扱う。",
-    init: function () {
-      thiz.randoms = thiz.initFinalStraightRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    conditions: {
+      is_finalcorner: 1,
+      corner: 0,
     },
   },
   // {
@@ -7182,11 +7064,9 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "「最終コーナーのどこかで発動」として扱う。まぁ発動しないけど。",
-    init: function () {
-      thiz.randoms = thiz.initFinalCornerRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    conditions: {
+      is_finalcorner: 1,
+      corner: 1,
     },
   },
   {
@@ -7196,17 +7076,15 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.45,
     duration: 5,
     tooltip: "競合あり、2～7位(<=75%)",
-    init: function () {
-      thiz.randoms = thiz.initFinalCornerRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    conditions: {
+      is_finalcorner: 1,
+      corner: 1,
     },
   },
   {
     id: 100231,
     holder: 102301,
-    name: "∴win Q.E.D.",
+    name: "∴win Q．E．D．",
     duration: 5,
     type: "speed",
     invokes: [
@@ -7246,11 +7124,9 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "「最終コーナーのどこかで発動」として扱う",
-    init: function () {
-      thiz.randoms = thiz.initFinalCornerRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    conditions: {
+      is_finalcorner: 1,
+      corner: 1,
     },
   },
   {
@@ -7260,11 +7136,9 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.45,
     duration: 5,
     tooltip: "「最終直線のどこかで発動」として扱う",
-    init: function () {
-      thiz.randoms = thiz.initFinalStraightRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    conditions: {
+      is_finalcorner: 1,
+      corner: 0,
     },
   },
   {
@@ -7274,11 +7148,9 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "「最終コーナーのどこかで発動」として扱う。こちらは前の方。",
-    init: function () {
-      thiz.randoms = thiz.initFinalCornerRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    conditions: {
+      is_finalcorner: 1,
+      corner: 1,
     },
   },
   {
@@ -7288,12 +7160,7 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "「中盤のどこかで発動」として扱うが、基本的には発動しない。",
-    init: function () {
-      thiz.randoms = thiz.initPhaseRandom(1);
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    conditions: { phase_random: 1 },
   },
   {
     id: 100121,
@@ -7302,11 +7169,9 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "「最終直線のどこかで発動」として扱う。",
-    init: function () {
-      thiz.randoms = thiz.initFinalStraightRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
+    conditions: {
+      is_finalcorner: 1,
+      corner: 0,
     },
   },
   {
@@ -7316,9 +7181,7 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     check: function () {
-      return (
-        thiz.position >= thiz.courseLength * 0.5 && thiz.healTriggerCount > 0
-      );
+      return thiz.position >= thiz.courseLength * 0.5 && thiz.healTriggerCount > 0;
     },
   },
   {
@@ -7350,16 +7213,11 @@ const uniqueSkillData = (thiz) => [
   {
     id: 100191,
     holder: 101901,
-    name: "尊み☆ﾗｽﾄｽﾊﾟ—(ﾟ∀ﾟ)—ﾄ!",
+    name: "尊み☆ﾗｽﾄｽﾊﾟ━━(ﾟ∀ﾟ)━━ﾄ!",
     targetSpeed: 0.35,
     duration: 5,
     tooltip: "フェイズ2のどこか発動として扱う",
-    init: function () {
-      thiz.randoms = thiz.initPhaseRandom(2);
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    conditions: { phase_random: 2 },
   },
   {
     id: 100391,
@@ -7423,18 +7281,17 @@ const uniqueSkillData = (thiz) => [
     name: "紅焔ギア/LP1211-M",
     acceleration: 0.4,
     duration: 4,
-    tooltip:
-      "順位<=5及び<=50%は満たしていると見なす。どの脚質でも最速発動扱い。",
-    conditions: {
-      is_finalcorner: 1,
-    }
+    tooltip: "順位<=5及び<=50%は満たしていると見なす。どの脚質でも最速発動扱い。",
+    check: function () {
+      return thiz.isInFinalCorner() || thiz.isInFinalStraight();
+    },
   },
   {
     id: 100101,
     holder: 101001,
     name: "ヴィクトリーショット！",
     acceleration: 0.4,
-    duration: 4,
+    duration: 5,
     tooltip: "順位>=3及び<=50%は満たしていると見なす",
     check: function () {
       return thiz.isInFinalCorner(thiz.position, { start: 0.5, end: 1 });
@@ -7476,17 +7333,12 @@ const uniqueSkillData = (thiz) => [
     name: "コンドル猛撃波",
     acceleration: 0.4,
     duration: 4,
-    init: function () {
-      thiz.randoms = thiz.initFinalCornerRandom();
-    },
-    check: function (startPosition) {
-      return thiz.isInRandom(thiz.randoms, startPosition);
-    },
+    conditions: { is_finalcorner: 1, corner: 1 },
   },
   {
     id: 100401,
     holder: 104001,
-    name: "KEEP IT REAL.",
+    name: "KEEP IT REAL．",
     acceleration: 0.3,
     duration: 6,
     tooltip: "50%地点で即発動として扱う",
@@ -7504,9 +7356,7 @@ const uniqueSkillData = (thiz) => [
     check: function (startPosition) {
       return (
         thiz.temptationModeStart == null &&
-        ((thiz.currentPhase >= 2 &&
-          !thiz.isInFinalCorner(startPosition) &&
-          thiz.isInCorner(startPosition)) ||
+        ((thiz.currentPhase >= 2 && !thiz.isInFinalCorner(startPosition) && thiz.isInCorner(startPosition)) ||
           (thiz.currentPhase === 1 && thiz.isInFinalCorner(startPosition)))
       );
     },
@@ -7589,7 +7439,7 @@ const uniqueSkillData = (thiz) => [
   {
     id: 100281,
     holder: 102801,
-    name: "I'M☆FULL☆SPEED!!",
+    name: "I’M☆FULL☆SPEED!!",
     targetSpeed: 0.25,
     acceleration: 0.3,
     duration: 5,
@@ -7633,9 +7483,7 @@ const uniqueSkillData = (thiz) => [
     heal: 350,
     duration: 5,
     check: function () {
-      return (
-        thiz.position >= thiz.courseLength * 0.5 && thiz.healTriggerCount >= 3
-      );
+      return thiz.position >= thiz.courseLength * 0.5 && thiz.healTriggerCount >= 3;
     },
   },
   {
@@ -7678,10 +7526,7 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "7回発動したとして扱う。じゃないと弱すぎる。",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(400) &&
-        thiz.position >= thiz.toPosition(400)
-      );
+      return startPosition <= thiz.toPosition(400) && thiz.position >= thiz.toPosition(400);
     },
   },
   {
@@ -7691,10 +7536,7 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(300) &&
-        thiz.position >= thiz.toPosition(300)
-      );
+      return startPosition <= thiz.toPosition(300) && thiz.position >= thiz.toPosition(300);
     },
   },
   {
@@ -7725,51 +7567,24 @@ const uniqueSkillData = (thiz) => [
     name: "ディオスクロイの流星",
     targetSpeed: 0.45,
     duration: 5,
-    tooltip:
-      "7～9位(>=80%)の場合。他の場合は他の最終直線0.35固有で代用して下さい。",
+    tooltip: "7～9位(>=80%)の場合。他の場合は他の最終直線0.35固有で代用して下さい。",
     check: function () {
       return thiz.isInFinalStraight();
     },
   },
-  // {
-  //   id: 100681,
-  //   holder: 106801,
-  //   name: "勝ち鬨ワッショイ！",
-  //   targetSpeed: 0.25,
-  //   acceleration: 0.3,
-  //   duration: 5,
-  //   tooltip: "1～2位",
-  //   check: function () {
-  //     return (
-  //       (thiz.isPhase(2) && thiz.isStraightFrontType(2)) ||
-  //       (thiz.isInInterval(0.5, 1) && thiz.isInCorner(null, 3))
-  //     );
-  //   },
-  // },
   {
     id: 100681,
     holder: 106801,
     name: "勝ち鬨ワッショイ！",
+    targetSpeed: 0.25,
+    acceleration: 0.3,
     duration: 5,
     tooltip: "1～2位",
-    invokes: [
-      {
-        targetSpeed: 0.25,
-        acceleration: 0.3,
-        conditions: {
-          phase: 2,
-          straight_front_type: 2,
-        },
-      },
-      {
-        targetSpeed: 0.25,
-        conditions: {
-          distance_rate: ">=50",
-          corner: 3,
-        },
-      },
-    ],
-    type: "composite",
+    check: function () {
+      return (
+        (thiz.isPhase(2) && thiz.isStraightFrontType(2)) || (thiz.isInInterval(0.5, 1) && thiz.isInCorner(null, 3))
+      );
+    },
   },
   // {
   //   id: 10621,
@@ -7864,34 +7679,22 @@ const uniqueSkillData = (thiz) => [
     name: "Ravissant",
     targetSpeed: 0.45,
     duration: 4,
-    conditions: {
-      is_finalcorner: 1,
-    }
+    check: function () {
+      return thiz.isInFinalCorner() || thiz.isInFinalStraight();
+    },
   },
   {
     id: 110201,
     holder: 102002,
     name: "Do Ya Breakin!",
+    targetSpeed: 0.35,
+    acceleration: 0.2,
     duration: 5,
-    invokes: [
-      {
-        targetSpeed: 0.35,
-        acceleration: 0.2,
-        conditions: {
-          phase: ">=2",
-          corner: 0,
-          straight_front_type: 2,
-        },
-      },
-      {
-        targetSpeed: 0.35,
-        conditions: {
-          phase: ">=2",
-          corner: 0,
-        },
-      },
-    ],
-    type: "composite"
+    conditions: {
+      phase: ">=2",
+      corner: 0,
+      straight_front_type: 2,
+    },
   },
   {
     id: 100511,
@@ -7902,8 +7705,7 @@ const uniqueSkillData = (thiz) => [
     check: function () {
       return (
         (thiz.isPhase(2) || thiz.isPhase(3)) &&
-        (thiz.isInFinalStraight() ||
-          thiz.isInFinalCorner(thiz.position, { start: 0.5, end: 1 }))
+        (thiz.isInFinalStraight() || thiz.isInFinalCorner(thiz.position, { start: 0.5, end: 1 }))
       );
     },
   },
@@ -7915,10 +7717,7 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "<=40%(1～4位)",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(300) &&
-        thiz.position >= thiz.toPosition(300)
-      );
+      return startPosition <= thiz.toPosition(300) && thiz.position >= thiz.toPosition(300);
     },
   },
   {
@@ -7951,10 +7750,7 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "東京時、1～2位",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(300) &&
-        thiz.position >= thiz.toPosition(300)
-      );
+      return startPosition <= thiz.toPosition(300) && thiz.position >= thiz.toPosition(300);
     },
   },
   {
@@ -7978,7 +7774,7 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "2～4位。加速力は残り401m以上がある場合（自動で判断していない）",
     check: function () {
-      return thiz.currentPhase >= 2 && thiz.isFinalCorner();
+      return thiz.currentPhase >= 2 && thiz.isInFinalCorner();
     },
   },
   {
@@ -8114,11 +7910,8 @@ const uniqueSkillData = (thiz) => [
         return;
       }
       const rate = [0, 0, 0, 1, 1, 2];
-      skill.targetSpeed =
-        0.25 +
-        (thiz.passiveTriggered > 5 ? 3 : rate[thiz.passiveTriggered]) * 0.05;
-      skill.acceleration =
-        (thiz.passiveTriggered > 5 ? 3 : rate[thiz.passiveTriggered]) * 0.05;
+      skill.targetSpeed = 0.25 + (thiz.passiveTriggered > 5 ? 3 : rate[thiz.passiveTriggered]) * 0.05;
+      skill.acceleration = (thiz.passiveTriggered > 5 ? 3 : rate[thiz.passiveTriggered]) * 0.05;
     },
   },
   {
@@ -8152,10 +7945,7 @@ const uniqueSkillData = (thiz) => [
     targetSpeed: 0.35,
     duration: 5,
     check: function () {
-      return (
-        thiz.isInFinalCorner(thiz.position, { start: 0.5, end: 1 }) &&
-        (thiz.isPhase(2) || thiz.isPhase(3))
-      );
+      return thiz.isInFinalCorner(thiz.position, { start: 0.5, end: 1 }) && (thiz.isPhase(2) || thiz.isPhase(3));
     },
   },
   {
@@ -8166,24 +7956,18 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "300m即発動として扱う。実際は先頭か先頭と5m以内の差で1～4位。",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(300) &&
-        thiz.position >= thiz.toPosition(300)
-      );
+      return startPosition <= thiz.toPosition(300) && thiz.position >= thiz.toPosition(300);
     },
   },
   {
     id: 100421,
     holder: 104201,
-    name: "『I'm possible』",
+    name: "『I’m possible』",
     targetSpeed: 0.45,
     duration: 5,
     tooltip: "2～9位、先頭と5m以内扱い",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(200) &&
-        thiz.position >= thiz.toPosition(200)
-      );
+      return startPosition <= thiz.toPosition(200) && thiz.position >= thiz.toPosition(200);
     },
   },
   {
@@ -8216,10 +8000,7 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "400m即発動として扱う",
     check: function (startPosition) {
-      return (
-        startPosition <= thiz.toPosition(400) &&
-        thiz.position >= thiz.toPosition(400)
-      );
+      return startPosition <= thiz.toPosition(400) && thiz.position >= thiz.toPosition(400);
     },
   },
   {
@@ -8296,7 +8077,7 @@ const uniqueSkillData = (thiz) => [
   {
     id: 110091,
     holder: 100902,
-    name: "Queen's Lumination",
+    name: "Queen’s Lumination",
     targetSpeed: 0.35,
     duration: 6,
     tooltip: "0.35のみ",
@@ -8314,11 +8095,7 @@ const uniqueSkillData = (thiz) => [
     duration: 5,
     tooltip: "常に東京として扱う。分ける実装面倒すぎぃ！",
     check: function (startPosition) {
-      return (
-        thiz.isInSlope("down", startPosition) &&
-        !thiz.isInSlope("down") &&
-        thiz.phase >= 1
-      );
+      return thiz.isInSlope("down", startPosition) && !thiz.isInSlope("down") && thiz.phase >= 1;
     },
   },
   {
@@ -8505,10 +8282,7 @@ const uniqueSkillData = (thiz) => [
     trigger: function (thisSkill) {
       const candidates = [];
       for (const skill of thiz.invokedSkills) {
-        if (
-          !thiz.isInCoolDown(skill) &&
-          ["rare", "evo"].includes(skill.rarity)
-        ) {
+        if (!thiz.isInCoolDown(skill) && ["rare", "evo"].includes(skill.rarity)) {
           candidates.push(skill);
         }
       }
@@ -8800,7 +8574,6 @@ const uniqueSkillData = (thiz) => [
     conditions: {
       distance_rate: ">=50",
       corner: 1,
-      track_id: 10005,
     },
     tooltip: "加速度なし扱い",
   },
@@ -8946,7 +8719,7 @@ const uniqueSkillData = (thiz) => [
   {
     id: 110361,
     holder: 103602,
-    name: "...found you.",
+    name: "…found you．",
     duration: 5,
     targetSpeed: 0.45,
     conditions: {

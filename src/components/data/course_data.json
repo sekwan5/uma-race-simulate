@@ -124,9 +124,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 13500,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -171,9 +169,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 13500,
         "finishTimeMin": 157.6,
         "finishTimeMax": 165,
@@ -263,9 +259,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 11000,
         "finishTimeMin": 101.4,
         "finishTimeMax": 113,
@@ -450,9 +444,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 14700,
         "finishTimeMin": 104.4,
         "finishTimeMax": 110,
@@ -508,9 +500,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 14700,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -566,9 +556,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 14700,
         "finishTimeMin": 157.6,
         "finishTimeMax": 165,
@@ -730,9 +718,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 11000,
         "finishTimeMin": 149.1,
         "finishTimeMax": 156,
@@ -794,9 +780,7 @@
         "distanceType": 1,
         "surface": 1,
         "turn": 4,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 13500,
         "finishTimeMin": 54.7,
         "finishTimeMax": 57,
@@ -930,9 +914,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 13500,
         "finishTimeMin": 104.4,
         "finishTimeMax": 110,
@@ -976,10 +958,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          2,
-          3
-        ],
+        "courseSetStatus": [2, 3],
         "laneMax": 13500,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -1024,10 +1003,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          2,
-          3
-        ],
+        "courseSetStatus": [2, 3],
         "laneMax": 13500,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -1071,9 +1047,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 13500,
         "finishTimeMin": 130.2,
         "finishTimeMax": 135,
@@ -1196,9 +1170,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          5
-        ],
+        "courseSetStatus": [5],
         "laneMax": 11000,
         "finishTimeMin": 108.1,
         "finishTimeMax": 118,
@@ -1344,9 +1316,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 13000,
         "finishTimeMin": 104.4,
         "finishTimeMax": 110,
@@ -1397,9 +1367,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 13000,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -1551,9 +1519,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 11500,
         "finishTimeMin": 101.4,
         "finishTimeMax": 113,
@@ -1604,9 +1570,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 11500,
         "finishTimeMin": 149.1,
         "finishTimeMax": 156,
@@ -1708,9 +1672,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12000,
         "finishTimeMin": 90.8,
         "finishTimeMax": 95,
@@ -1820,9 +1782,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 12000,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -1888,10 +1848,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2,
-          4
-        ],
+        "courseSetStatus": [2, 4],
         "laneMax": 12000,
         "finishTimeMin": 130.2,
         "finishTimeMax": 135,
@@ -1953,10 +1910,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2,
-          4
-        ],
+        "courseSetStatus": [2, 4],
         "laneMax": 12000,
         "finishTimeMin": 148.7,
         "finishTimeMax": 157,
@@ -2030,9 +1984,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 12000,
         "finishTimeMin": 223.1,
         "finishTimeMax": 227,
@@ -2137,9 +2089,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12000,
         "finishTimeMin": 69,
         "finishTimeMax": 77,
@@ -2183,9 +2133,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12000,
         "finishTimeMin": 108.1,
         "finishTimeMax": 118,
@@ -2251,9 +2199,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 12000,
         "finishTimeMin": 149.1,
         "finishTimeMax": 156,
@@ -2372,10 +2318,7 @@
         "distanceType": 1,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          2,
-          3
-        ],
+        "courseSetStatus": [2, 3],
         "laneMax": 15000,
         "finishTimeMin": 80,
         "finishTimeMax": 84,
@@ -2424,10 +2367,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          2,
-          4
-        ],
+        "courseSetStatus": [2, 4],
         "laneMax": 15000,
         "finishTimeMin": 90.8,
         "finishTimeMax": 95,
@@ -2476,9 +2416,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 15000,
         "finishTimeMin": 104.4,
         "finishTimeMax": 110,
@@ -2584,9 +2522,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 15000,
         "finishTimeMin": 139.3,
         "finishTimeMax": 143,
@@ -2713,9 +2649,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 15000,
         "finishTimeMin": 148.7,
         "finishTimeMax": 157,
@@ -2869,9 +2803,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 12500,
         "finishTimeMin": 76.6,
         "finishTimeMax": 82,
@@ -2915,9 +2847,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 12500,
         "finishTimeMin": 80.8,
         "finishTimeMax": 94,
@@ -2961,10 +2891,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          1,
-          2
-        ],
+        "courseSetStatus": [1, 2],
         "laneMax": 12500,
         "finishTimeMin": 94.1,
         "finishTimeMax": 108,
@@ -3064,9 +2991,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 12500,
         "finishTimeMin": 149.1,
         "finishTimeMax": 156,
@@ -3208,9 +3133,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 14400,
         "finishTimeMin": 90.8,
         "finishTimeMax": 95,
@@ -3319,9 +3242,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 14400,
         "finishTimeMin": 130.2,
         "finishTimeMax": 135,
@@ -3464,9 +3385,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 13000,
         "finishTimeMin": 108.1,
         "finishTimeMax": 118,
@@ -3714,9 +3633,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 14100,
         "finishTimeMin": 90.8,
         "finishTimeMax": 95,
@@ -3760,9 +3677,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 14100,
         "finishTimeMin": 90.8,
         "finishTimeMax": 95,
@@ -3860,9 +3775,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 14100,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -3918,9 +3831,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 14100,
         "finishTimeMin": 130.2,
         "finishTimeMax": 135,
@@ -3981,9 +3892,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 14100,
         "finishTimeMin": 141.6,
         "finishTimeMax": 149,
@@ -4044,10 +3953,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3,
-          5
-        ],
+        "courseSetStatus": [3, 5],
         "laneMax": 14100,
         "finishTimeMin": 181.5,
         "finishTimeMax": 190,
@@ -4516,9 +4422,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12500,
         "finishTimeMin": 90.8,
         "finishTimeMax": 95,
@@ -4562,9 +4466,7 @@
         "distanceType": 2,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12500,
         "finishTimeMin": 104.4,
         "finishTimeMax": 110,
@@ -4608,9 +4510,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          4
-        ],
+        "courseSetStatus": [4],
         "laneMax": 12500,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -4676,9 +4576,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 12500,
         "finishTimeMin": 130.2,
         "finishTimeMax": 135,
@@ -4744,9 +4642,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12500,
         "finishTimeMin": 141.6,
         "finishTimeMax": 149,
@@ -4874,9 +4770,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12500,
         "finishTimeMin": 181.5,
         "finishTimeMax": 190,
@@ -5082,10 +4976,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          2,
-          3
-        ],
+        "courseSetStatus": [2, 3],
         "laneMax": 12000,
         "finishTimeMin": 121.9,
         "finishTimeMax": 129,
@@ -5224,9 +5115,7 @@
         "distanceType": 1,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 14500,
         "finishTimeMin": 67.5,
         "finishTimeMax": 71,
@@ -5316,9 +5205,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 14500,
         "finishTimeMin": 117.1,
         "finishTimeMax": 123,
@@ -5369,9 +5256,7 @@
         "distanceType": 4,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 14500,
         "finishTimeMin": 157.6,
         "finishTimeMax": 165,
@@ -5434,9 +5319,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 12000,
         "finishTimeMin": 57.4,
         "finishTimeMax": 63,
@@ -5582,10 +5465,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          4,
-          5
-        ],
+        "courseSetStatus": [4, 5],
         "laneMax": 12000,
         "finishTimeMin": 69,
         "finishTimeMax": 77,
@@ -5618,9 +5498,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          3
-        ],
+        "courseSetStatus": [3],
         "laneMax": 12000,
         "finishTimeMin": 108.1,
         "finishTimeMax": 118,
@@ -5665,9 +5543,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 1,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 12000,
         "finishTimeMin": 121.9,
         "finishTimeMax": 129,
@@ -5717,9 +5593,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          5
-        ],
+        "courseSetStatus": [5],
         "laneMax": 13500,
         "finishTimeMin": 87,
         "finishTimeMax": 94,
@@ -5764,9 +5638,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          5
-        ],
+        "courseSetStatus": [5],
         "laneMax": 13500,
         "finishTimeMin": 98,
         "finishTimeMax": 108,
@@ -5811,10 +5683,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2,
-          5
-        ],
+        "courseSetStatus": [2, 5],
         "laneMax": 13500,
         "finishTimeMin": 131,
         "finishTimeMax": 140,
@@ -5876,9 +5745,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          1
-        ],
+        "courseSetStatus": [1],
         "laneMax": 13500,
         "finishTimeMin": 58,
         "finishTimeMax": 63,
@@ -6001,9 +5868,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 13500,
         "finishTimeMin": 150,
         "finishTimeMax": 156,
@@ -6065,9 +5930,7 @@
         "distanceType": 1,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 13500,
         "finishTimeMin": 69,
         "finishTimeMax": 77,
@@ -6116,10 +5979,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2,
-          5
-        ],
+        "courseSetStatus": [2, 5],
         "laneMax": 13500,
         "finishTimeMin": 93,
         "finishTimeMax": 108,
@@ -6168,10 +6028,7 @@
         "distanceType": 2,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2,
-          5
-        ],
+        "courseSetStatus": [2, 5],
         "laneMax": 13500,
         "finishTimeMin": 110,
         "finishTimeMax": 118,
@@ -6232,9 +6089,7 @@
         "distanceType": 3,
         "surface": 2,
         "turn": 2,
-        "courseSetStatus": [
-          2
-        ],
+        "courseSetStatus": [2],
         "laneMax": 13500,
         "finishTimeMin": 121,
         "finishTimeMax": 129,
@@ -6329,10 +6184,7 @@
         "distanceType": 3,
         "surface": 1,
         "turn": 1,
-        "courseSetStatus": [
-          2,
-          3
-        ],
+        "courseSetStatus": [2, 3],
         "laneMax": 12000,
         "finishTimeMin": 141.6,
         "finishTimeMax": 149,

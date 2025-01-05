@@ -122,7 +122,21 @@
     "evoSkill": "진화 스킬",
     "evoHint": "(고유 선택으로 대응하는 진화 스킬을 표시)",
     "lastUpdate": "최종 업데이트",
-    "releaseNote": "릴리즈 노트"
+    "releaseNote": "릴리즈 노트",
+
+    "leadCompetitionSpeed": "포지션 경쟁 속도",
+    "leadCompetitionDuration": "초",
+    "leadCompetitionAdvantage": "장점",
+    "leadCompetitionHP": "스태미나",
+
+    "simulateLeadCompetition": "포지션 경쟁 시뮬레이션",
+    "simulatePositionKeeping": "포지션 킵 시뮬레이션",
+
+    "positionKeeping": {
+      "none": "없음",
+      "nige": "도주",
+      "oonige": "대도주"
+    }
   },
   "emulatorType": {
     "teamRace": "팀 레이스",
@@ -189,5 +203,16 @@
   "surface": {
     "1": "잔디",
     "2": "더트"
+  },
+  "raceType": {
+    "0": "단거리",
+    "1": "마일",
+    "2": "중거리",
+    "3": "장거리",
+    "4": "더트"
+  },
+  "systematicSkill": {
+    "leadCompetition": "위치 경쟁",
+    "rcp": "다릿심 충분"
   }
 }

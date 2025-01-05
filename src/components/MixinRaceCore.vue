@@ -3,9 +3,10 @@ import RaceGraph from "@/components/RaceGraph";
 import MixinCourseData from "@/components/data/MixinCourseData";
 import MixinConstants from "@/components/data/MixinConstants";
 import MixinSkills from "@/components/data/MixinSkills";
+import MixinPositionKeeping from "@/components/MixinPositionKeeping.vue";
 import { STYLE } from "./data/constants";
-/*脚色十分常數引入*/
 import * as RCP from "./data/release_conserve_power_constants";
+import MixinKua from "@/components/MixinKua.vue";
 const UMA_OBJ_VERSION = 2;
 
 // let timer = 0;
@@ -17,7 +18,7 @@ const UMA_OBJ_VERSION = 2;
 export default {
   name: "MixinRaceCore",
   components: { RaceGraph },
-  mixins: [MixinCourseData, MixinConstants, MixinSkills],
+  mixins: [MixinCourseData, MixinConstants, MixinSkills, MixinPositionKeeping, MixinKua],
   data() {
     return {
       umaStatus: {
@@ -65,6 +66,7 @@ export default {
       temptationModeStart: null,
       temptationModeEnd: null,
       temptationWaste: 0,
+      leadCompetitionUsage: 0,
       // UI
       skillGroups: "",
       savedUmas: {},
@@ -75,11 +77,13 @@ export default {
       fitRanks: ["S", "A", "B", "C", "D", "E", "F", "G"],
       // Special cases
       oonige: false,
-      /** 2단계(phase 2) 진입 시간 기록 **/
-      frame_enter_phase_2: 0,
-      //스태미너승부 진입 시점
-      frame_spurt_start: 0,
-      triggeredSkills: [],
+      kua: {
+        showKuaWeights: false,
+        baseSkillName: "變速",
+        baseSkillPt: 96,
+        downSlopeProbAccumulator: 0,
+        downSlopeEndProbAccumulator: 0,
+      },
     };
   },
   mounted() {
@@ -100,8 +104,14 @@ export default {
     fixRandom() {
       return this.skillActivateAdjustment === "2";
     },
+    useExpectedValue() {
+      return this.skillActivateAdjustment === "expected";
+    },
     randomPosition() {
       return this.$refs.executeBlock.randomPosition;
+    },
+    leadCompetition() {
+      return this.$refs.executeBlock.leadCompetition;
     },
     runningStyle() {
       return this.oonige ? STYLE.OONIGE : +this.umaStatus.style;
@@ -185,7 +195,7 @@ export default {
       return 100 - 9000.0 / this.umaStatus.wisdom;
     },
     temptationRate() {
-      if (this.fixRandom) {
+      if (this.fixRandom || this.useExpectedValue) {
         return 0;
       } else {
         return Math.pow(6.5 / Math.log10(0.1 * this.modifiedWisdom + 1), 2) + this.passiveBonus.temptationRate;
@@ -534,10 +544,13 @@ export default {
     chartMiddle() {
       return this.courseLength * 0.45;
     },
+    expectedDownSlopeCoef() {
+      return 4 / (4 + 1 / (this.modifiedWisdom * 0.0004));
+    },
   },
   methods: {
     calcExceedStatus(status) {
-      return status > 1200 ? 1200 + (status - 1200) / 2 : status;
+      return +status > 1200 ? 1200 + (+status - 1200) / 2 : +status;
     },
     locationChanged(location) {
       this.courseList = this.trackData[location].courses;
@@ -582,13 +595,13 @@ export default {
         this.umaStatus.speed = 1000;
       }
       if (this.umaStatus.stamina === "") {
-        this.umaStatus.stamina = 400;
+        this.umaStatus.stamina = 2000;
       }
       if (this.umaStatus.power === "") {
         this.umaStatus.power = 1000;
       }
       if (this.umaStatus.guts === "") {
-        this.umaStatus.guts = 600;
+        this.umaStatus.guts = 1000;
       }
       if (this.umaStatus.wisdom === "") {
         this.umaStatus.wisdom = 1000;
@@ -630,10 +643,13 @@ export default {
       this.invokeSkills(this.skillActivateAdjustment);
       if (this.fixRandom) {
         this.startDelay = 0;
+      } else if (this.useExpectedValue) {
+        this.startDelay = 0.05;
       } else {
         this.startDelay = Math.random() * 0.1;
       }
       this.triggerStartSkills();
+      this.initSystematicSkills();
       this.initTemptation();
       this.isStartDash = true;
       this.delayTime = this.startDelay;
@@ -665,6 +681,8 @@ export default {
       this.season = -1;
       this.weather = -1;
       this.oonige = false;
+      this.leadCompetitionUsage = 0;
+      this.resetPositionKeeping();
       this.lastConservationCheckFrame = -1;
     },
     initCondition() {
@@ -701,52 +719,46 @@ export default {
       }
     },
 
-    /**
-     * 경주 진행을 시뮬레이션하는 메인 함수
-     */
     progressRace() {
-      // 말이 코스를 완주할 때까지 반복
       while (this.position < this.courseLength) {
-        // 무한 루프 방지를 위한 안전장치
         if (this.frameElapsed > 5000) {
           break;
         }
-
-        // 현재 프레임의 시작 상태 저장
         const startPosition = this.position;
         const startSp = this.sp;
         const startPhase = this.currentPhase;
-
-        // 현재 프레임의 상태 기록
         this.frames[this.frameElapsed].speed = this.currentSpeed;
         this.frames[this.frameElapsed].sp = this.sp;
         this.frames[this.frameElapsed].startPosition = startPosition;
 
-        // 내리막길 모드 진입/종료 판정
-        if (this.isInSlope("down") && !this.fixRandom) {
-          // 1초마다 체크
-          if (
-            Math.floor(this.frameElapsed * this.frameLength) !== Math.floor((this.frameElapsed + 1) * this.frameLength)
-          ) {
-            if (this.downSlopeModeStart == null) {
-              // 내리막길 모드 진입 확률 계산
-              if (Math.random() < this.modifiedWisdom * 0.0004) {
-                this.downSlopeModeStart = this.frameElapsed;
-              }
-            } else {
-              // 내리막길 모드 종료 확률 계산
-              if (Math.random() < 0.2) {
-                this.downSlopeModeStart = null;
-              }
+        // 下り坂モードに入るか・終わるかどうかの判定
+        const enterDownSlopeModeProbability = this.modifiedWisdom * 0.0004;
+        // 1秒置きなので、このフレームは整数秒を含むかどうかのチェック
+        const frameContainsRoundSecond =
+          Math.floor(this.frameElapsed * this.frameLength) !== Math.floor((this.frameElapsed + 1) * this.frameLength);
+
+        if (this.fixRandom || !this.isInSlope("down")) {
+          this.downSlopeModeStart = null;
+        } else if (this.useExpectedValue) {
+          if (this.downSlopeModeStart == null) {
+            // Always enter down slope mode, modify the speed increase instead
+            this.downSlopeModeStart = this.frameElapsed;
+          }
+        } else if (!this.useExpectedValue && frameContainsRoundSecond) {
+          if (this.downSlopeModeStart == null) {
+            if (Math.random() < enterDownSlopeModeProbability) {
+              this.downSlopeModeStart = this.frameElapsed;
+            }
+          } else {
+            if (Math.random() < 0.2) {
+              this.downSlopeModeStart = null;
             }
           }
-        } else {
-          this.downSlopeModeStart = null;
         }
 
-        // 방해(걸림) 처리
+        // 掛かり処理
         if (this.isInTemptation) {
-          // 방해 종료 판정
+          // 掛かり終了判定
           const temptationDuration = (this.frameElapsed - this.temptationModeStart) * this.frameLength;
           const prevTemptationDuration = (this.frameElapsed - 1 - this.temptationModeStart) * this.frameLength;
           for (let j = 3; j < 12; j += 3) {
@@ -760,23 +772,23 @@ export default {
             this.temptationModeEnd = this.frameElapsed;
           }
         }
-        // 방해 시작
+        // 掛かり開始
         if (this.temptationSection > 0 && this.currentSection === this.temptationSection) {
           this.temptationModeStart = this.frameElapsed;
           this.temptationSection = -1;
         }
 
         // 온존 시스템 적용
-        const preservedSp = this.applyConservationSystem(this.frameElapsed);
-        if (preservedSp > 0) {
-          // console.log(
-          //   `온존 시스템 발동: ${preservedSp.toFixed(2)} SP 보존 (프레임: ${this.frameElapsed}, 시간: ${(
-          //     this.frameElapsed * this.frameLength
-          //   ).toFixed(2)}초)`
-          // );
-          // 그래프 데이터에 온존 시스템 발동 정보 추가
-          this.frames[this.frameElapsed].conservationPreservedSp = preservedSp;
-        }
+        // const preservedSp = this.applyConservationSystem(this.frameElapsed);
+        // if (preservedSp > 0) {
+        //   console.log(
+        //     `온존 시스템 발동: ${preservedSp.toFixed(2)} SP 보존 (프레임: ${this.frameElapsed}, 시간: ${(
+        //       this.frameElapsed * this.frameLength
+        //     ).toFixed(2)}초)`
+        //   );
+        //   // 그래프 데이터에 온존 시스템 발동 정보 추가
+        //   this.frames[this.frameElapsed].conservationPreservedSp = preservedSp;
+        // }
 
         // 말 이동 처리
         this.move(this.frameLength);
@@ -788,28 +800,28 @@ export default {
         if (startPhase === 1 && this.currentPhase === 2) {
           this.spurtParameters = this.calcSpurtParameter();
 
-          // 종반 진입 후 '다릿심 충분' 처리 추가
-          if (this.modifiedPower > 1200) {
-            // 각질 거리 계수
-            const rcp_dis_style_coef = this.rcp_dis_running_style_coef();
-            // 가속도 계산: √((실제 파워-1200)×130)×0.001 x 각질 거리 계수
-            const rcp_accel =
-              Math.sqrt((this.modifiedPower - 1200) * RCP.RELEASE_CONSERVE_POWER_DECEL_COEF) *
-              RCP.RELEASE_CONSERVE_POWER_ACCEL_COEF *
-              rcp_dis_style_coef;
-            // 지속 시간 계산 (거리에 따른 보정)
-            const rcp_dur = (RCP.RELEASE_CONSERVE_POWER_INITIAL_DURATION_SEC * 1000) / this.trackDetail.distance;
+          // // 종반 진입 후 '다릿심 충분' 처리 추가
+          // if (this.modifiedPower > 1200) {
+          //   // 각질 거리 계수
+          //   const rcp_dis_style_coef = this.rcp_dis_running_style_coef();
+          //   // 가속도 계산: √((실제 파워-1200)×130)×0.001 x 각질 거리 계수
+          //   const rcp_accel =
+          //     Math.sqrt((this.modifiedPower - 1200) * RCP.RELEASE_CONSERVE_POWER_DECEL_COEF) *
+          //     RCP.RELEASE_CONSERVE_POWER_ACCEL_COEF *
+          //     rcp_dis_style_coef;
+          //   // 지속 시간 계산 (거리에 따른 보정)
+          //   const rcp_dur = (RCP.RELEASE_CONSERVE_POWER_INITIAL_DURATION_SEC * 1000) / this.trackDetail.distance;
 
-            // '다릿심 충분' 스킬 추가
-            this.operatingSkills.push({
-              data: {
-                name: "脚力十足",
-                acceleration: rcp_accel,
-                duration: rcp_dur,
-              },
-              startFrame: this.frameElapsed,
-            });
-          }
+          //   // '다릿심 충분' 스킬 추가
+          //   this.operatingSkills.push({
+          //     data: {
+          //       name: "脚力十足",
+          //       acceleration: rcp_accel,
+          //       duration: rcp_dur,
+          //     },
+          //     startFrame: this.frameElapsed,
+          //   });
+          // }
           this.frame_enter_phase_2 = this.frameElapsed;
         }
 
@@ -852,12 +864,6 @@ export default {
 
         // 다음 프레임의 목표 속도 계산 및 회복/피로 처리
         const skillTriggered = this.checkSkillTrigger(startPosition);
-        // if (skillTriggered.length > 0) {
-        //   for (const skill of skillTriggered) {
-        //     this.triggeredSkills.push(skill.data.id);
-        //   }
-        // }
-
         const spurting =
           this.spurtParameters != null && this.position + this.spurtParameters.distance >= this.courseLength;
         this.frames.push({
@@ -910,16 +916,40 @@ export default {
 
         // 내리막길이면 체력 소모가 줄어듭니다
         if (this.downSlopeModeStart != null) {
-          consume *= 0.4; // 60% 감소
+          if (this.useExpectedValue) {
+            consume *= 0.4 / this.expectedDownSlopeCoef;
+          } else {
+            consume *= 0.4;
+          }
+        }
+        const inLeadCompetition = this.operatingSkills.some((s) => s.data.id === "leadCompetition");
+        if (inLeadCompetition) {
+          if (this.isInTemptation) {
+            if (this.oonige) {
+              consume *= 7.7;
+              this.temptationWaste += consume * 6.7;
+              this.leadCompetitionUsage += consume * 6.7;
+            } else {
+              consume *= 3.6;
+              this.temptationWaste += consume * 2.6;
+              this.leadCompetitionUsage += consume * 2.6;
+            }
+          } else {
+            if (this.oonige) {
+              consume *= 3.5;
+              this.leadCompetitionUsage += consume * 2.5;
+            } else {
+              consume *= 1.4;
+              this.leadCompetitionUsage += consume * 0.4;
+            }
+          }
+        } else {
+          if (this.isInTemptation) {
+            this.temptationWaste += consume * 0.6;
+            consume *= 1.6;
+          }
         }
 
-        // '걸림' 상태면 체력 소모가 늘어나고, 일부는 낭비됩니다
-        if (this.isInTemptation) {
-          this.temptationWaste += consume * 0.6; // 60%는 낭비
-          consume *= 1.6; // 전체 소모량은 60% 증가
-        }
-
-        // 계산된 양만큼 체력을 감소시킵니다
         this.sp -= consume;
 
         // 출발 대시 상태를 업데이트합니다
@@ -937,11 +967,11 @@ export default {
       }
 
       const framesPerTwoSeconds = 2 / this.frameLength;
-      if (currentFrame - this.lastConservationCheckFrame < framesPerTwoSeconds) {
+      if (currentFrame - this.positionKeeping.lastCheckFrame < framesPerTwoSeconds) {
         return 0;
       }
 
-      this.lastConservationCheckFrame = currentFrame;
+      this.positionKeeping.lastCheckFrame = currentFrame;
 
       // 종반(phase 3) 시작 지점 계산
       const phase3StartPosition = (this.trackDetail.distance * 5) / 6;
@@ -980,11 +1010,11 @@ export default {
       const maxPreserveSp = totalRequiredSp * 1.04;
       const preserveAmount = Math.random() * (maxPreserveSp - minPreserveSp) + minPreserveSp;
 
-      // console.log("Current SP:", this.sp);
-      // console.log("Required SP to Phase 3:", consumption);
-      // console.log("Required SP for Spurt:", v3Consumption + additionalConsumption);
-      // console.log("Total Required SP:", totalRequiredSp);
-      // console.log("Preserve Amount:", preserveAmount);
+      console.log("Current SP:", this.sp);
+      console.log("Required SP to Phase 3:", consumption);
+      console.log("Required SP for Spurt:", v3Consumption + additionalConsumption);
+      console.log("Total Required SP:", totalRequiredSp);
+      console.log("Preserve Amount:", preserveAmount);
 
       if (this.sp < preserveAmount) {
         if (Math.random() < 0.3 * (this.modifiedWisdom / 1000 + Math.pow(this.modifiedWisdom, 0.03))) {
@@ -1034,99 +1064,57 @@ export default {
      */
 
     calcSpurtParameter(isReCalc) {
-      // 남은 거리 계산
       const maxDistance = this.trackDetail.distance - this.position;
-
-      // 최대 스퍼트 속도로 달릴 수 있는 거리 계산
       const spurtDistance = this.calcSpurtDistance(this.maxSpurtSpeed);
-
-      // 최대 스퍼트 속도로 달릴 때 필요한 총 스태미나 계산
       const totalConsume = this.calcRequiredSp(this.maxSpurtSpeed);
-
-      // 스퍼트 거리가 남은 거리보다 크거나 같으면
       if (spurtDistance >= maxDistance) {
-        // 현재 위치가 전체 코스의 2/3 지점 + 5미터 이내라면
         if (this.position <= (this.courseLength * 2.0) / 3 + 5) {
-          // 재계산이 아니라면 최대 스퍼트 모드 설정
           if (!isReCalc) {
             this.maxSpurt = true;
           }
         }
-        // 스퍼트 파라미터 반환
         return {
-          distance: maxDistance, // 남은 거리
-          speed: this.maxSpurtSpeed, // 최대 스퍼트 속도
-          spDiff: isReCalc
-            ? this.spurtParameters.spDiff // 재계산이면 기존 값 사용
-            : this.sp - totalConsume, // 아니면 현재 스태미나에서 필요한 스태미나를 뺀 값
+          distance: maxDistance,
+          speed: this.maxSpurtSpeed,
+          spDiff: isReCalc ? this.spurtParameters.spDiff : this.sp - totalConsume,
         };
       }
-
-      // 스태미나가 부족한 경우 처리
-      const candidates = []; // 가능한 스퍼트 옵션들을 저장할 배열
-
-      // v3 속도로 달릴 때 필요한 총 스태미나 계산
+      // SPが足りない場合の処理
+      const candidates = [];
       const totalConsumeV3 = this.calcRequiredSp(this.v3);
-
-      // 현재 스태미나에서 v3 속도로 달릴 때 필요한 스태미나를 뺀 값
       const excessSp = this.sp - totalConsumeV3;
-
-      // 스태미나가 부족하면 v3 속도로 스퍼트 불가능
       if (excessSp < 0) {
         return {
-          distance: 0, // 스퍼트 거리 0
-          speed: this.v3, // v3 속도
-          spDiff: isReCalc
-            ? this.spurtParameters.spDiff // 재계산이면 기존 값 사용
-            : this.sp - totalConsume, // 아니면 현재 스태미나에서 필요한 스태미나를 뺀 값
+          distance: 0,
+          speed: this.v3,
+          spDiff: isReCalc ? this.spurtParameters.spDiff : this.sp - totalConsume,
         };
       }
-
-      // 최대 스퍼트 속도부터 v3 속도까지 0.1씩 줄여가며 가능한 옵션들 계산
       for (let v = this.maxSpurtSpeed - 0.1; v >= this.v3; v -= 0.1) {
-        // 해당 속도로 달릴 수 있는 거리 계산
         let distanceV = this.calcSpurtDistance(v);
-
-        // 계산된 거리가 남은 거리보다 크면 남은 거리로 설정
         if (distanceV >= maxDistance) {
           distanceV = maxDistance;
         }
-
-        // 가능한 옵션을 배열에 추가
         candidates.push({
-          distance: distanceV, // 스퍼트 거리
-          speed: v, // 스퍼트 속도
-          // 총 소요 시간 (스퍼트 거리/스퍼트 속도 + 남은 거리/v3 속도)
+          distance: distanceV,
+          speed: v,
           time: distanceV / v + (maxDistance - distanceV) / this.v3,
-          spDiff: isReCalc
-            ? this.spurtParameters.spDiff // 재계산이면 기존 값 사용
-            : this.sp - totalConsume, // 아니면 현재 스태미나에서 필요한 스태미나를 뺀 값
+          spDiff: isReCalc ? this.spurtParameters.spDiff : this.sp - totalConsume,
         });
       }
-
-      // 옵션들을 소요 시간 순으로 정렬 (가장 빠른 것부터)
       candidates.sort((a, b) => {
         return a.time - b.time;
       });
-
-      // 각 옵션에 대해
       for (const i in candidates) {
-        // 순서 번호 부여
         candidates[i].order = parseInt(i) + 1;
         const c = candidates[i];
-
-        // 고정 랜덤 모드면 첫 번째 옵션 선택
-        if (this.fixRandom) {
+        if (this.fixRandom || this.useExpectedValue) {
           return c;
         }
-
-        // 15% + (지능 * 0.05%)의 확률로 현재 옵션 선택
         if (Math.random() * 100 < 15 + 0.05 * this.modifiedWisdom) {
           return c;
         }
       }
-
-      // 모든 옵션을 통과했다면 마지막 옵션 선택 (가장 느린 옵션)
       return candidates[candidates.length - 1];
     },
     calcSpurtDistance(v) {
@@ -1147,57 +1135,32 @@ export default {
         60
       );
     },
-    /**
-     * 특정 속도로 남은 거리를 주행하는 데 필요한 체력(SP)을 계산하는 함수
-     *
-     * @param {number} v - 계산할 속도
-     * @returns {number} 필요한 체력(SP) 양
-     */
     calcRequiredSp(v) {
-      // 남은 거리 (60m를 뺀 이유는 아마도 결승선 통과 후 여유 거리)
-      const remainingDistance = this.courseLength - this.position - 60;
-
-      // 트랙 표면 상태에 따른 체력 소모 계수
-      const surfaceCoef = this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition];
-
-      // 기본 계수
-      const baseCoef = 20 * surfaceCoef * this.spurtSpCoef;
-
-      // v3 속도에서의 기본 체력 소모
-      const v3Consumption =
-        (remainingDistance * baseCoef * Math.pow(this.v3 - this.baseSpeed + 12, 2)) / (144 * this.v3);
-
-      // 목표 속도(v)와 v3 속도의 차이에 따른 추가 체력 소모
-      const additionalConsumption =
-        remainingDistance *
-        baseCoef *
-        (Math.pow(v - this.baseSpeed + 12, 2) / (144 * v) -
-          Math.pow(this.v3 - this.baseSpeed + 12, 2) / (144 * this.v3));
-
-      // 총 필요 체력
-      return v3Consumption + additionalConsumption;
+      return (
+        ((this.courseLength - this.position - 60) *
+          20 *
+          this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition] *
+          this.spurtSpCoef *
+          Math.pow(this.v3 - this.baseSpeed + 12, 2)) /
+          144 /
+          this.v3 +
+        (this.courseLength - this.position - 60) *
+          (20 *
+            this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition] *
+            this.spurtSpCoef *
+            (Math.pow(v - this.baseSpeed + 12, 2) / 144 / v -
+              Math.pow(this.v3 - this.baseSpeed + 12, 2) / 144 / this.v3))
+      );
     },
-    /**
-     * 말이 1초당 소모하는 체력(SP)을 계산하는 함수
-     *
-     * @param {number} baseSpeed - 기본 속도
-     * @param {number} v - 현재 속도
-     * @param {number} phase - 현재 경주 단계
-     * @returns {number} 1초당 소모되는 체력(SP)
-     */
     consumePerSecond(baseSpeed, v, phase) {
-      // 기본 체력 소모량 계산
       let ret =
         (20.0 *
           this.spConsumptionCoef[this.trackDetail.surface][this.track.surfaceCondition] *
           Math.pow(v - baseSpeed + 12, 2)) /
         144;
-
-      // 경주 후반부(phase 2 이상)에는 스퍼트 계수를 적용
       if (phase >= 2) {
         ret *= this.spurtSpCoef;
       }
-
       return ret;
     },
     isInSlope(direction, position) {
@@ -1333,32 +1296,20 @@ export default {
     },
     loadUma() {
       const umas = JSON.parse(localStorage.getItem("umas") || "{}");
-      const umaData = umas[this.umaToLoad];
-      if (umaData) {
-        if (this.loadUmaFromObject(umaData)) {
-          this.$message({
-            type: "success",
-            message: `${this.umaToLoad}을(를) 로드했습니다.`,
-          });
-        } else {
-          this.$message({
-            type: "failed",
-            message: `${this.umaToLoad}은(는) 구 데이터라서 불러올 수 없었습니다.`,
-          });
-        }
+      if (this.loadUmaFromObject(umas[this.umaToLoad])) {
+        this.$message({
+          type: "success",
+          message: `${this.umaToLoad}을(를) 로드했습니다.`,
+        });
       } else {
         this.$message({
-          type: "warning",
-          message: `${this.umaToLoad}의 데이터를 찾을 수 없었습니다.`,
+          type: "failed",
+          message: `${this.umaToLoad}은(는) 구 데이터라서 불러올 수 없었습니다.`,
         });
       }
     },
     loadUmaFromObject(u) {
-      if (!u || typeof u !== "object") {
-        console.error("Invalid uma data:", u);
-        return false;
-      }
-      if (u.version == null || u.version < UMA_OBJ_VERSION) {
+      if (u == null || u.version == null || u.version < UMA_OBJ_VERSION) {
         return false;
       }
       this.umaStatus = u.status;
@@ -1486,7 +1437,6 @@ export default {
     },
     resetUma() {
       this.resetStatus();
-      this.resetTrack();
       this.resetHasSkills();
       this.umaToLoad = "";
     },
@@ -1504,14 +1454,11 @@ export default {
         styleFit: "A",
       };
     },
-    resetTrack() {
-      // Do nothing
-    },
     initSectionTargetSpeedRandoms() {
       const ret = [];
       for (let i = 0; i < 24; i++) {
         const max = (this.modifiedWisdom / 5500.0) * Math.log10(this.modifiedWisdom * 0.1) * 0.01;
-        if (this.fixRandom) {
+        if (this.fixRandom || this.useExpectedValue) {
           ret.push(max - 0.00325);
         } else {
           ret.push(max + Math.random() * -0.0065);
@@ -1610,24 +1557,24 @@ export default {
         }
         for (let mi = index; mi < index + step && mi < this.frames.length; mi++) {
           /* rcp: 다릿심 충분 그래프 그리기, 후반기 진입 시간을 기록하여 다릿심 충분 효과가 발동하는 프레임 찾기 */
-          if (this.modifiedPower > 1200 && mi === this.frame_enter_phase_2) {
-            annotations.push({
-              type: "line",
-              label: {
-                content: this.$t("chart.releasePower"),
-                position: "top",
-                enabled: true,
-                yAdjust: skillYAdjust,
-              },
-              mode: "vertical",
-              scaleID: "x-axis-0",
-              value: label,
-              borderColor: SKILL_COLORS["acceleration"],
-              borderWidth: 2,
-              onClick: function () {},
-            });
-            nextSkillYAdjust(skillYAdjust);
-          }
+          // if (this.modifiedPower > 1200 && mi === this.frame_enter_phase_2) {
+          //   annotations.push({
+          //     type: "line",
+          //     label: {
+          //       content: this.$t("chart.releasePower"),
+          //       position: "top",
+          //       enabled: true,
+          //       yAdjust: skillYAdjust,
+          //     },
+          //     mode: "vertical",
+          //     scaleID: "x-axis-0",
+          //     value: label,
+          //     borderColor: SKILL_COLORS["acceleration"],
+          //     borderWidth: 2,
+          //     onClick: function () {},
+          //   });
+          //   nextSkillYAdjust(skillYAdjust);
+          // }
 
           // 2.5주년 스태미너승부 발동 프레임
           if (this.modifiedStamina > 1200 && mi === this.frame_spurt_start) {
@@ -1919,18 +1866,18 @@ export default {
             borderColor: "rgb(215, 255, 215)",
             data: dataPosition,
           },
-          {
-            fill: false,
-            label: this.$t("chart.conservation"),
-            yAxisID: "sp",
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgb(255, 99, 132)", // 점의 배경색 설정
-            pointRadius: 6, // 점 크기 증가
-            pointHoverRadius: 8, // 호버 시 점 크기 증가
-            pointStyle: "circle", // 점 스타일을 원형으로 설정
-            pointBorderWidth: 2, // 점 테두리 두께 설정
-            data: dataConservation,
-          },
+          // {
+          //   fill: false,
+          //   label: this.$t("chart.conservation"),
+          //   yAxisID: "sp",
+          //   borderColor: "rgb(255, 99, 132)",
+          //   backgroundColor: "rgb(255, 99, 132)", // 점의 배경색 설정
+          //   pointRadius: 6, // 점 크기 증가
+          //   pointHoverRadius: 8, // 호버 시 점 크기 증가
+          //   pointStyle: "circle", // 점 스타일을 원형으로 설정
+          //   pointBorderWidth: 2, // 점 테두리 두께 설정
+          //   data: dataConservation,
+          // },
         ],
       };
     },
@@ -1960,10 +1907,6 @@ export default {
     /*回傳脚色十分脚質距離係數,我是懶狗先hardcode一個,有時間再改*/
     rcp_dis_running_style_coef() {
       this.isDistanceType();
-      /**脚質是字串**/
-      // console.log("style:", this.umaStatus.style);
-      /**距離是int**/
-      // console.log("raceType:", this.getDistanceTypeByDis());
 
       if (this.getDistanceTypeByDis() === 1) {
         if (this.umaStatus.style === "1") {

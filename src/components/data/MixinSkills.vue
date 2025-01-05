@@ -1,6 +1,7 @@
 <script>
+import * as RCP from "@/components/data/release_conserve_power_constants";
+
 const SkillData = require("./skillData");
-const SKILL_TRIGGER_COUNT_YUMENISIKI = 4;
 
 const effects = [
   "heal",
@@ -16,7 +17,6 @@ const effects = [
   "passiveWisdom",
   "temptationRate",
   "startDelay",
-  "duration",
 ];
 
 const inheritMap = {
@@ -54,7 +54,7 @@ const inheritMap = {
     0.5: 0.3,
     0.4: 0.2,
     0.3: 0.1,
-    0.2: 0.07,
+    0.2: 0.07, // 0.05 => 0.07 bugfix
     0.1: 0.05,
   },
 };
@@ -70,8 +70,6 @@ function toInheritValues(invoke) {
         console.error(`Unknown ${effect} value ${value} in ${JSON.stringify(invoke)}`);
       }
       ret[effect] = newValue;
-    } else if (effect === "duration" && invoke[effect]) {
-      ret[effect] = invoke[effect] * 0.6;
     }
   }
   return ret;
@@ -93,10 +91,6 @@ function rewriteInheritValues(inherit) {
       let newValue = map[value];
       if (newValue == null) {
         console.error(`Unknown ${effect} value ${value} in ${JSON.stringify(inherit)}`);
-      }
-      // special case for Tomakomai
-      if (effect === "acceleration" && [100991].includes(inherit.id)) {
-        newValue = 0.07;
       }
       variant[effect] = newValue;
       delete inherit[effect];
@@ -134,7 +128,7 @@ export default {
       selectedUnique: this.$t("skills.selectedUnique"),
       hasEvoSkills: [],
       uniqueLevel: 4,
-      skillTriggerCount: [0, 0, 0, 0],
+      skillTriggerCount: {},
       healTriggerCount: 0,
       skills: {},
       passiveBonusKeys: ["speed", "stamina", "power", "guts", "wisdom", "temptationRate"],
@@ -172,14 +166,44 @@ export default {
       for (const skill of origin) {
         this.localizeSkill(skill, undefined, newSkillNames);
       }
-      // if (Object.keys(newSkillNames).length > 0) {
-      //   console.log(JSON.stringify(newSkillNames));
-      // }
+      if (Object.keys(newSkillNames).length > 0) {
+        console.log(JSON.stringify(newSkillNames));
+      }
       return origin.sort((a, b) => {
         if (a.name < b.name) return -1;
         if (a.name > b.name) return 1;
         return 0;
       });
+    },
+    systematicSkills() {
+      const thiz = this;
+      return {
+        leadCompetition: {
+          id: "leadCompetition",
+          systematic: true,
+          name: this.$t("systematicSkill.leadCompetition"),
+          targetSpeed: Math.pow(500 * this.modifiedGuts, 0.6) * 0.0001,
+          cd: 999999,
+          duration: (Math.pow(700 * this.modifiedGuts, 0.5) * 0.012) / this.timeCoef,
+          check: function (startPosition) {
+            return startPosition >= 150;
+          },
+        },
+        rcp: {
+          id: "rcp",
+          systematic: true,
+          name: this.$t("systematicSkill.rcp"),
+          cd: 999999,
+          acceleration:
+            Math.sqrt((this.rcpPower - 1200) * RCP.RELEASE_CONSERVE_POWER_DECEL_COEF) *
+            RCP.RELEASE_CONSERVE_POWER_ACCEL_COEF *
+            this.rcp_dis_running_style_coef(),
+          duration: (RCP.RELEASE_CONSERVE_POWER_INITIAL_DURATION_SEC * 1000) / this.timeCoef,
+          check: function () {
+            return thiz.phase >= 2;
+          },
+        },
+      };
     },
     availableSkills() {
       const ret = {};
@@ -202,6 +226,17 @@ export default {
           continue;
         }
 
+        // 進化スキルはエミュ種類以外では無条件で表示
+        if (skill.rarity === "evo") {
+          if (skill.holder == null) {
+            console.error(`No holder in ${JSON.stringify(skill)}`);
+          }
+          if (skill.holder === uqHolder) {
+            ret.evo.push(skill);
+          }
+          continue;
+        }
+
         if (!this.isDistanceType(skill.conditions?.distance_type)) {
           continue;
         }
@@ -221,17 +256,6 @@ export default {
           continue;
         }
         if (!this.isGroundCondition(skill.conditions?.ground_condition)) {
-          continue;
-        }
-        // 進化スキルはエミュ種類以外では無条件で表示
-        // 어차피 무조건 표시해봤자 시뮬에서 안터지는데 의미 있음?
-        if (skill.rarity === "evo") {
-          if (skill.holder == null) {
-            console.error(`No holder in ${JSON.stringify(skill)}`);
-          }
-          if (skill.holder === uqHolder) {
-            ret.evo.push(skill);
-          }
           continue;
         }
         // コースと馬場状態指定はチャンミのみ
@@ -283,6 +307,9 @@ export default {
     phase() {
       return this.currentPhase;
     },
+    rcpPower() {
+      return this.umaStatus.power * this.condCoef[this.modifiedCondition] + this.passiveBonus.power;
+    },
   },
   created() {
     this.buildSkillData();
@@ -292,7 +319,14 @@ export default {
     invokeSkills(skillActivateAdjustment) {
       this.invokedSkills = [];
       this.coolDownMap = {};
-      this.skillTriggerCount = [0, 0, 0, 0, 0];
+      this.skillTriggerCount = {
+        0: 0,
+        1: 0,
+        2: 0,
+        3: 0,
+        phase2FinalCorner: 0,
+        laterHalf: 0,
+      };
       this.healTriggerCount = 0;
 
       const hasSkills = [];
@@ -326,7 +360,8 @@ export default {
           skill.type === "passive" ||
           skill.type === "unique" ||
           skillActivateAdjustment === "1" ||
-          skillActivateAdjustment === "2"
+          skillActivateAdjustment === "2" ||
+          skillActivateAdjustment === "expected"
         ) {
           invokeRate = 100;
         } else {
@@ -366,22 +401,7 @@ export default {
       const thiz = this;
       switch (cond) {
         case "motivation":
-          if (typeof value === "string") {
-            if (value.startsWith(">=")) {
-              return () => 5 - parseInt(thiz.umaStatus.condition) >= parseInt(value.substring(2));
-            } else if (value.startsWith(">")) {
-              return () => 5 - parseInt(thiz.umaStatus.condition) > parseInt(value.substring(1));
-            } else if (value.startsWith("<=")) {
-              return () => 5 - parseInt(thiz.umaStatus.condition) <= parseInt(value.substring(2));
-            } else if (value.startsWith("<")) {
-              return () => 5 - parseInt(thiz.umaStatus.condition) < parseInt(value.substring(1));
-            } else {
-              console.error("Unknown motivation value", value);
-              return null;
-            }
-          } else {
-            return () => parseInt(value) === 5 - parseInt(thiz.umaStatus.condition);
-          }
+          return parseInt(value) === 5 - +thiz.umaStatus.condition;
         case "hp_per":
           if (value.startsWith(">=")) {
             return () => thiz.sp >= parseInt(value.substring(2)) * 0.01 * thiz.spMax;
@@ -394,9 +414,11 @@ export default {
         case "activate_count_heal":
           return () => thiz.healTriggerCount >= value;
         case "activate_count_all":
-          return () => thiz.skillTriggerCount.reduce((pre, cur) => pre + cur, 0) >= value;
+          return () => Object.values(thiz.skillTriggerCount).reduce((pre, cur) => pre + cur, 0) >= value;
         case "activate_count_start":
           return () => thiz.skillTriggerCount[0] >= value;
+        case "activate_count_later_half":
+          return () => thiz.skillTriggerCount.laterHalf >= value;
         case "accumulatetime":
           return () => thiz.accTimePassed(value);
         case "straight_front_type":
@@ -524,7 +546,7 @@ export default {
             return () => thiz.currentPhase == value;
           }
         case "is_finalcorner":
-          return () => thiz.isFinalCorner();
+          return () => thiz.isInFinalStraight() || thiz.isInFinalCorner();
         case "is_finalcorner_laterhalf":
           return () => thiz.isInFinalCorner(null, { start: 0.5, end: 1 });
         case "corner":
@@ -537,7 +559,7 @@ export default {
             return () => thiz.isInCorner(thiz.position, value);
           }
         case "is_activate_any_skill":
-          return () => thiz.skillTriggerCount[SKILL_TRIGGER_COUNT_YUMENISIKI] >= 1;
+          return () => thiz.skillTriggerCount.finalCorner >= 1;
         case "is_lastspurt":
           if (value == 0) {
             return () => !thiz.isInSpurt;
@@ -560,6 +582,8 @@ export default {
           return () => thiz.umaStatus.wisdom >= value;
         case "course_distance":
           return () => thiz.courseLength == value;
+        case "compete_fight_count":
+          return () => thiz.compete_fight_count >= value;
         default:
           alert(`Unknown condition ${cond}`);
           console.error(`Unknown condition ${cond}`);
@@ -585,7 +609,7 @@ export default {
           checks.push(res);
         } else if (Array.isArray(res)) {
           if (res.length > 0) {
-            if (res[0].start !== undefined) {
+            if (res[0].start) {
               // Randoms
               skill.randoms = res;
               checks.push((startPosition) => thiz.isInRandom(skill.randoms, startPosition));
@@ -593,7 +617,7 @@ export default {
               // Multiple conditions
               checks.push(...res);
             } else {
-              console.error("Unknown res array", skill, cond, res);
+              console.error("Unknown res array", cond, res);
             }
           } else {
             // Empty random array = won't trigger
@@ -614,30 +638,37 @@ export default {
       const nonStartSkills = [];
       for (const skill of this.invokedSkills) {
         switch (skill.type) {
-          case "passive":
+          case "passive": {
+            let triggered = true;
             if (skill.id === 202051) {
               // 大逃げ
               this.oonige = true;
             } else if (skill.check && skill.check()) {
-              if ("triggerRate" in skill) {
-                if (Math.random() < skill.triggerRate) {
-                  skill.trigger(skill);
-                  this.skillTriggerCount[0]++;
-                  this.passiveTriggered += 1;
-                  this.frames[0].skills.push({ data: skill });
-                }
+              if ("triggerRate" in skill && Math.random() >= skill.triggerRate) {
+                triggered = false;
               } else {
                 skill.trigger(skill);
-                this.skillTriggerCount[0]++;
-                this.passiveTriggered += 1;
-                this.frames[0].skills.push({ data: skill });
               }
             }
+            if (triggered && skill.systematic !== true) {
+              this.skillTriggerCount[0]++;
+              this.passiveTriggered += 1;
+              this.frames[0].skills.push({ data: skill });
+            }
             break;
+          }
           case "gate":
             this.startDelay *= skill.startDelay;
             skill.trigger(skill);
-            this.skillTriggerCount[0]++;
+            if (skill.duration > 0) {
+              this.operatingSkills.push({
+                data: skill,
+                startFrame: this.frameElapsed,
+              });
+            }
+            if (skill.systematic !== true) {
+              this.skillTriggerCount[0]++;
+            }
             this.frames[0].skills.push({ data: skill });
             break;
           default:
@@ -646,6 +677,14 @@ export default {
         }
       }
       this.invokedSkills = nonStartSkills;
+    },
+    initSystematicSkills() {
+      if (this.isRunningStyle(1) && this.leadCompetition === "yes") {
+        this.invokedSkills.push(this.systematicSkills.leadCompetition);
+      }
+      if (this.rcpPower > 1200) {
+        this.invokedSkills.push(this.systematicSkills.rcp);
+      }
     },
     checkSkillTrigger(startPosition) {
       const skillTriggered = [];
@@ -678,10 +717,15 @@ export default {
           startFrame: this.frameElapsed,
         });
       }
-      this.skillTriggerCount[this.currentPhase]++;
-      // 特殊スキル誘発カウント
-      if (this.isInFinalCorner() && this.currentPhase >= 2) {
-        this.skillTriggerCount[SKILL_TRIGGER_COUNT_YUMENISIKI]++;
+      if (skill.systematic !== true) {
+        this.skillTriggerCount[this.currentPhase]++;
+        // 特殊スキル誘発カウント
+        if (this.isInFinalCorner() && this.currentPhase >= 2) {
+          this.skillTriggerCount.phase2FinalCorner++;
+        }
+        if (this.isInLaterHalf()) {
+          this.skillTriggerCount.laterHalf++;
+        }
       }
       const coolDownId = skill.invokeNo ? `${skill.id}-${skill.invokeNo}` : skill.id;
       this.coolDownMap[coolDownId] = this.frameElapsed;
@@ -689,26 +733,30 @@ export default {
     },
     chooseRandom(zoneStart, zoneEnd) {
       let rate;
-      switch (this.randomPosition) {
-        case "0":
-          rate = Math.random();
-          break;
-        case "1":
-          rate = 0;
-          break;
-        case "2":
-          rate = 0.25;
-          break;
-        case "3":
-          rate = 0.5;
-          break;
-        case "4":
-          rate = 0.75;
-          break;
-        case "5":
-        default:
-          rate = 0.98;
-          break;
+      if (this.skillActivateAdjustment === "expected") {
+        rate = 0.5;
+      } else {
+        switch (this.randomPosition) {
+          case "0":
+            rate = Math.random();
+            break;
+          case "1":
+            rate = 0;
+            break;
+          case "2":
+            rate = 0.25;
+            break;
+          case "3":
+            rate = 0.5;
+            break;
+          case "4":
+            rate = 0.75;
+            break;
+          case "5":
+          default:
+            rate = 0.98;
+            break;
+        }
       }
 
       const start = rate * (zoneEnd - zoneStart) + zoneStart;
@@ -954,32 +1002,11 @@ export default {
       if (!position) {
         position = this.position;
       }
-      /* todo : 2.5주년에 최종 직선 조건문이 "is_finalcorner==1 &corner==0" -> "is_last_straight==1" 으로 변경되므로 아래껄 지우고 이걸로 바꾸기.
-
-      const lastStraight =
-        this.trackDetail.straights[this.trackDetail.straights.length - 1];
+      const lastStraight = this.trackDetail.straights[this.trackDetail.straights.length - 1];
       if (!lastStraight) {
         return false;
       }
       return position >= lastStraight.start;
-      */
-      const fc = this.trackDetail.corners[this.trackDetail.corners.length - 1];
-      if (!fc) {
-        // 千直、最終直線は仕様上存在しないことになっている
-        return false;
-      }
-      return position > this.cornerEnd(fc);
-    },
-    //replace isInFinalCorner() || isInFinalStraight(). is_finalcorner should not activate when finalcorner doesn't exist.
-    isFinalCorner(position) {
-      if (!position) {
-        position = this.position;
-      }
-      const fc = this.trackDetail.corners[this.trackDetail.corners.length - 1];
-      if (!fc) {
-        return false;
-      }
-      return position >= fc.start;
     },
     isContainsRemainingDistance(remain, startPosition) {
       return startPosition <= this.toPosition(remain) && this.position >= this.toPosition(remain);
@@ -992,6 +1019,9 @@ export default {
     },
     isPhase(phase) {
       return this.currentPhase === phase;
+    },
+    isInLaterHalf() {
+      return this.position > this.courseLength / 2;
     },
     isStraightFrontType(type) {
       switch (type) {

@@ -70,6 +70,9 @@ export default {
       totalSkills: 0,
 
       isAdmin: false,
+
+      leadCompetition: "no",
+      positionKeeping: "none",
     };
   },
   computed: {
