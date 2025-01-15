@@ -456,15 +456,7 @@ export default {
             skillData[key] = ratio;
           }
         }
-        // if (!this.triggeredSkills.includes(skillId) && skillType !== "passive") {
-        //   skillData["마신"] = 0;
-        //   skillData["표준 편차"] = 0;
-        //   skillData["최대"] = 0;
-        //   skillData["최소"] = 0;
-        //   skillData["중앙"] = 0;
-        // }
 
-        // this.triggeredSkills = [];
         this.hasSkills = JSON.parse(JSON.stringify(this.originHasSkills));
         this.hasEvoSkills = [...this.originHasEvoSkills];
         this.$refs.executeBlock.randomPosition = "0";

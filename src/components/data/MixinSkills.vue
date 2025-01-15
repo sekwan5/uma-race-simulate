@@ -81,9 +81,19 @@ function rewriteInheritValues(inherit) {
     name: inherit.name,
     rarity: "inherit",
   };
+
   if (inherit.duration) {
     inherit.duration = inherit.duration * 0.6;
   }
+
+  if (inherit.invokes) {
+    for (const invoke of inherit.invokes) {
+      if (invoke.duration) {
+        invoke.duration = invoke.duration * 0.6;
+      }
+    }
+  }
+
   for (const effect of effects) {
     if (inherit[effect] && inheritMap[effect]) {
       const map = inheritMap[effect];
