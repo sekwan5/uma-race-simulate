@@ -220,7 +220,7 @@ export default {
       //4. 고유기 마신 계산
       console.log("고유기및 핑딱 마신계산 시작");
 
-      if (typeof this.selectedUnique == "string" || this.selectedUnique == 1) {
+      if (typeof this.selectedUnique == "string" || this.selectedUnique == 0) {
         // const tmpUniqueSkills = this.uniqueSkillData.slice(1);
         for (const skill of this.uniqueSkillData.slice(1)) {
           this.selectedUnique = await skill.id;
@@ -232,7 +232,7 @@ export default {
             }
           }
         }
-        this.selectedUnique = 1;
+        this.selectedUnique = 0;
       } else {
         if (this.availableSkills.evo.length > 0) {
           this.$refs.executeBlock.totalSkills += this.availableSkills.evo.length;

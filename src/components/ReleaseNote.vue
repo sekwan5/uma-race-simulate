@@ -48,6 +48,10 @@ export default {
           content: "조건부 계승기 지속시간 적용 안되던 오류 수정",
           timestamp: "2025-01-15",
         },
+        {
+          content: "마신표 제작시 고유기 초기화 변수 수정",
+          timestamp: "2025-01-17",
+        },
       ],
     };
   },

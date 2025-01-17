@@ -124,7 +124,7 @@ function normalSkillData(thiz) {
           passiveSpeed: 40,
         },
       ],
-      tooltip: "発動率44%として扱う(チャンピオンズミーティング基準)",
+      tooltip: "발동률 44%로 처리(챔피언즈 미팅 기준)",
       triggerRate: 0.4444444444444444,
     },
     {
@@ -526,7 +526,7 @@ function normalSkillData(thiz) {
           passiveWisdom: 40,
         },
       ],
-      tooltip: "発動率33%として扱う(チャンピオンズミーティング基準)",
+      tooltip: "발동률 33%로 처리(챔피언즈 미팅 기준)",
       triggerRate: 0.3333333333333333,
     },
     {
@@ -616,7 +616,7 @@ function normalSkillData(thiz) {
           passiveStamina: 40,
         },
       ],
-      tooltip: "発動率1/18として扱う(チャンピオンズミーティング基準)",
+      tooltip: "발동률 1/18로 처리(챔피언즈 미팅 기준)",
       triggerRate: 0.05555555555555555,
     },
     {
@@ -631,7 +631,7 @@ function normalSkillData(thiz) {
           passiveStamina: 80,
         },
       ],
-      tooltip: "発動率2/9として扱う(チャンピオンズミーティング基準)",
+      tooltip: "발동률2/9として扱う(チャンピオンズミーティング基準)",
       triggerRate: 0.2222222,
     },
     {
@@ -646,7 +646,7 @@ function normalSkillData(thiz) {
           conditions: {
             motivation: ">=4",
           },
-          tooltip: "発動率92%として扱う",
+          tooltip: "발동률92%として扱う",
           triggerRate: 0.92,
         },
       ],
@@ -684,7 +684,7 @@ function normalSkillData(thiz) {
           passiveSpeed: 40,
         },
       ],
-      tooltip: "発動率40%として扱う。",
+      tooltip: "발동률40%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.season === 0;
@@ -707,7 +707,7 @@ function normalSkillData(thiz) {
           passiveSpeed: 40,
         },
       ],
-      tooltip: "発動率20%として扱う。",
+      tooltip: "발동률20%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.season === 1;
@@ -738,7 +738,7 @@ function normalSkillData(thiz) {
           passiveSpeed: 40,
         },
       ],
-      tooltip: "発動率20%として扱う。",
+      tooltip: "발동률20%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.season === 2;
@@ -754,7 +754,7 @@ function normalSkillData(thiz) {
           passiveSpeed: 40,
         },
       ],
-      tooltip: "発動率20%として扱う。",
+      tooltip: "발동률20%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.season === 3;
@@ -770,7 +770,7 @@ function normalSkillData(thiz) {
           passiveGuts: 40,
         },
       ],
-      tooltip: "発動率57.5%として扱う。",
+      tooltip: "발동률57.5%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.weather === 0;
@@ -786,7 +786,7 @@ function normalSkillData(thiz) {
           passiveGuts: 40,
         },
       ],
-      tooltip: "発動率30%として扱う。",
+      tooltip: "발동률30%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.weather === 1;
@@ -802,7 +802,7 @@ function normalSkillData(thiz) {
           passiveGuts: 40,
         },
       ],
-      tooltip: "発動率11%として扱う。",
+      tooltip: "발동률11%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.weather === 2;
@@ -818,7 +818,7 @@ function normalSkillData(thiz) {
           passiveGuts: 40,
         },
       ],
-      tooltip: "発動率1.5%として扱う。",
+      tooltip: "발동률1.5%として扱う。",
       emulatorTypeLimit: ["team"],
       check: function () {
         return thiz.weather === 3;
@@ -1020,7 +1020,7 @@ function normalSkillData(thiz) {
           passivePower: 40,
         },
       ],
-      tooltip: "発動率60%として扱う",
+      tooltip: "발동률60%として扱う",
       triggerRate: 0.6,
     },
     {
@@ -6101,21 +6101,21 @@ function normalSkillData(thiz) {
           holder: 108501,
           name: "華麗であれ",
           targetSpeed: 0.45,
-          tooltip: "デバフは前後各３人で、-0.15。",
+          tooltip: "디버프는 앞뒤 각 3명에게 적용、-0.15。",
         },
         {
           rarity: "rare",
           id: 202541,
           name: "威風堂々",
           targetSpeed: 0.35,
-          tooltip: "デバフは前後各３人で、-0.15。",
+          tooltip: "디버프는 앞뒤 각 3명에게 적용、-0.15。",
         },
         {
           rarity: "normal",
           id: 202542,
           name: "プレッシャー",
           targetSpeed: 0.15,
-          tooltip: "デバフは前後各３人で、-0.035。",
+          tooltip: "디버프는 앞뒤 각 3명에게 적용、-0.035。",
         },
       ],
       duration: 1.8,
@@ -8727,7 +8727,7 @@ const uniqueSkillData = (thiz) => [
       is_finalcorner: 1,
       corner: 0,
     },
-    tooltip: "0.45の即時発動扱い",
+    tooltip: "0.45로 즉시 발동 처리",
   },
   {
     id: 100861,
