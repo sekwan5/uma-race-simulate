@@ -5046,12 +5046,6 @@ function normalSkillData(thiz) {
           name: "ワンチャンス",
           acceleration: 0.2,
         },
-      ],
-      duration: 1.8,
-      conditions: { distance_type: 3, phase_firsthalf_random: 2 },
-    },
-    {
-      variants: [
         {
           rarity: "evo",
           id: 108801211,
@@ -5062,12 +5056,26 @@ function normalSkillData(thiz) {
         },
       ],
       duration: 1.8,
-      conditions: { 
-        distance_type: 3, 
-        phase_firstquarter_random: 2,
-        course_distance_range: [2200,2400]
-      },
+      conditions: { distance_type: 3, phase_firsthalf_random: 2 },
     },
+    // {
+    //   variants: [
+    //     {
+    //       rarity: "evo",
+    //       id: 108801211,
+    //       holder: 100881,
+    //       name: "ミリオンカード",
+    //       acceleration: 0.5,
+    //       heal: -200
+    //     },
+    //   ],
+    //   duration: 1.8,
+    //   conditions: { 
+    //     distance_type: 3, 
+    //     phase_firstquarter_random: 2,
+    //     course_distance_range: [2200,2400]
+    //   },
+    // },
     {
       variants: [
         {
