@@ -73,7 +73,7 @@ function normalSkillData(thiz) {
         {
           rarity: "rare",
           id: -200174,
-          name: "春一番 | 青嵐 | 初嵐",
+          name: "春一番 | 青嵐 | 初嵐 | 凍て風",
           passiveSpeed: 60,
           passivePower: 60,
         },
@@ -1561,6 +1561,14 @@ function normalSkillData(thiz) {
           heal: 550,
           targetSpeed: 0.15,
         },
+        {
+          rarity: "evo",
+          id: 100303211,
+          holder: 100303,
+          name: "盤楽遊嬉",
+          heal: 350,
+          targetSpeed: 0.25,
+        },
         { rarity: "rare", id: 200561, name: "余裕綽々", heal: 550 },
         {
           rarity: "normal",
@@ -2447,6 +2455,19 @@ function normalSkillData(thiz) {
     },
     {
       variants: [
+        {
+          rarity: "evo",
+          id: 106402111,
+          holder: 106402,
+          name: "北風一蹴",
+          targetSpeed: 0.35,
+        },
+      ],
+      duration: 4,
+      conditions: { distance_type: 4, straight_random: 1 },
+    },
+    {
+      variants: [
         { rarity: "double", id: 201241, name: "逃げ直線◎", targetSpeed: 0.25 },
         {
           rarity: "normal",
@@ -2548,6 +2569,13 @@ function normalSkillData(thiz) {
           name: "瑠璃色エスケイプ",
           targetSpeed: 0.45,
         },
+        {
+          rarity: "evo",
+          id: 110701111,
+          holder: 110701,
+          name: "Breakaway Star",
+          targetSpeed: 0.45,
+        },
         { rarity: "rare", id: 200541, name: "脱出術", targetSpeed: 0.35 },
         {
           rarity: "normal",
@@ -2584,6 +2612,13 @@ function normalSkillData(thiz) {
           name: "真夏の思い切り",
           targetSpeed: 0.35,
           duration: 4,
+        },
+        {
+          rarity: "evo",
+          id: 108801111,
+          holder: 100881,
+          name: "アンビシャスカード",
+          targetSpeed: 0.45,
         },
         { rarity: "rare", id: 200591, name: "迅速果断", targetSpeed: 0.35 },
         {
@@ -3322,7 +3357,25 @@ function normalSkillData(thiz) {
       ],
       duration: 3,
       conditions: { distance_type: 4, phase_random: 2 },
-      tooltip: "「終盤前半のどこか」として扱う",
+      tooltip: "종반 전반부 어딘가에서 발동하는 것으로 처리",
+    },
+    {
+      variants: [
+        {
+          rarity: "evo",
+          id: 107402211,
+          holder: 107402,
+          name: "雪華の追い上げ",
+          speedWithDecel: 0.35,
+        },
+
+      ],
+      duration: 5,
+      conditions: {
+        distance_type: 4,
+        phase: 2,
+        base_stamina: 1200,
+      },
     },
     {
       variants: [
@@ -3496,6 +3549,13 @@ function normalSkillData(thiz) {
           id: 102101211,
           holder: 102101,
           name: "尻尾の有頂天",
+          targetSpeed: 0.45,
+        },
+        {
+          rarity: "evo",
+          id: 110701211,
+          holder: 110701,
+          name: "Smooth Sailing!",
           targetSpeed: 0.45,
         },
         { rarity: "rare", id: 201612, name: "尻尾の滝登り", targetSpeed: 0.35 },
@@ -3811,6 +3871,18 @@ function normalSkillData(thiz) {
           },
         },
         {
+          rarity: "evo",
+          id: 103902211,
+          holder: 103902,
+          name: "爆走猛姫☆急転直下！！",
+          targetSpeed: 0.35,
+          acceleration: 0.2,
+          conditions: {
+            distance_type: [2, 3],
+            down_slope_random: 1,
+          },
+        },
+        {
           rarity: "rare",
           id: 202171,
           name: "至高のダウンヒラー",
@@ -4084,6 +4156,13 @@ function normalSkillData(thiz) {
           id: 100802211,
           holder: 100802,
           name: "最速のトップギア",
+          targetSpeed: 0.55,
+        },
+        {
+          rarity: "evo",
+          id: 103902111,
+          holder: 103902,
+          name: "トップ・オブ・ザ・姫！",
           targetSpeed: 0.55,
         },
         {
@@ -4855,6 +4934,27 @@ function normalSkillData(thiz) {
         },
         {
           rarity: "evo",
+          id: 100303111,
+          holder: 100303,
+          name: "天賦の身ごなし",
+          acceleration : 0.5,
+          invoke:[
+            {
+              invokeNo: 1,
+              acceleration: 0.5,
+            },
+            {
+              invokeNo: 2,
+              duration: 1.8,
+              conditions: {
+                running_style: 2,
+                course_distance_range: [2400, 2500],
+              },
+            },
+          ],
+        },
+        {
+          rarity: "evo",
           id: 109301211,
           holder: 109301,
           name: "命の火花",
@@ -4949,6 +5049,24 @@ function normalSkillData(thiz) {
       ],
       duration: 1.8,
       conditions: { distance_type: 3, phase_firsthalf_random: 2 },
+    },
+    {
+      variants: [
+        {
+          rarity: "evo",
+          id: 108801211,
+          holder: 100881,
+          name: "ミリオンカード",
+          acceleration: 0.5,
+          heal: -200
+        },
+      ],
+      duration: 1.8,
+      conditions: { 
+        distance_type: 3, 
+        phase_firstquarter_random: 2,
+        course_distance_range: [2200,2400]
+      },
     },
     {
       variants: [
@@ -5658,6 +5776,7 @@ function normalSkillData(thiz) {
       variants: [{ rarity: "all", id: -201221, name: "スタミナグリード", fatigue: 100 }],
       conditions: { distance_type: 4, phase_random: 1 },
     },
+    
     {
       variants: [
         {
@@ -6212,10 +6331,37 @@ function normalSkillData(thiz) {
           name: "陽の加護",
           targetSpeed: 0.15 * 1.15,
         },
+
       ],
       duration: 1.8,
       conditions: { phase_random: 1 },
-      tooltip: "1.15倍(スキル15個)、中盤ランダムとして扱う",
+      tooltip: "1.15배(스킬 15개), 중반 랜덤으로 처리",
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 202792,
+          name: "中盤巧者",
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 1.8,
+      conditions: { phase_random: 1 },
+      tooltip: "",
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 202802,
+          name: "序盤巧者",
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 1.8,
+      conditions: { phase_laterhalf_random: 0 },
+      tooltip: "",
     },
     {
       variants: [
@@ -6380,6 +6526,23 @@ function normalSkillData(thiz) {
     {
       variants: [
         {
+          rarity: "evo",
+          id: 107402111,
+          holder: 107402,
+          name: "聖夜の天路",
+          targetSpeed: 0.25,
+        },
+      ],
+      duration: 5,
+      conditions: {
+        running_style: 3,
+        phase_random: 1,
+        base_stamina: 1200,
+      },
+    },
+    {
+      variants: [
+        {
           rarity: "rare",
           id: 202661,
           name: "昂る鼓動",
@@ -6450,6 +6613,24 @@ function normalSkillData(thiz) {
       conditions: {
         distance_type: 4,
         phase_random: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "evo",
+          id: 106402211,
+          holder: 106402,
+          name: "メリ☆クリ↑パーリー",
+          targetSpeed: 0.45,
+          heal: 550,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        distance_type: 4,
+        phase_random: 1,
+        is_used_skill_id: 202051,
       },
     },
     {
@@ -6676,6 +6857,7 @@ function normalSkillData(thiz) {
         phase_random: 1,
       },
     },
+    //20250217 이후 스킬추가
     {
       variants: [
         {
@@ -6690,6 +6872,48 @@ function normalSkillData(thiz) {
         running_style: 2,
         distance_type: 4,
         phase_firstquarter_random: 2,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 202751,
+          name: "気骨稜稜",
+          targetSpeed: 0.35,
+        },
+        {
+          rarity: "normal",
+          id: 202752,
+          name: "ひたむき前進",
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        running_style: 2,
+        distance_type: 1
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 202761,
+          name: "かっとばせ！",
+          targetSpeed: 0.25,
+        },
+        {
+          rarity: "normal",
+          id: 202762,
+          name: "勝利に向かって",
+          targetSpeed: 0.05,
+        },
+      ],
+      duration: 4,
+      conditions: {
+        running_style: 2,
+        phase_random: 1
       },
     },
     // End of normal skills
@@ -8729,14 +8953,104 @@ const uniqueSkillData = (thiz) => [
     },
     tooltip: "0.45로 즉시 발동 처리",
   },
-  {
+  //20250217 이후 스킬추가
+    {
     id: 100861,
     holder: 108601,
-    name: "愛と熔けよただ熔けよ",
+    name: "愛と熔けよただ熔けよ",//라모누
     duration: 5,
     targetSpeed: 0.35,
     conditions: {
       remain_distance: [999, 1001],
+    },
+  },
+  {
+    id: 120031,
+    holder: 100303,
+    name: "歌舞歓楽や、ああをかし",//축제테이오
+    duration: 5,
+    targetSpeed: 0.35,
+    speedWithDecel: 0.15,
+    conditions: {
+      phase: ">=2",
+      is_finalcorner_laterhalf :1,
+      course_distance_range: [2400, 2500],
+    },
+  },
+  {
+    id: 110391,
+    holder: 103902,
+    name: "快なる剛力",//축제카와카미
+    duration: 5,
+    targetSpeed: 0.35,
+    conditions: {
+      phase: ">=1",
+      slope: 1,
+    },
+  },
+  {
+    id: 101071,
+    holder: 110701,
+    name: "Billions of stars",//탭댄스시티
+    duration: 5,
+    targetSpeed: 0.25,
+    conditions: {
+      phase: ">=2",
+      is_last_straight: 1,
+    },
+  },
+  {
+    id: 110641,
+    holder: 106402,
+    name: "jingle all the way",//클파머
+    duration: 7,
+    targetSpeed: 0.25,
+    acceleration: 0.1,
+    conditions: {
+      distance_rate: ">=50",
+      corner: 0,
+      track_id: 10005,
+      
+    },
+    tooltip: "나카야마 대도주일때 발동",
+  },
+  {
+    id: 110741,
+    holder: 107402,
+    name: "Illuminate you",//클브라이트
+    invokes: [
+      {
+        invokeNo: 1,
+        speed: -0.15,
+        duration: 1.2,
+        heal: 750,
+        conditions: {
+          phase: 1,
+        },
+      },
+      {
+        invokeNo: 2,
+        speedWithDecel: 0.15,
+        duration: 8,
+        conditions: {
+          phase: ">=2",
+          base_stamina: 1200
+        },
+      },
+    ],
+    type: "speed"
+  },
+  {
+    id: 100881,
+    holder: 100881,
+    name: "Reversal Illusion",//사토노 크라운
+    duration: 5,
+    targetSpeed: 0.45,
+    conditions: {
+      distance_type: 3,
+      remain_distance: [399, 401],
+      is_finalcorner: 1,
+      corner: 1
     },
   },
   // End of unique skills
