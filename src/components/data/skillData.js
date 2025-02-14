@@ -5051,11 +5051,23 @@ function normalSkillData(thiz) {
           id: 108801211,
           holder: 100881,
           name: "ミリオンカード",
-          acceleration: 0.5,
-          heal: -200
+          invokes: [
+            {
+              invokeNo: 1,
+              acceleration: 0.4,
+            },
+            {
+              invokeNo: 2,
+              acceleration: 0.5,
+              conditions: {
+                course_distance_range: [2200,2400],
+              },
+            },
+          ],
         },
       ],
       duration: 1.8,
+      type: "acceleration",
       conditions: { distance_type: 3, phase_firsthalf_random: 2 },
     },
     // {
@@ -6901,27 +6913,6 @@ function normalSkillData(thiz) {
       conditions: {
         running_style: 2,
         distance_type: 1
-      },
-    },
-    {
-      variants: [
-        {
-          rarity: "rare",
-          id: 202761,
-          name: "かっとばせ！",
-          targetSpeed: 0.25,
-        },
-        {
-          rarity: "normal",
-          id: 202762,
-          name: "勝利に向かって",
-          targetSpeed: 0.05,
-        },
-      ],
-      duration: 4,
-      conditions: {
-        running_style: 2,
-        phase_random: 1
       },
     },
     // End of normal skills
