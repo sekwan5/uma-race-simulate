@@ -494,6 +494,8 @@ export default {
 					return () => thiz.isGroundCondition(value);
 				case "distance_type":
 					return () => thiz.isDistanceType(value);
+				case "ex_distance_type":
+					return () => !thiz.isDistanceType(value);
 				case "track_id":
 					return () => thiz.isTrackId(value);
 				case "is_used_skill_id":
@@ -599,6 +601,8 @@ export default {
 					return () => thiz.courseLength == value;
 				case "course_distance_range":
 					return () => thiz.courseLength >= value[0] && thiz.courseLength <= value[1];
+				case "ex_course_distance_range":
+					return () => thiz.courseLength < value[0] || thiz.courseLength > value[1];
 				case "compete_fight_count":
 					return () => thiz.compete_fight_count >= value;
 				default:
