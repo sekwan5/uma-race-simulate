@@ -2052,6 +2052,12 @@ function normalSkillData(thiz) {
     {
       variants: [
         {
+          rarity: "rare",
+          id: 200973,
+          name: "紫電円刃",
+          targetSpeed: 0.35,
+        },
+        {
           rarity: "double",
           id: 200971,
           name: "短距離コーナー◎",
@@ -2620,6 +2626,13 @@ function normalSkillData(thiz) {
           name: "アンビシャスカード",
           targetSpeed: 0.45,
         },
+        {
+          rarity: "evo",
+          id: 105401111,
+          holder: 105401,
+          name: "急行！ヒーロー参上！",
+          targetSpeed: 0.45,
+        },
         { rarity: "rare", id: 200591, name: "迅速果断", targetSpeed: 0.35 },
         {
           rarity: "normal",
@@ -2847,6 +2860,14 @@ function normalSkillData(thiz) {
           targetSpeed: 0.35,
           acceleration: 0.1,
           duration: 4,
+        },
+        {
+          rarity: "evo",
+          id: 105401211,
+          holder: 105401,
+          name: "必殺・雷電キーック！",
+          targetSpeed: 0.35,
+          acceleration: 0.2,
         },
         {
           rarity: "rare",
@@ -3897,6 +3918,18 @@ function normalSkillData(thiz) {
           },
         },
         {
+          rarity: "evo",
+          id: 109101111,
+          holder: 109101,
+          name: "天来のリトルシスター",//하늘에서 내려온 리틀 시스터
+          targetSpeed: 0.35,
+          acceleration: 0.2,
+          conditions: {
+            distance_type: [2, 3],
+            down_slope_random: 1,
+          },
+        },
+        {
           rarity: "rare",
           id: 202171,
           name: "至高のダウンヒラー",
@@ -4062,6 +4095,13 @@ function normalSkillData(thiz) {
           name: "眩耀のルクシオン",
           targetSpeed: 0.45,
           tooltip: "0.45扱い",
+        },
+        {
+          rarity: "evo",
+          id: 102902111,
+          holder: 102902,
+          name: "もうひとけっぱり！",//좀 더 힘내봐유!
+          targetSpeed: 0.45,
         },
         {
           rarity: "rare",
@@ -4257,6 +4297,14 @@ function normalSkillData(thiz) {
           name: "怪物的コーナリング",
           acceleration: 0.4,
           heal: 150,
+        },
+        {
+          rarity: "evo",
+          id: 102902211,
+          holder: 102902,
+          name: "曲線に舞う深雪",//곡선에 내리는 눈
+          acceleration: 0.4,
+          targetSpeed: 0.15,
         },
         {
           rarity: "rare",
@@ -4483,6 +4531,25 @@ function normalSkillData(thiz) {
           id: 100703111,
           holder: 100703,
           name: "押し寄せるジュテーム",
+          invokes: [
+            {
+              invokeNo: 1,
+              acceleration: 0.4,
+              duration: 0.9,
+            },
+            {
+              invokeNo: 2,
+              targetSpeed: 0.15,
+              duration: 3,
+              conditions: { running_style: 4, is_last_straight: 1 },
+            },
+          ],
+        },
+        {
+          rarity: "evo",
+          id: 102502111,
+          holder: 102502,
+          name: "迫りくる宵闇",//다가오는 땅거미
           invokes: [
             {
               invokeNo: 1,
@@ -5349,6 +5416,15 @@ function normalSkillData(thiz) {
             is_finalcorner_random: 1,
             track_id: 10006,
           },
+        },
+        {
+          rarity: "evo",
+          id: 109101211,
+          holder: 109101,
+          name: "ハイソ・メンタリティ！",//하이 소사이어티・멘탈리티!
+          targetSpeed: 0.35,
+          acceleration: 0.1,
+          duration: 4,
         },
         {
           rarity: "rare",
@@ -6422,6 +6498,18 @@ function normalSkillData(thiz) {
     {
       variants: [
         {
+          rarity: "rare",
+          id: 202801,
+          name: "機先の勝負",//기선잡기 승부
+          targetSpeed: 0.35,
+        },
+        {
+          rarity: "rare",
+          id: 202801,
+          name: "キラメキの勝負",//반짝이는 승부
+          targetSpeed: 0.35,
+        },
+        {
           rarity: "normal",
           id: 202802,
           name: "序盤巧者",
@@ -7055,12 +7143,14 @@ function normalSkillData(thiz) {
             {
               targetSpeed: 0.25,
               conditions: {
+                ground_type: 2,
                 phase: 1
               },
             },
             {
               speedWithDecel: 0.25,
               conditions: {
+                ground_type: 2,
                 phase: ">=2"
               },
             },
@@ -7074,12 +7164,14 @@ function normalSkillData(thiz) {
             {
               targetSpeed: 0.05,
               conditions: {
+                ground_type: 2,
                 phase: 1
               },
             },
             {
               speedWithDecel: 0.05,
               conditions: {
+                ground_type: 2,
                 phase: ">=2"
               },
             },
@@ -7087,6 +7179,7 @@ function normalSkillData(thiz) {
         },
       ],
       duration: 2.4,
+      type: "speed",
       conditions: {
         ground_type: 2,
       },
@@ -7104,6 +7197,161 @@ function normalSkillData(thiz) {
         ground_type: 2,
         phase_random: 1
       },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 202851,
+          name: "一網打尽",//일망타진
+          speedWithDecel: 0.35,
+        },
+        {
+          rarity: "normal",
+          id: 202852,
+          name: "ごぼう抜き",
+          speedWithDecel: 0.15,
+        },
+        {
+          rarity: "evo",
+          id: 102502211,
+          holder: 102502,
+          name: "玄界領域",//현해 영역
+          duration: 3,
+          speedWithDecel: 0.45,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        distance_type: 4,
+        running_style: 4,
+        phase_firsthalf_random: 2,
+        lastspurt: 2
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 202861,
+          name: "ロケットスタート",//로켓 스타트
+          acceleration: 0.4,
+        },
+        {
+          rarity: "normal",
+          id: 202862,
+          name: "急発進",
+          acceleration: 0.2,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        distance_type: 1,
+        phase: 0,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 202871,
+          name: "君臨",//군림
+          acceleration: 0.4,
+        },
+        {
+          rarity: "normal",
+          id: 202872,
+          name: "渾身の足取り",
+          acceleration: 0.2,
+        },
+      ],
+      duration: 0.9,
+      conditions: {
+        distance_type: 3,
+        running_style: 4,
+        phase: ">=2",
+        is_finalcorner: 1,
+        corner: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 210301,
+          name: "爆熱のキラメキ！",//폭열의 반짝임!
+          targetSpeed: 0.35 * 1.15,
+        },
+        {
+          rarity: "normal",
+          id: 210302,
+          name: "渾身の足取り",
+          targetSpeed: 0.15 * 1.15,
+        },
+      ],
+      duration: 1.8,
+      conditions: {
+        distance_type: [2, 3],
+        phase_random: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 202882,
+          name: "たぎる血潮",//끓어오르는 피
+          targetSpeed: 0.25,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        running_style: 4,
+        is_last_straight: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 202932,
+          name: "影踏み",//그림자밟기
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        running_style: 4,
+        distance_rate: ">=50",
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 210311,
+          name: "アスリート魂",//애슬리트 혼
+          invokes: [
+            {
+              speedWithDecel: 0.15,
+            },
+            {
+              speedWithDecel: 0.25,
+              conditions: {
+                distance_type: [2, 3],
+                distance_rate_after_random: 50,
+                base_guts: 1200,
+              },
+            },
+          ],
+        },
+      ],
+      conditions: {
+        distance_type: [2, 3],
+        distance_rate_after_random: 50,
+      },
+      duration: 1.2,
+      type: "speed",
     },
     // End of normal skills
   ];
@@ -9234,13 +9482,29 @@ const uniqueSkillData = (thiz) => [
     holder: 100881,
     name: "Reversal Illusion",//사토노 크라운
     duration: 5,
-    targetSpeed: 0.45,
-    conditions: {
-      distance_type: 3,
-      remain_distance: [399, 401],
-      is_finalcorner: 1,
-      corner: 1
-    },
+    invokes: [
+      {
+        invokeNo: 1,
+        targetSpeed: 0.45,
+        conditions: {
+          is_finalcorner: 1,
+          corner: 1,
+          remain_distance: [399, 401],
+          distance_type: 3,
+        },
+      },
+      {
+        invokeNo: 2,
+        targetSpeed: 0.35,
+        conditions: {
+          is_finalcorner: 1,
+          corner: 1,
+          remain_distance: [399, 401],
+          ex_distance_type: 3,
+        },
+      },
+    ],
+    type: "speed"
   },
   {
     id: 100891,
@@ -9321,9 +9585,9 @@ const uniqueSkillData = (thiz) => [
     ],
     type: "speed"
   },
-    {
+  {
     id: 100911,
-    holder: 100911,
+    holder: 109101,
     name: "デラックス☆ファウンテン",//비블로스
     duration: 5,
     type: "speed",
@@ -9346,6 +9610,109 @@ const uniqueSkillData = (thiz) => [
         },
       },
     ],
+  },
+  {
+    id: 110251,
+    holder: 102502,
+    name: "心からのおもてにゃし",//카페(발렌타인)
+    duration: 5,
+    invokes: [
+      {
+        invokeNo: 1,
+        speedWithDecel: 0.35,
+        conditions: {
+          distance_rate: ">=50",
+          phase: ">=2",
+          is_finalcorner: 1,
+          distance_type: 4,
+        },
+      },
+      {
+        invokeNo: 2,
+        targetSpeed: 0.25,
+        conditions: {
+          distance_rate: ">=50",
+          phase: ">=2",
+          is_finalcorner: 1,
+          ex_distance_type: 4,
+        },
+      },
+    ],
+    type: "speed"
+  },
+  {
+    id: 110291,
+    holder: 102902,
+    name: "いっぱいおあげんしぇ！",//비진(발렌타인)
+    duration: 4,
+    invokes: [
+      {
+        invokeNo: 1,
+        targetSpeed: 0.45,
+        conditions: {
+          distance_rate_random: [45, 55],
+          distance_type: 2,
+        },
+      },
+      {
+        invokeNo: 2,
+        targetSpeed: 0.35,
+        conditions: {
+          distance_rate_random: [45, 55],
+          ex_distance_type: 2,
+        },
+      },
+    ],
+    type: "speed"
+  },
+  {
+    id: 100541,
+    holder: 100541,
+    name: "疾風爆走ペガサスダッシュ！",//비코 페가수스
+    duration: 4,
+    targetSpeed: 0.45,
+    conditions: {
+      distance_rate: ">=50",
+      remain_distance: [149, 151],
+      temptation_count: 0
+    },
+  },
+  {
+    id: 100631,
+    holder: 100631,
+    name: "百錬成鋼",//이쿠노 딕터스
+    duration: 6,
+    targetSpeed: 0.25,
+    conditions: {
+      phase: 3,
+      is_lastspurt: 1,
+      temptation_count: 0
+    },
+  },
+  {
+    id: 101081,
+    holder: 110801,
+    name: "羅刹、赤翼にて天上へ至らん",//두라
+    invokes: [
+      {
+        invokeNo: 1,
+        targetSpeed: 0.35,
+        conditions: {
+          distance_rate_random: [50, 51],
+          distance_type: 2,
+        },
+      },
+      {
+        invokeNo: 2,
+        speedWithDecel: 0.15,
+        conditions: {
+          phase: ">=2",
+          is_finalcorner: 1,
+          corner: 1,
+        },
+      },
+    ],
+    type: "speed"
   },
   // End of unique skills
 ];

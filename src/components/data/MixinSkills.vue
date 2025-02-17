@@ -597,6 +597,8 @@ export default {
 					return () => thiz.umaStatus.power >= value;
 				case "base_wiz":
 					return () => thiz.umaStatus.wisdom >= value;
+				case "base_guts":
+					return () => thiz.umaStatus.guts >= value;
 				case "course_distance":
 					return () => thiz.courseLength == value;
 				case "course_distance_range":
