@@ -498,6 +498,8 @@ export default {
 					return () => !thiz.isDistanceType(value);
 				case "track_id":
 					return () => thiz.isTrackId(value);
+				case "ex_track_id":
+					return () => !thiz.isTrackId(value);
 				case "is_used_skill_id":
 					return () => thiz.isUsedSkillId(value);
 				case "is_basis_distance":
