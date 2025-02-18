@@ -1030,6 +1030,7 @@ function normalSkillData(thiz) {
           id: 105802211,
           holder: 105802,
           name: "魂の導き手",
+          duration: 3,
           heal: 550,
           targetSpeed: 0.15,
         },
@@ -1085,6 +1086,16 @@ function normalSkillData(thiz) {
           id: 100801111,
           holder: 100801,
           name: "スキットルブレイク",
+          duration: 3,
+          heal: 550,
+          targetSpeed: 0.15,
+        },
+        {
+          rarity: "evo",
+          id: 110201111,
+          holder: 110201,
+          name: "カエスーラ",
+          duration: 3,
           heal: 550,
           targetSpeed: 0.15,
         },
@@ -2920,10 +2931,17 @@ function normalSkillData(thiz) {
           targetSpeed: 0.45,
         },
         {
+          rarity: "evo",
+          id: 106502211,
+          holder: 106502,
+          name: "マイル神、爆☆誕",
+          targetSpeed: 0.45,
+        },
+        {
           rarity: "rare",
           id: 200681,
           name: "マイルの支配者",
-          targetSpeed: 0.35,
+          targetSpeed: 0.45,
         },
         {
           rarity: "normal",
@@ -3859,6 +3877,33 @@ function normalSkillData(thiz) {
           targetSpeed: 0.45,
         },
         {
+          rarity: "evo",
+          id: 103503111,
+          holder: 103503,
+          name: "全・力・ワク・ワク！！",
+          targetSpeed: 0.45,
+          invokes: [
+            {
+              invokeNo: 1,
+              targetSpeed: 0.45,
+              conditions: { 
+                distance_type: 3,
+                phase_random: 1,
+                course_distance: 2400,
+              } 
+            },
+            {
+              invokeNo: 2,
+              targetSpeed: 0.35,
+              conditions: { 
+                distance_type: 3,
+                phase_random: 1,
+                ex_course_distance_range: [2400, 2400] 
+              } 
+            },
+          ],
+        },
+        {
           rarity: "rare",
           id: 202101,
           name: "高揚感",
@@ -4152,6 +4197,13 @@ function normalSkillData(thiz) {
           targetSpeed: 0.45,
         },
         {
+          rarity: "evo",
+          id: 104503111,
+          holder: 104503,
+          name: "流水流走",
+          targetSpeed: 0.45,
+        },
+        {
           rarity: "rare",
           id: 202371,
           name: "アンストッパブル",
@@ -4293,6 +4345,13 @@ function normalSkillData(thiz) {
           name: "BLAZING WOLF",
           targetSpeed: 0.35,
           duration: 4,
+        },
+        {
+          rarity: "evo",
+          id: 107202211,
+          holder: 107202,
+          name: "無双の追撃",
+          targetSpeed: 0.45,
         },
         { rarity: "rare", id: 202471, name: "猛追", targetSpeed: 0.35 },
         {
@@ -4443,6 +4502,13 @@ function normalSkillData(thiz) {
           id: 110401111,
           holder: 110401,
           name: "してやったり！",
+          acceleration: 0.5,
+        },
+        {
+          rarity: "evo",
+          id: 106502111,
+          holder: 106502,
+          name: "トレンド先取り☆",
           acceleration: 0.5,
         },
         { rarity: "rare", id: 200531, name: "先手必勝", acceleration: 0.4 },
@@ -5334,6 +5400,19 @@ function normalSkillData(thiz) {
           tooltip: "速度デバフは-0.15。",
         },
         {
+          rarity: "evo",
+          id: 108502111,
+          holder: 108502,
+          name: "霹靂閃電",
+          acceleration: 0.4,
+          conditions: {
+            distance_type: 2,
+            running_style: 3,
+            phase: ">=2",
+            distance_rate: "<=75",
+          },
+        },
+        {
           rarity: "rare",
           id: 202401,
           name: "電光石火",
@@ -5358,6 +5437,13 @@ function normalSkillData(thiz) {
           holder: 101602,
           name: "渇望する怪物",
           acceleration: 0.5,
+        },
+        {
+          rarity: "evo",
+          id: 104503211,
+          holder: 104503,
+          name: "神仙蝶変の術",
+          acceleration: 0.4,
         },
         { rarity: "rare", id: 202481, name: "怪物", acceleration: 0.4 },
         {
@@ -6473,6 +6559,14 @@ function normalSkillData(thiz) {
           tooltip: "디버프는 앞뒤 각 3명에게 적용、-0.15。",
         },
         {
+          rarity: "evo",
+          id: 110201211,
+          holder: 110201,
+          name: "トライアンフ",
+          targetSpeed: 0.45,
+          conditions: { running_style: 3, phase_laterhalf_random: 1 },
+        },
+        {
           rarity: "rare",
           id: 202541,
           name: "威風堂々",
@@ -6770,6 +6864,13 @@ function normalSkillData(thiz) {
           targetSpeed: 0.35,
         },
         {
+          rarity: "evo",
+          id: 103503211,
+          holder: 103503,
+          name: "Dreamer's Path",
+          targetSpeed: 0.35,
+        },
+        {
           rarity: "normal",
           id: 202641,
           name: "千里の道",
@@ -6954,8 +7055,28 @@ function normalSkillData(thiz) {
           name: "会心の一歩",
           acceleration: 0.2,
         },
+        {
+          rarity: "evo",
+          id: 107202111,
+          holder: 107202,
+          name: "将の疾刃",
+          invokes: [
+            {
+              acceleration: 0.4,
+            },
+            {
+              targetSpeed: 0.15,
+              duration: 3,
+              conditions: {
+                is_lastspurt: 1,
+                phase_firsthalf_random:3
+              },
+            },
+          ],
+        },
       ],
       duration: 0.9,
+      type: "acceleration",
       conditions: {
         running_style: [2, 3],
         phase: ">=2",
@@ -7530,11 +7651,88 @@ function normalSkillData(thiz) {
           name: "滾る想い",
           targetSpeed: 0.15,
         },
+        {
+          rarity: "evo",
+          id: 108502211,
+          holder: 108502,
+          name: "灰と化すまで",
+          targetSpeed: 0.35,
+          duration: 4,
+        },
       ],
       duration: 2.4,
       conditions: {
         distance_type: 2,
         phase_laterhalf_random: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "rare",
+          id: 202901,
+          name: "飛翔脚",//비상각
+          targetSpeed: 0.35,
+        },
+        {
+          rarity: "normal",
+          id: 202902,
+          name: "推力十分",
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        running_style: 4,
+        phase_laterhalf_random: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 202942,
+          name: "鬼気迫って",//소름 끼치게
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 1.8,
+      conditions: {
+        distance_type: 3,
+        running_style: 4,
+        phase_random: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 202922,
+          name: "惜しみなし",//아쉬움 없음
+          targetSpeed: 0.25,
+          heal: -200,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        running_style: 4,
+        phase_random: 1,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "normal",
+          id: 202922,
+          name: "好機を捉えて",//좋은 기회를 붙잡고서
+          acceleration: 0.2,
+        },
+      ],
+      duration: 1.2,
+      conditions: {
+        running_style: 4,
+        distance_type: 4,
+        phase_firstquarter_random :2
       },
     },
     // End of normal skills
@@ -9881,6 +10079,7 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 1,
         targetSpeed: 0.35,
+        duration: 5,
         conditions: {
           distance_rate_random: [50, 51],
           distance_type: 2,
@@ -9889,6 +10088,7 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 2,
         speedWithDecel: 0.15,
+        duration: 3,
         conditions: {
           phase: ">=2",
           is_finalcorner: 1,
@@ -9943,8 +10143,8 @@ const uniqueSkillData = (thiz) => [
       },
       {
         invokeNo: 2,
-        targetSpeed: 0.05,
-        duration: 3.6,
+        targetSpeed: 0.25,
+        duration: 5,
         conditions: {
           ex_distance_type: [1, 2],
           distance_rate: "<=50",
@@ -9971,7 +10171,7 @@ const uniqueSkillData = (thiz) => [
       },
       {
         invokeNo: 2,
-        targetSpeed: 0.25,
+        targetSpeed: 0.35,
         duration: 3,
         conditions: {
           ex_distance_type: 2,
@@ -9989,6 +10189,7 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 1,
         targetSpeed: 0.35,
+        duration: 6,
         conditions: {
           distance_type: 2,
           distance_rate: [45, 50],
@@ -9996,8 +10197,8 @@ const uniqueSkillData = (thiz) => [
       },
       {
         invokeNo: 2,
-        targetSpeed: 0.15,
-        duration: 3.6,
+        targetSpeed: 0.25,
+        duration: 5,
         conditions: {
           ex_distance_type: 2,
           distance_rate: [45, 50],
@@ -10005,6 +10206,96 @@ const uniqueSkillData = (thiz) => [
       },
     ],
     type: "speed"
+  },
+  {
+    id: 120351,
+    holder: 103503,
+    name: "GO! Full-send",//위닝티켓 (uaf)
+    invokes: [
+      {
+        invokeNo: 1,
+        targetSpeed: 0.35,
+        duration: 6,
+        conditions: {
+          phase_random: 1,
+          corner: 3,
+          course_distance: 2400,
+        },
+      },
+      {
+        invokeNo: 2,
+        targetSpeed: 0.35,
+        duration: 4,
+        conditions: {
+          phase_random: 1,
+          corner: 3,
+          ex_course_distance_range: [2400, 2400],
+        },
+      },
+    ],
+    type: "speed"
+  },
+  {
+    id: 101021,
+    holder: 101021,
+    name: "ヴィヴァーチェ・ヴォラーレ",//사운즈 오브 어스
+    invokes: [
+      {
+        invokeNo: 1,
+        heal: 150,
+        conditions: {
+          distance_rate: "<=50",
+        },
+      },
+      {
+        invokeNo: 2,
+        targetSpeed: 0.45,
+        duration: 4,
+        conditions: {
+          distance_rate: [45, 60],
+          corner: 0,
+        },
+      },
+    ],
+    type: "speed"
+  },
+  {
+    id: 120451,
+    holder: 104503,
+    name: "忍法・ほほえみ心結の印",//슈퍼 크릭 (Warfare)
+    invokes: [
+      {
+        invokeNo: 1,
+        heal: 550,
+        targetSpeed: 0.25,
+        duration: 6,
+        conditions: {
+          phase: 1,
+          corner: 1,
+          distance_type:[3, 4]
+        },
+      },
+      {
+        invokeNo: 2,
+        heal:550,
+        conditions: {
+          phase: 1,
+          corner: 1,
+          ex_distance_type:[3, 4]
+        },
+      },
+    ],
+    type: "speed"
+  },
+  {
+    id: 110721,
+    holder: 107202,
+    name: "剛勇果断、烈火之刀",//야에노 무테키 (Warfare)
+    duration: 5,
+    targetSpeed: 0.45,
+    conditions: {
+      distance_rate_after_random: 50,
+    },
   },
   
   // End of unique skills
