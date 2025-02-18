@@ -52,6 +52,10 @@ export default {
 					content: "마신표 제작시 고유기 초기화 변수 수정",
 					timestamp: "2025-02-10",
 				},
+				{
+					content: "~2025.08.19 출시스킬 추가",
+					timestamp: "2025-02-18",
+				},
 			],
 		};
 	},
