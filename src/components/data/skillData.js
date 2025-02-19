@@ -1588,6 +1588,7 @@ function normalSkillData(thiz) {
           name: "盤楽遊嬉",
           heal: 350,
           targetSpeed: 0.25,
+          conditions: { running_style: 2, phase_laterhalf_random: 1 }
         },
         { rarity: "rare", id: 200561, name: "余裕綽々", heal: 550 },
         {
