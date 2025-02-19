@@ -9137,6 +9137,24 @@ const uniqueSkillData = (thiz) => [
     acceleration: 0.1,
     duration: 5,
     tooltip: "常に東京として扱う。分ける実装面倒すぎぃ！",
+    invokes: [
+      {
+        acceleration: 0.1,
+        targetSpeed: 0.35,
+        duration: 5,
+        conditions: {
+          track_id: 10006,
+        },
+      },
+      {
+        targetSpeed: 0.35,
+        duration: 4,
+        conditions: {
+          ex_track_id: 10006,
+        },
+      },
+    ],
+    type: "speed",
     check: function (startPosition) {
       return thiz.isInSlope("down", startPosition) && !thiz.isInSlope("down") && thiz.phase >= 1;
     },
