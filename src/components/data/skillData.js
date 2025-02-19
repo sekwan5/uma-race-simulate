@@ -9863,7 +9863,7 @@ const uniqueSkillData = (thiz) => [
         duration: 1.2,
         heal: 750,
         conditions: {
-          phase: 1,
+          phase_random: 1,
         },
       },
       {
