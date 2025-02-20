@@ -237,6 +237,7 @@ export default {
 				}
 
 				// 進化スキルはエミュ種類以外では無条件で表示
+				// 진화 스킬은 에뮬레이터 타입을 제외하고는 항상 표시
 				if (skill.rarity === "evo") {
 					if (skill.holder == null) {
 						console.error(`No holder in ${JSON.stringify(skill)}`);

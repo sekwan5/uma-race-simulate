@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import locale from 'element-ui/lib/locale/lang/ko'
 import VueGtag from "vue-gtag"
 import Ads from 'vue-google-adsense'
 import AdFit from 'vue-adfit-component'
@@ -13,7 +14,7 @@ import PluginUtils from "@/components/plugins/PluginUtils";
 
 Vue.config.productionTip = false
 
-Vue.use(ElementUI)
+Vue.use(ElementUI, { locale })
 Vue.use(VueGtag, {
     config: {id: "G-TQ83VX9F79"}
 });
