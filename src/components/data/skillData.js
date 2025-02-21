@@ -8790,12 +8790,30 @@ const uniqueSkillData = (thiz) => [
     id: 100311,
     holder: 103101,
     name: "チャージ完了！全速前進！",
-    targetSpeed: 0.45,
-    duration: 5,
-    tooltip: "東京時、1～2位",
-    check: function (startPosition) {
-      return startPosition <= thiz.toPosition(300) && thiz.position >= thiz.toPosition(300);
-    },
+    invokes: [
+      {
+        invokeNo: 1,
+        targetSpeed: 0.45,
+        duration: 5,
+        conditions: {
+          remain_distance: [295, 299],
+          slope: [0, 2],
+          pre_conditions: {
+            remain_distance: [300, 305],
+            slope: 1
+          }
+        }
+      },
+      {
+        invokeNo: 2,
+        targetSpeed: 0.25,
+        duration: 5,
+        conditions: {
+          remain_distance: [295, 299],
+        }
+      }
+    ],
+    type: "speed"
   },
   {
     id: 100641,

@@ -409,7 +409,6 @@ export default {
 		 * check or randoms.
 		 */
 		checkCondition(skill, cond, value) {
-			console.log("skill", skill, "cond", cond, "value", value);
 			const thiz = this;
 			switch (cond) {
 				case "motivation":
@@ -473,6 +472,9 @@ export default {
 				case "all_corner_random":
 					return this.initAllCornerRandom();
 				case "slope":
+					if (Array.isArray(value)) {
+						return () => value.some((v) => thiz.isInSlope(["", "up", "down"][v]));
+					}
 					return () => thiz.isInSlope(["", "up", "down"][value]);
 				case "up_slope_random":
 					return this.initSlopeRandom("up");
@@ -610,6 +612,20 @@ export default {
 					return () => thiz.courseLength < value[0] || thiz.courseLength > value[1];
 				case "compete_fight_count":
 					return () => thiz.compete_fight_count >= value;
+				case "pre_conditions":
+					return () => {
+						for (const [key, val] of Object.entries(value)) {
+							const check = thiz.checkCondition(skill, key, val);
+							if (typeof check === "function") {
+								if (!check()) return false;
+							} else if (Array.isArray(check)) {
+								if (!check.some((c) => c())) return false;
+							} else if (!check) {
+								return false;
+							}
+						}
+						return true;
+					};
 				default:
 					alert(`Unknown condition ${cond}`);
 					console.error(`Unknown condition ${cond}`);
@@ -1116,7 +1132,6 @@ export default {
 		},
 		isUsedSkillId(value) {
 			if (value == null) return true;
-			console.log("value,value", value, this.oonige);
 			if (value === 202051) {
 				return this.oonige;
 			}
