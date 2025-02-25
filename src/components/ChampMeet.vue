@@ -1,19 +1,6 @@
 <template>
 	<div class="main-frame">
-		<p>
-			<!--<Adsense
-        v-if="production"
-        data-ad-client="ca-pub-4611969396217909"
-        data-ad-slot="6969023753"
-      >
-      </Adsense>
-      <adfit-banner
-        v-if="production"
-        class="kakao_ad_area"
-        data-ad-unit="DAN-C9EPw6PZoltqZXj6"
-      >
-      </adfit-banner>-->
-		</p>
+		<p></p>
 		<el-form class="input-form" :inline="true">
 			<el-form-item>
 				<el-button @click="saveUma">{{ $t("message.saveUma") }}</el-button>
@@ -21,12 +8,6 @@
 			<el-form-item>
 				<el-select v-model="umaToLoad" :placeholder="$t('message.umaToLoad')">
 					<el-option v-for="(_, key) in savedUmas" :label="key" :value="key" :key="key"></el-option>
-					<!-- <el-option
-            v-if="Object.keys(savedUmas).length === 0"
-            :value="null"
-            :label="'데이터 없음'"
-            disabled
-          ></el-option> -->
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -220,18 +201,6 @@
 			<ExecuteBlock ref="executeBlock" :exec-function="this.exec" :exec-make-mashin-to-tsv="this.execMakeMashinToTsv" />
 		</el-form>
 		<el-divider />
-		<!--<Adsense
-      v-if="production"
-      data-ad-client="ca-pub-4611969396217909"
-      data-ad-slot="6969023753"
-    >
-    </Adsense>
-    <adfit-banner
-      v-if="production"
-      class="kakao_ad_area"
-      data-ad-unit="DAN-1Gtqq8rtCdn36qKa"
-    >
-    </adfit-banner>-->
 		<div>
 			<h3>{{ $t("message.emulationResult") }}</h3>
 			<table border="1" class="emulation-result">
@@ -294,8 +263,7 @@
 		<calculated-values />
 		<el-divider />
 		<release-note />
-		<h3>주의사항</h3>
-		<!-- <h3>注意事項</h3> -->
+		<h3>{{ $t("message.caution") }}</h3>
 		<ol>
 			<li>{{ $t("message.remark1") }}</li>
 			<li>{{ $t("message.remark2") }}</li>
