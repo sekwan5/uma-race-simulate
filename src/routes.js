@@ -1,6 +1,6 @@
 import ChampMeet from "@/components/ChampMeet";
 import TeamRace from "@/components/TeamRace";
-import ReceiptFactor from "@/components/receiptFactor/ReceiptFactor";
+import ReceiptFactor from "@/components/receiptFactor/index";
 
 const routes = [
     {path: '/', redirect: '/champions-meeting'},

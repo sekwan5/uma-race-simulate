@@ -16,6 +16,8 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.15.2",
     "mime-types": "^2.1.32",
+    "opencv.js": "^1.2.1",
+    "tesseract.js": "^6.0.0",
     "vue": "^2.7.16",
     "vue-adfit-component": "^1.0.2",
     "vue-chartjs": "^3.5.1",
