@@ -1,8 +1,8 @@
 <template>
 	<div class="container">
-		<div v-if="isLoading" class="loading-spinner">
+		<div v-if="isLoading" class="loading-spinner" id="loading">
 			<div class="spinner"></div>
-			<p class="percentage-text">{{ percentage }}%</p>
+			<p class="percentage-text" id="percentage">{{ percentage }}%</p>
 		</div>
 		<div class="toolbar">
 			<div id="errMsg" class="message hidden"></div>
@@ -81,16 +81,18 @@
 						</el-form-item>
 					</el-form>
 				</section>
-				<hr />
-				<section id="overview">
-					<div id="SaveBtnArea" class="buttonArea hidden">
-						<button id="btnSaveJPG" class="btn weak" value="JPG" @click="saveOriginal('jpg')">JPG로 저장</button>
-						<button id="btnSavePNG" class="btn weak" value="PNG" @click="saveOriginal('png')">PNG로 저장</button>
-						<button id="btnSaveClipBoard" class="btn weak" value="clibBoard" @click="saveToClipBoard">📋에 복사</button>
-					</div>
-					<p id="outputAreaText" class="overviewTitle">이곳에 결과가 표시됩니다</p>
-					<p id="toggleSizeText" class="overviewTitle hidden">이미지 탭으로 표시 크기 전환</p>
-					<img id="outputImage" class="hidden" src="" />
+				<section v-show="showSaveArea" id="overview">
+					<hr />
+					<el-form>
+						<el-form-item>
+							<el-button type="primary" @click="saveOriginal('jpg')">JPG로 저장</el-button>
+							<el-button type="success" @click="saveOriginal('png')">PNG로 저장</el-button>
+							<el-button type="info" @click="saveToClipBoard">📋에 복사</el-button>
+						</el-form-item>
+						<p id="outputAreaText" class="overviewTitle">이곳에 결과가 표시됩니다</p>
+						<p id="toggleSizeText" class="overviewTitle hidden">이미지 탭으로 표시 크기 전환</p>
+						<img id="outputImage" src="" />
+					</el-form>
 				</section>
 				<hr />
 				<section id="howto">
@@ -248,10 +250,17 @@ import ReceiptFactorBase from "./base.vue";
 
 export default {
 	name: "ReceiptFactor",
+
 	components: {
 		UpdateNote,
 	},
 	mixins: [ReceiptFactorBase],
+	data() {
+		return {
+			showSaveArea: false,
+			percentage: 0,
+		};
+	},
 	mounted() {
 		window.addEventListener("paste", this.handlePaste);
 	},
@@ -297,23 +306,56 @@ export default {
 			}
 		},
 		generatePhoto() {
-			this.generatePhotos();
+			this.isLoading = true;
+			this.$nextTick(() => {
+				this.generatePhotos();
+			});
+
+			this.showSaveArea = true;
+			document.getElementById("overview").scrollIntoView({ behavior: "smooth", block: "start" });
 		},
 		resetPage() {
 			location.reload();
 		},
-		saveOriginal() {
-			// 원본 저장 로직
+		saveOriginal(format) {
+			try {
+				const canvas = document.getElementById("canvasOutput");
+				if (!canvas) {
+					throw new Error("출력 캔버스를 찾을 수 없습니다.");
+				}
+				const link = document.createElement("a");
+				link.href = canvas.toDataURL(`image/${format}`);
+				link.download = `receipt.${format}`;
+				link.click();
+			} catch (e) {
+				console.log(e);
+				this.$message.error(e.message);
+			}
 		},
 		saveToClipBoard() {
-			// 클립보드에 저장 로직
+			try {
+				const canvas = document.getElementById("canvasOutput");
+				if (!canvas) {
+					throw new Error("출력 캔버스를 찾을 수 없습니다.");
+				}
+				canvas.toBlob(async (blob) => {
+					try {
+						const item = new window.ClipboardItem({ "image/png": blob });
+						await navigator.clipboard.write([item]);
+						this.$message.success("이미지가 클립보드에 복사되었습니다.");
+					} catch (error) {
+						console.error("클립보드에 복사하는 중 오류 발생:", error);
+						this.$message.error("클립보드에 복사하는 중 오류가 발생했습니다.");
+					}
+				}, "image/png");
+			} catch (e) {
+				console.log(e);
+				this.$message.error(e.message);
+			}
 		},
 		selectText(event) {
 			event.target.select();
 		},
-	},
-	data() {
-		return {};
 	},
 };
 </script>

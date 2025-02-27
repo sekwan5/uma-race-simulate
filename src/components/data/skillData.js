@@ -1093,7 +1093,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           id: 110201111,
-          holder: 110201,
+          holder: 101021,
           name: "カエスーラ",
           duration: 3,
           heal: 550,
@@ -6561,7 +6561,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           id: 110201211,
-          holder: 110201,
+          holder: 101021,
           name: "トライアンフ",
           targetSpeed: 0.45,
           conditions: { running_style: 3, phase_laterhalf_random: 1 },

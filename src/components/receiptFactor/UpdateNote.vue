@@ -21,8 +21,8 @@ export default {
 			updateNote: "",
 			updates: [
 				{
-					content: "~2025.08.19 출시스킬 추가,일부 스킬발동조건 수정",
-					timestamp: "2025-02-22",
+					content: "인자 영수증 합치기 오픈",
+					timestamp: "2025-02-27",
 				},
 			],
 		};

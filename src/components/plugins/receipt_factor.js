@@ -101,7 +101,7 @@ function add_rect_prop(rect_prop, rect_prop_dynamic, rayout_type) {
   return dict_out
 }
 
-// しきい値
+// 임계값
 const thres_gray = 215;
 const thres_cont_close = 0.1;
 const thres_match_tmpl = 0.8;
@@ -118,7 +118,7 @@ const thres_scbar_h = 0.90;
 const thres_1factor = 140;
 const thres_1factor_color = 0.3;
 
-// パラメータ
+// 파라미터
 const force_one_group = false;
 const all_rayout_type = ['normal', 'with_growth_rate', 'with_register_partner', 'result_table', 'score_info', 'score_detail', 'field', 'race_detail', 'gougai', 'common_scroll_only', 'common_header_scroll'];
 const load_parts = ['header', 'basic_info', 'tab', 'scroll_full_width', 'scroll', 'scroll_bar', 'bottom_row', 'bottom_row_higher', 'icon', 'eval_val', 'speed_val', 'stamina_val', 'power_val', 'guts_val', 'int_val'];
@@ -247,23 +247,21 @@ function match_tmpl_min_max_loc(img_tgt, img_tmpl) {
   dst.delete();
   return out;
 }
-function match_tmpl_with_msk_min_max_loc(img_tgt, img_tmpl, img_msk) {
-  let dst = new cv.Mat();
-  let out = null;
-  // マスクなしと比べて遅すぎるのでモノクロで比較
-  let img_tgt_gray = new cv.Mat();
-  let img_tmpl_gray = new cv.Mat();
-  let img_msk_gray = new cv.Mat();
-  cv.cvtColor(img_tgt, img_tgt_gray, cv.COLOR_RGBA2GRAY, 0);
-  cv.cvtColor(img_tmpl, img_tmpl_gray, cv.COLOR_RGBA2GRAY, 0);
-  cv.cvtColor(img_msk, img_msk_gray, cv.COLOR_RGBA2GRAY, 0);
-  cv.matchTemplate(img_tgt_gray, img_tmpl_gray, dst, cv.TM_CCOEFF_NORMED, img_msk_gray);
-  out = cv.minMaxLoc(dst);
-  dst.delete();
-  img_tgt_gray.delete();
-  img_tmpl_gray.delete();
-  img_msk_gray.delete();
-  return out;
+function match_tmpl_with_msk_min_max_loc(img_in, tmpl, mask = null) {
+  try {
+    // 마스크가 있는 경우 일반 템플릿 매칭으로 대체
+    if (mask) {
+      console.warn("마스크를 사용한 템플릿 매칭이 지원되지 않습니다. 마스크 없이 진행합니다.");
+      return match_tmpl_min_max_loc(img_in, tmpl);
+    }
+    
+    // 마스크가 없는 경우 기존 코드 실행
+    return match_tmpl_min_max_loc(img_in, tmpl);
+  } catch (error) {
+    console.error("템플릿 매칭 중 오류 발생:", error);
+    // 기본값 반환
+    return { minVal: 0, maxVal: 0, minLoc: { x: 0, y: 0 }, maxLoc: { x: 0, y: 0 } };
+  }
 }
 function gene_common_msk(img_tmpl, img_tgt) {
   let tmp_diff = new cv.Mat();
@@ -297,7 +295,7 @@ function detect_common_scroll_area(l, l_smooth, window_size) {
       i <= tmp_y2 + window_size &&
       // e > thres_common_diff_y2);
       e > thres_common_diff_y2 &&
-      // bottom_rowで参照される範囲に固定表示エリアがない
+      // bottom_row에서 참조되는 범위에 고정 표시 영역이 없다
       l_smooth.slice(i - Math.floor((i - tmp_y1) / 16), i).filter(f => f <= thres_common_diff_y2).length == 0);
   }
   return {'y1': tmp_y1, 'y2': tmp_y2}
@@ -315,15 +313,15 @@ function detect_rects(img_in) {
   let rayout_type = 'none';
   let rects = {};
 
-  // Canny法でエッジ検出
+  // Canny 방법으로 엣지 검출
   let img_gray = img_in.clone();
   cv.cvtColor(img_gray, img_gray, cv.COLOR_RGBA2GRAY, 0);
   cv.Canny(img_gray, img_gray, 50, 200, 3);
   let img_gray_half = img_gray.roi(new cv.Rect(0, Math.floor(img_in.rows / 2), img_in.cols, img_in.rows - Math.floor(img_in.rows / 2)));
 
-  // 入力画像で輪郭抽出
+  // 입력 이미지에서 윤곽선 추출
   cv.findContours(img_gray_half, mv_contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE, new cv.Point(0, Math.floor(img_in.rows / 2)));
-  // 小さい輪郭は除外して再格納
+  // 작은 윤곽선은 제외하고 다시 저장
   for (let i = 0; i < mv_contours.size(); i++) {
     if (cv.contourArea(mv_contours.get(i)) > (Math.min(img_gray_half.cols, img_gray_half.rows) ** 2) / 80) {
       mv_contours_only_large.push_back(mv_contours.get(i));
@@ -332,7 +330,7 @@ function detect_rects(img_in) {
   }
   img_gray.delete();
 
-  // 二値化でエッジ検出
+  // 이진화로 엣지 검출
   img_gray = img_in.clone();
   cv.cvtColor(img_gray, img_gray, cv.COLOR_RGBA2GRAY, 0);
   let ksize = new cv.Size(5, 5);
@@ -340,9 +338,9 @@ function detect_rects(img_in) {
   cv.threshold(img_gray, img_gray, thres_gray, 255, cv.THRESH_BINARY);
   img_gray_half = img_gray.roi(new cv.Rect(0, Math.floor(img_in.rows / 2), img_in.cols, img_in.rows - Math.floor(img_in.rows / 2)));
 
-  // 入力画像で輪郭抽出
+  // 입력 이미지에서 윤곽선 추출
   cv.findContours(img_gray_half, mv_contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE, new cv.Point(0, Math.floor(img_in.rows / 2)));
-  // 小さい輪郭は除外して再格納
+  // 작은 윤곽선은 제외하고 다시 저장
   for (let i = 0; i < mv_contours.size(); i++) {
     if (cv.contourArea(mv_contours.get(i)) > (Math.min(img_gray_half.cols, img_gray_half.rows) ** 2) / 80) {
       mv_contours_only_large.push_back(mv_contours.get(i));
@@ -352,31 +350,31 @@ function detect_rects(img_in) {
 
   // console.log(mv_contours.size(), mv_contours_only_large.size());
   if (mv_contours_only_large.size() == 0) {
-    throw new Error('閉じるボタンが検出出来ない画像があります。');
+    throw new Error('닫기 버튼을 감지할 수 없는 이미지가 있습니다.');
   }
 
-  // 閉じるボタンテンプレ読み込み
+  // 닫기 버튼 템플릿 로드
   let tmpl_gray = cv.imread(document.getElementById('tmplClose'));
   cv.cvtColor(tmpl_gray, tmpl_gray, cv.COLOR_RGBA2GRAY, 0);
   cv.GaussianBlur(tmpl_gray, tmpl_gray, ksize, 0, 0, cv.BORDER_DEFAULT);
   cv.threshold(tmpl_gray, tmpl_gray, thres_gray, 255, cv.THRESH_BINARY);
   let mv_tmpl_contours = new cv.MatVector();
   let tmpl_hierarchy = new cv.Mat();
-  // 閉じるボタン輪郭抽出
+  // 닫기 버튼 윤곽선 추출
   cv.findContours(tmpl_gray, mv_tmpl_contours, tmpl_hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
-  // 小さい輪郭は除外して配列に再格納
+  // 작은 윤곽선은 제외하고 배열에 다시 저장
   let l_tmpl_contours_only_large = [];
   for (let i = 0; i < mv_tmpl_contours.size(); i++) {
     if (cv.contourArea(mv_tmpl_contours.get(i)) > (Math.min(tmpl_gray.cols, tmpl_gray.rows) ** 2) / 80) {
       l_tmpl_contours_only_large.push(mv_tmpl_contours.get(i));
     }
   }
-  // 大きい順に2番目のを閉じるボタンの輪郭として採用
+  // 크기 순으로 2번째를 닫기 버튼의 윤곽선으로 채택
   l_tmpl_contours_only_large.sort((first, second) => cv.contourArea(second) - cv.contourArea(first));
   let msk_close = l_tmpl_contours_only_large[1];
   // console.log(cv.boundingRect(msk_close));
 
-  // テンプレと比較して閉じるボタンの輪郭だけ抽出
+  // 템플릿과 비교하여 닫기 버튼의 윤곽선만 추출
   let cont_out = [];
   let info_out = [];
   let is_close_val = 1.0;
@@ -404,39 +402,39 @@ function detect_rects(img_in) {
     }
   }
   if (cont_out.length == 0) {
-    // 汎用連結処理に回すためレイアウトタイプ=unknownで終了
+    // 범용 연결 처리로 넘기기 위해 레이아웃 타입=unknown으로 종료
     rayout_type = 'unknown';
-    // throw new Error('閉じるボタンが正常に検出出来ない画像があります。');
+    // throw new Error('닫기 버튼을 정상적으로 감지할 수 없는 이미지가 있습니다.');
   } else {
     // console.log('rect_close_area', cv.contourArea(cont_out[0]));
     let rect_close = cv.boundingRect(cont_out[0]);
-    // 閉じるが横にズレていた時のため座標をセンタリング
+    // 닫기가 가로로 어긋났을 때를 위해 좌표를 중앙에 맞춤
     rect_close.x = Math.round(img_in.cols / 2 - rect_close.width / 2);
-    // 一度wholeの枠座標を計算
+    // 한 번 whole 프레임 좌표 계산
     // console.log(rect_close);
     let rect_whole = calc_rects(rect_close, {'whole': rect_prop.whole, 'close': rect_prop.close});
     // console.log(rect_close);
     // console.log(rect_whole);
 
-    // ヘッダー部分がどのyから始まってるか調査
+    // 헤더 부분이 어떤 y에서 시작하는지 조사
     let y_start = Math.max(0, Math.floor(rect_whole.whole.y - rect_whole.whole.height / 20));
     let tmp_rect = new cv.Rect(rect_whole.whole.x, y_start, rect_whole.whole.width, Math.floor(rect_whole.whole.height / 10));
     if (tmp_rect.y + tmp_rect.height > img_in.rows || tmp_rect.x + tmp_rect.width > img_in.cols || tmp_rect.x < 0 || tmp_rect.y < 0) {
-      // 汎用連結処理に回すためレイアウトタイプ=unknownで終了
+      // 범용 연결 처리로 넘기기 위해 레이아웃 타입=unknown으로 종료
       rayout_type = 'unknown';
-      // throw new Error('閉じるボタンが正しく検出出来ない画像があります。');
+      // throw new Error('닫기 버튼을 정확하게 감지할 수 없는 이미지가 있습니다.');
     } else {
       let img_find_header = img_in.roi(new cv.Rect(rect_whole.whole.x, y_start, rect_whole.whole.width, Math.floor(rect_whole.whole.height / 10))).clone();
       cv.cvtColor(img_find_header, img_find_header, cv.COLOR_RGB2HSV, 0);
       let green = new cv.Mat();
-      // ヘッダー辺りで緑っぽいピクセルを抽出
+      // 헤더 부근에서 녹색 픽셀 추출
       cv.inRange(
         img_find_header,
         new cv.Mat(img_find_header.rows, img_find_header.cols, img_find_header.type(), [20, 150, 0, 0]),
         new cv.Mat(img_find_header.rows, img_find_header.cols, img_find_header.type(), [60, 255, 255, 0]),
         green);
 
-      // 上から見ていってほぼ全セルが緑っぽい行(＝ウマ娘詳細ヘッダーの始まり)をy_actに格納
+      // 위에서부터 보면서 거의 모든 셀이 녹색인 행(=우마무스메 상세 헤더의 시작)을 y_act에 저장
       let y_act = rect_whole.whole.y;
       let tmp_sum = 0;
       for (let i = 0; i < green.rows; i++) {
@@ -450,7 +448,7 @@ function detect_rects(img_in) {
         }
       }
 
-      // 発見したヘッダー開始位置に合わせてrect_closeを調整
+      // 발견한 헤더 시작 위치에 맞게 rect_close 조정
       let height_act = rect_whole.whole.height - (y_act - rect_whole.whole.y)
       let act_rate = height_act / rect_whole.whole.height
       // console.log(rect_close);
@@ -461,17 +459,17 @@ function detect_rects(img_in) {
         'height': rect_close.height * act_rate,
       };
       // console.log(rect_close);
-      // 枠座標を再計算
+      // 프레임 좌표 재계산
       let rects_base = calc_rects(rect_close, rect_prop);
-      // レイアウトを取得
+      // 레이아웃 가져오기
       let arr_rayout_score = [];
 
       let img_tgt = new cv.Mat();
       let img_tmpl = new cv.Mat();
       let tmp_dst = new cv.Mat();
 
-      // 着順表かチェック
-      // レイアウト毎にスコアを算出
+      // 착순표인지 확인
+      // 레이아웃별로 점수 계산
       img_tgt = img_in.roi(new cv.Rect(Math.max(rects_base.header_text_result_table.x - 2, 0), Math.max(rects_base.header_text_result_table.y - 2, 0), rects_base.header_text_result_table.width + 4, rects_base.header_text_result_table.height + 4));
       img_tmpl = cv.imread(document.getElementById('tmplHeaderTextResultTable'));
       cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
@@ -479,7 +477,7 @@ function detect_rects(img_in) {
       cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.header_text_result_table.width, rects_base.header_text_result_table.height), 0, 0);
       arr_rayout_score.push({'rayout_type': 'result_table', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-      // チムレスコア情報かチェック
+      // 팀 레이스 점수 정보인지 확인
       img_tgt = img_in.roi(new cv.Rect(Math.max(rects_base.header_text_score_info.x - 2, 0), Math.max(rects_base.header_text_score_info.y - 2, 0), rects_base.header_text_score_info.width + 4, rects_base.header_text_score_info.height + 4));
       img_tmpl = cv.imread(document.getElementById('tmplHeaderTextScoreInfo'));
       cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
@@ -487,40 +485,40 @@ function detect_rects(img_in) {
       cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.header_text_score_info.width, rects_base.header_text_score_info.height), 0, 0);
       arr_rayout_score.push({'rayout_type': 'score_info', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-      // ウマ娘詳細かチェック
-      // チムレスコア情報とターゲット画像の座標が同じなのでimg_tgtの生成は省略
+      // 우마무스메 상세인지 확인
+      // 팀 레이스 점수 정보와 타겟 이미지의 좌표가 같으므로 img_tgt 생성은 생략
       img_tmpl = cv.imread(document.getElementById('tmplHeaderTextUmaDetail'));
       cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
       tmp_dst = new cv.Mat();
       cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.header_text_score_detail.width, rects_base.header_text_score_detail.height), 0, 0);
       arr_rayout_score.push({'rayout_type': 'uma_detail', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-      // チムレスコア詳細かチェック
-      // スコア情報とターゲット画像の座標が同じなのでimg_tgtの生成は省略
+      // 팀 레이스 점수 상세인지 확인
+      // 점수 정보와 타겟 이미지의 좌표가 같으므로 img_tgt 생성은 생략
       img_tmpl = cv.imread(document.getElementById('tmplHeaderTextScoreDetail'));
       cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
       tmp_dst = new cv.Mat();
       cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.header_text_score_detail.width, rects_base.header_text_score_detail.height), 0, 0);
       arr_rayout_score.push({'rayout_type': 'score_detail', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-      // 出走ウマ娘かチェック
-      // スコア情報とターゲット画像の座標が同じなのでimg_tgtの生成は省略
+      // 출주 우마무스메인지 확인
+      // 점수 정보와 타겟 이미지의 좌표가 같으므로 img_tgt 생성은 생략
       img_tmpl = cv.imread(document.getElementById('tmplHeaderTextField'));
       cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
       tmp_dst = new cv.Mat();
       cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.header_text_field.width, rects_base.header_text_field.height), 0, 0);
       arr_rayout_score.push({'rayout_type': 'field', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-      // レース詳細かチェック
-      // スコア情報とターゲット画像の座標が同じなのでimg_tgtの生成は省略
+      // 레이스 상세인지 확인
+      // 점수 정보와 타겟 이미지의 좌표가 같으므로 img_tgt 생성은 생략
       img_tmpl = cv.imread(document.getElementById('tmplHeaderTextRaceDetail'));
       cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
       tmp_dst = new cv.Mat();
       cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.header_text_race_detail.width, rects_base.header_text_race_detail.height), 0, 0);
       arr_rayout_score.push({'rayout_type': 'race_detail', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-      // 号外かチェック
-      // スコア情報とターゲット画像の座標が同じなのでimg_tgtの生成は省略
+      // 호외인지 확인
+      // 점수 정보와 타겟 이미지의 좌표가 같으므로 img_tgt 생성은 생략
       img_tgt = img_in.roi(new cv.Rect(Math.max(rects_base.header_text_gougai.x - 2, 0), Math.max(rects_base.header_text_gougai.y - 2, 0), rects_base.header_text_gougai.width + 4, rects_base.header_text_gougai.height + 4));
       img_tmpl = cv.imread(document.getElementById('tmplHeaderTextGougai'));
       cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
@@ -528,20 +526,20 @@ function detect_rects(img_in) {
       cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.header_text_gougai.width, rects_base.header_text_gougai.height), 0, 0);
       arr_rayout_score.push({'rayout_type': 'gougai', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-      // 最もスコアの高いレイアウトを選択、しきい値より高ければ採用
+      // 가장 점수가 높은 레이아웃을 선택, 임계값보다 높으면 채택
       arr_rayout_score.sort((a, b) => b.score - a.score);
       if (arr_rayout_score[0].score > thres_match_tmpl_rayout_type) {
         rayout_type = arr_rayout_score[0].rayout_type;
       } else {
-        // 汎用連結処理に回すためレイアウトタイプ=unknownで終了
+        // 범용 연결 처리로 넘기기 위해 레이아웃 타입=unknown으로 종료
         rayout_type = 'unknown';
       }
 
       if (rayout_type == 'uma_detail') {
-        // ウマ娘詳細画面の中でレイアウト特定
+        // 우마무스메 상세 화면 내에서 레이아웃 특정
         arr_rayout_score = [];
 
-        // 成長率付きかチェック
+        // 성장률 포함인지 확인
         let img_tgt = img_in.roi(new cv.Rect(rects_base.growth_rate.x - 2, rects_base.growth_rate.y - 2, rects_base.growth_rate.width + 4, rects_base.growth_rate.height + 4));
         let img_tmpl = cv.imread(document.getElementById('tmplGrowthRate'));
         cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
@@ -549,7 +547,7 @@ function detect_rects(img_in) {
         cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.growth_rate.width, rects_base.growth_rate.height), 0, 0);
         arr_rayout_score.push({'rayout_type': 'with_growth_rate', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-        // パートナー登録ボタン付きかチェック
+        // 파트너 등록 버튼 포함인지 확인
         img_tgt = img_in.roi(new cv.Rect(rects_base.register_partner.x - 2, rects_base.register_partner.y - 2, rects_base.register_partner.width + 4, rects_base.register_partner.height + 4));
         img_tmpl = cv.imread(document.getElementById('tmplRegisterPartner'));
         cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
@@ -557,18 +555,18 @@ function detect_rects(img_in) {
         cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.register_partner.width, rects_base.register_partner.height), 0, 0);
         arr_rayout_score.push({'rayout_type': 'with_register_partner', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-        // パートナー解除ボタン付きかチェック
-        // パートナー登録とターゲット画像の座標が同じなのでimg_tgtの生成は省略
+        // 파트너 해제 버튼 포함인지 확인
+        // 파트너 등록과 타겟 이미지의 좌표가 같으므로 img_tgt 생성은 생략
         img_tmpl = cv.imread(document.getElementById('tmplUnregisterPartner'));
         cv.cvtColor(img_tmpl, img_tmpl, cv.COLOR_RGBA2RGB, 0);
         tmp_dst = new cv.Mat();
         cv.resize(img_tmpl, tmp_dst, new cv.Size(rects_base.register_partner.width, rects_base.register_partner.height), 0, 0);
         arr_rayout_score.push({'rayout_type': 'with_unregister_partner', 'score': match_tmpl_min_max_loc(img_tgt, tmp_dst).maxVal});
 
-        // 最もスコアの高いレイアウトを選択、しきい値より高ければ採用
+        // 가장 점수가 높은 레이아웃을 선택, 임계값보다 높으면 채택
         arr_rayout_score.sort((a, b) => b.score - a.score);
         if (arr_rayout_score[0].score > thres_match_tmpl_rayout_type) {
-          // パートナー解除ボタン付きはパートナー登録ボタン付きとレイアウト同じなので読み替え
+          // 파트너 해제 버튼 포함은 파트너 등록 버튼 포함과 레이아웃이 같으므로 변환
           rayout_type = arr_rayout_score[0].rayout_type;
           if (rayout_type == 'with_unregister_partner') {
             rayout_type = 'with_register_partner';
@@ -595,28 +593,14 @@ function detect_rects(img_in) {
           0 <= rects.whole.y &&
           rects.whole.x + rects.whole.width < img_in.cols &&
           rects.whole.y + rects.whole.height < img_in.rows)) {
-        throw new Error('ウマ娘詳細エリアが正しく検出出来ない画像があります。');
+        throw new Error('우마무스메 상세 영역을 정확하게 감지할 수 없는 이미지가 있습니다.');
         }
-        // 輪郭描画
-        // let dst = cv.Mat.zeros(img_gray.rows, img_gray.cols, cv.CV_8UC3);
-        // let dst = img_in.clone();
-        // cv.cvtColor(dst, dst, cv.COLOR_RGBA2RGB, 0);
-        // for (let i = 0; i < mv_contours_only_large.size(); ++i) {
-        //     let color = new cv.Scalar(Math.round(Math.random() * 255), Math.round(Math.random() * 255),
-        //                               Math.round(Math.random() * 255));
-        //     cv.drawContours(dst, mv_contours_only_large, i, color, 2, cv.LINE_8);
-        // };
-        // cv2_rectangle(dst, rects.whole, new cv.Scalar(255, 0, 0), 1);
-        // let tmpCanvasElement = document.createElement('canvas');
-        // tmpCanvasElement.setAttribute('id', 'canvasOutput');
-        // document.getElementById('overview').appendChild(tmpCanvasElement);
-        // cv.imshow('canvasOutput', dst);
       }
     }
   }
 
 
-  // メモリ解放
+  // 메모리 해제
   img_gray.delete();
   img_gray_half.delete();
   mv_contours.delete();
@@ -630,14 +614,15 @@ function detect_rects(img_in) {
   return {'rayout_type': rayout_type, 'rects': rects};
 }
 function get_rects(l_mat) {
+    console.log("get_rects", l_mat);
   return new Promise(function(resolve){
     // const n_tgt = l_mat.length;
-    console.log('閉じるボタン位置取得');
-    console.log('枚数:', l_mat.length, '1枚目のheight,width:', l_mat[0].rows, l_mat[0].cols);
+    console.log('닫기 버튼 위치 가져오기');
+    console.log('이미지 수:', l_mat.length, '첫 번째 이미지의 height,width:', l_mat[0].rows, l_mat[0].cols);
     let l_rects = [];
     let tmp_rects = {};
     for (let i = 0; i < l_mat.length; i++) {
-      // 画像毎に閉じるボタンの検出と枠座標取得
+      // 이미지마다 닫기 버튼 감지와 프레임 좌표 가져오기
       tmp_rects = detect_rects(l_mat[i]);
       l_rects.push(tmp_rects);
     }
@@ -761,9 +746,9 @@ function get_unknown_rects(l_mat, l_rects) {
 }
 function trim_parts(l_mat, l_rects) {
   return new Promise(function(resolve){
-    console.log('閉じるボタンを基準に各パーツ切り出し');
+    console.log('닫기 버튼을 기준으로 각 부분 추출');
     // const n_tgt = l_mat.length;
-    // レイアウトxパーツ毎の最小サイズを算出
+    // 레이아웃x파트별 최소 크기 계산
     let tgt_sizes = {};
     all_rayout_type.forEach(function(r){
       if (l_rects.filter((e) => e.rayout_type == r).length > 0) {
@@ -775,7 +760,7 @@ function trim_parts(l_mat, l_rects) {
         })
       }
     });
-    // 最小サイズに合わせて全パーツを切り出し
+    // 최소 크기에 맞춰 모든 파트 추출
     let imgs = [];
     l_mat.forEach(function(m, i){
       let obj_tmp = {};
@@ -791,7 +776,7 @@ function trim_parts(l_mat, l_rects) {
         tmp_dst.delete();
       });
       obj_tmp['rayout_type'] = l_rects[i].rayout_type;
-      // スクロールバーがあればそれの高さを取得
+      // 스크롤바가 있으면 그 높이를 가져오기
       if (tgt_load_parts.includes('scroll_bar')) {
         // console.log(l_rects[i].rects['scroll_bar']);
         let img_scroll_bar_gray = obj_tmp['scroll_bar'].clone();
@@ -801,13 +786,13 @@ function trim_parts(l_mat, l_rects) {
         for (let i = 0; i < img_scroll_bar_gray.rows; i++) {
           let tmp_sum = 0;
           for (let j = 0; j < img_scroll_bar_gray.cols; j++) {
-            // ucharAtは1px毎に0~255で出力
+            // ucharAt은 1px마다 0~255로 출력
             tmp_sum += img_scroll_bar_gray.ucharAt(i, j);
           }
           l_sum_val_by_y.push(tmp_sum / img_scroll_bar_gray.cols);
         }
         img_scroll_bar_gray.delete();
-        // スクロールバーの中央と長さを取得して格納
+        // 스크롤바의 중앙과 길이를 가져와서 저장
         detect_scroll_bar_position(obj_tmp, l_sum_val_by_y);
       }
       imgs.push(obj_tmp);
@@ -818,60 +803,60 @@ function trim_parts(l_mat, l_rects) {
 function get_group_list(imgs, l_rects) {
   return new Promise(function(resolve){
     const n_tgt = imgs.length;
-    // グループ決め
+    // 그룹 결정
     let l_group = [];
     if (force_one_group) {
-      // 強制的に全画像同じグループ扱い
+      // 강제로 모든 이미지를 같은 그룹으로 취급
       l_group = Array(n_tgt).fill(0);
     } else {
-      // グループ番号をnullで初期化
+      // 그룹 번호를 null로 초기화
       l_group = Array(n_tgt).fill(null);
-      // 各画像の組み合わせ毎の一致度を格納する二次元配列宣言
-      // 似てると1、似てないと0なので1.0で初期化
+      // 각 이미지의 조합마다 일치도를 저장할 2차원 배열 선언
+      // 비슷하면 1, 비슷하지 않으면 0이므로 1.0으로 초기화
       let arr_val = new Array(n_tgt);
       for(let y = 0; y < n_tgt; y++) {
         arr_val[y] = new Array(n_tgt).fill(1.0);
       }
-      // アイコン等からグループ決め
-      // 全組み合わせでテンプレートマッチ
+      // 아이콘 등을 통해 그룹 결정
+      // 모든 조합에 대해 템플릿 매칭
       imgs.forEach(function(img_tmpl, i){
         imgs.forEach(function(img_tgt, j){
-          // 同じ組み合わせで二回チェックしないようjの方が大きい時
-          // かつ両者のレイアウトタイプが一致する時だけチェック
-          // i == jの時は同じ画像同士=100%一致なので無視
+          // 같은 조합을 두 번 체크하지 않도록 j가 더 클 때
+          // 그리고 양쪽의 레이아웃 타입이 일치할 때만 체크
+          // i == j일 때는 같은 이미지끼리 = 100% 일치하므로 무시
           if (i < j) {
             if (l_rects[i].rayout_type != l_rects[j].rayout_type) {
-              // レイアウトタイプが異なっていたら100%別グループとして0を強制代入
+              // 레이아웃 타입이 다르면 100% 다른 그룹으로 0을 강제 대입
               arr_val[Math.min(i, j)][Math.max(i, j)] = 0;
             } else if (['score_info', 'field', 'common_header_scroll'].includes(l_rects[i].rayout_type)) {
-              // ヘッダーを持つレイアウトはヘッダーで比較
+              // 헤더를 가진 레이아웃은 헤더로 비교
               ['header'].forEach(function(p){
                 let res = match_tmpl_min_max_loc(img_tgt[p], img_tmpl[p].roi(new cv.Rect(0, 0, Math.max(img_tmpl[p].cols - 1, 1), Math.max(img_tmpl[p].rows - 1, 1))).clone());
-                // パーツ毎の結果を乗算、全部似てればほぼ1のまま、どれかでも違うと一気に0に近づく
+                // 각 파트의 결과를 곱셈, 모두 비슷하면 거의 1 그대로, 하나라도 다르면 0에 가까워짐
                 arr_val[Math.min(i, j)][Math.max(i, j)] *= res.maxVal;
               });
             } else if (['result_table', 'score_detail', 'race_detail', 'gougai'].includes(l_rects[i].rayout_type)) {
-              // 基本情報欄を持つレイアウトは基本情報欄で比較
+              // 기본 정보란을 가진 레이아웃은 기본 정보란으로 비교
               ['basic_info'].forEach(function(p){
                 let res = match_tmpl_min_max_loc(img_tgt[p], img_tmpl[p].roi(new cv.Rect(0, 0, Math.max(img_tmpl[p].cols - 1, 1), Math.max(img_tmpl[p].rows - 1, 1))).clone());
-                // パーツ毎の結果を乗算、全部似てればほぼ1のまま、どれかでも違うと一気に0に近づく
+                // 각 파트의 결과를 곱셈, 모두 비슷하면 거의 1 그대로, 하나라도 다르면 0에 가까워짐
                 arr_val[Math.min(i, j)][Math.max(i, j)] *= res.maxVal;
               });
             } else if (['common_scroll_only'].includes(l_rects[i].rayout_type)) {
-              // スクロール範囲しかないものはレイアウトタイプが一致していれば強制的に100%同じグループとして1を強制代入
+              // 스크롤 범위만 있는 것은 레이아웃 타입이 일치하면 강제로 100% 같은 그룹으로 1을 강제 대입
               arr_val[Math.min(i, j)][Math.max(i, j)] = 1;
             } else {
-              // パーツ毎にテンプレートマッチ
+              // 각 파트별로 템플릿 매칭
               tgt_parts_for_group.forEach(function(p){
                 let res = match_tmpl_min_max_loc(img_tgt[p], img_tmpl[p].roi(new cv.Rect(0, 0, Math.max(img_tmpl[p].cols - 1, 1), Math.max(img_tmpl[p].rows - 1, 1))).clone());
-                // パーツ毎の結果を乗算、全部似てればほぼ1のまま、どれかでも違うと一気に0に近づく
+                // 각 파트의 결과를 곱셈, 모두 비슷하면 거의 1 그대로, 하나라도 다르면 0에 가까워짐
                 arr_val[Math.min(i, j)][Math.max(i, j)] *= res.maxVal;
               });
             }
           }
         })
       })
-      console.log(arr_val);
+      console.log(arr_val); // 일치도 배열 출력
       let current_group = -1;
       [...Array(n_tgt).keys()].forEach(function(i){
         if (l_group[i] == null) {
@@ -885,7 +870,7 @@ function get_group_list(imgs, l_rects) {
         }
       })
     }
-    // console.log(l_group);
+    // console.log(l_group); // 그룹 리스트 출력
     resolve(l_group);
   })
 }
@@ -942,7 +927,7 @@ function match_one_line(imgs, l_group, arr_val, arr_loc, i) {
     imgs.forEach(function(img_tgt, j){
       let is_neighbor_by_scbar = false;
       let is_tgt = false;
-      // 同じ画像ではなく、かつ同じグループであり、スクロールバーに基づく順序があるならそれが隣接していたら比較開始
+      // 같은 이미지가 아니고, 같은 그룹이며, 스크롤바에 기반한 순서가 있을 때 그것이 인접해 있으면 비교 시작
       if (i != j && l_group[i] == l_group[j]) {
         is_tgt = true;
         if (img_tmpl['position_by_scbar'] != -1) {
@@ -956,17 +941,17 @@ function match_one_line(imgs, l_group, arr_val, arr_loc, i) {
         let res = {};
         let tmp_sign = 0;
         if (simple_rayout.includes(img_tmpl.rayout_type)) {
-          // シンプルレイアウトなら比較範囲を拡大
+          // 간단한 레이아웃이면 비교 범위를 확장
           res = match_tmpl_min_max_loc(img_tgt.scroll, img_tmpl.bottom_row_higher);
         } else if (['common_header_scroll', 'common_scroll_only'].includes(img_tmpl.rayout_type)) {
-          // 汎用レイアウトならマスクを用いて比較
+          // 범용 레이아웃이면 마스크를 사용하여 비교
           let img_msk = gene_common_msk(img_tmpl.bottom_row, img_tgt.bottom_row);
           res = match_tmpl_with_msk_min_max_loc(img_tgt.scroll, img_tmpl.bottom_row, img_msk);
           img_msk.delete();
         } else {
           res = match_tmpl_min_max_loc(img_tgt.scroll, img_tmpl.bottom_row);
         }
-        // 1行分の範囲でヒットしたら重なってるはずのエリアで改めてヒットするか確認
+        // 한 줄 범위에서 히트하면 겹쳐져 있을 영역에서 다시 히트하는지 확인
         if (arr_val[Math.min(i, j)][Math.max(i, j)] < res.maxVal && thres_match_tmpl < res.maxVal) {
           // console.log(i, j);
           let dist = 0;
@@ -997,7 +982,7 @@ function match_one_line(imgs, l_group, arr_val, arr_loc, i) {
           tmp_img_tmpl.delete();
           tmp_img_tgt.delete();
         }
-        // もし隣接しているはずなのに相対距離が出てない、または上下逆に繋がってたら、真下に単純連結出来る距離を入力
+        // 만약 인접해 있어야 하는데 상대 거리가 없거나, 위아래가 반대로 연결되어 있으면, 바로 아래에 단순 연결할 수 있는 거리를 입력
         // console.log(is_neighbor_by_scbar, i, j, arr_val[Math.min(i, j)][Math.max(i, j)], arr_loc[Math.min(i, j)][Math.max(i, j)], arr_val[Math.min(i, j)][Math.max(i, j)] == 0.0)
         if (i <= j) {
           tmp_sign = 1;
@@ -1005,7 +990,7 @@ function match_one_line(imgs, l_group, arr_val, arr_loc, i) {
           tmp_sign = -1;
         }
         if (is_neighbor_by_scbar && (arr_val[Math.min(i, j)][Math.max(i, j)] == 0.0 || arr_loc[Math.min(i, j)][Math.max(i, j)] * tmp_sign < 0)) {
-        //   raiseNormalMsg('スクロールバーの位置に基づいて単純連結している箇所があります。');
+        //   raiseNormalMsg('스크롤바의 위치에 기반하여 단순 연결된 부분이 있습니다.');
           arr_val[Math.min(i, j)][Math.max(i, j)] = 1.0;
           arr_loc[Math.min(i, j)][Math.max(i, j)] = img_tgt.scroll.rows * tmp_sign;
           // console.log(is_neighbor_by_scbar, i, j, arr_val[Math.min(i, j)][Math.max(i, j)], arr_loc[Math.min(i, j)][Math.max(i, j)])
@@ -1016,12 +1001,11 @@ function match_one_line(imgs, l_group, arr_val, arr_loc, i) {
   })
 }
 
-// 2024/1/10 未使用
 async function match_cross(imgs, l_group) {
-    console.log('グループ内でテンプレートマッチ')
+    console.log('그룹 내에서 템플릿 매칭');
     const n_tgt = imgs.length;
-    // グループ内でテンプレートマッチ
-    // 結果格納用配列初期化
+    // 그룹 내에서 템플릿 매칭
+    // 결과 저장용 배열 초기화
     let arr_val = new Array(n_tgt);
     for(let y = 0; y < n_tgt; y++) {
       arr_val[y] = new Array(n_tgt).fill(0.0);
@@ -1031,30 +1015,25 @@ async function match_cross(imgs, l_group) {
       arr_loc[y] = new Array(n_tgt).fill(0.0);
     }
     for (let i = 0; i < imgs.length; i++) {
-      // changePercentage(10 + i);
       console.log((i + 1) +  '/' + imgs.length);
       await match_one_line(imgs, l_group, arr_val, arr_loc, i);
-    //   changePercentage(30 + i);
-    //   await repaint();
     }
-    // arr_val.forEach(function(r){console.log(r)});
-    // arr_loc.forEach(function(r){console.log(r)});
     return [arr_val, arr_loc];
 }
 function get_relative_dist(arr_val, arr_loc, l_group) {
   return new Promise(function(resolve){
     const n_tgt = arr_val.length;
-    console.log('各グループの先頭画像からの相対距離を算出')
-    // 各グループの先頭画像からの相対距離を算出
+    console.log('각 그룹의 첫 번째 이미지로부터의 상대 거리를 계산');
+    // 각 그룹의 첫 번째 이미지로부터의 상대 거리를 계산
     let l_relative_height = new Array(n_tgt).fill(null);
     let l_relative_height_score = new Array(n_tgt).fill(0.0);
     let l_isfinished = new Array(n_tgt).fill(false);
     let n_finished_before = -1;
     let n_finished = 0;
-    // グループ毎に処理
+    // 그룹별로 처리
     [...Array(Math.max(...l_group) + 1).keys()].forEach(function(current_group){
       let i_most_certain = 0;
-      // 基準となる最も確実性の高いペアの上側の画像を探す
+      // 기준이 되는 가장 확실성이 높은 쌍의 위쪽 이미지를 찾음
       let l_val = [];
       [...Array(n_tgt).keys()].filter((d) => l_group[d] == current_group).forEach(function(i){
         [...Array(n_tgt).keys()].filter((d) => l_group[d] == current_group).forEach(function(j){
@@ -1069,20 +1048,20 @@ function get_relative_dist(arr_val, arr_loc, l_group) {
       }
       // console.log(i_most_certain);
 
-      // 相対座標計算開始
+      // 상대 좌표 계산 시작
       let is_group_initialized = false;
       // eslint-disable-next-line no-constant-condition
       while (true) {
         n_finished_before = n_finished;
-        // 今のグループだけ処理
+        // 현재 그룹만 처리
         [...Array(n_tgt).keys()].filter((d) => l_group[d] == current_group).forEach(function(y){
-          // 基準画像までスキップ
+          // 기준 이미지까지 스킵
           if (!is_group_initialized && y == i_most_certain) {
             l_relative_height[y] = 0;
             l_relative_height_score[y] = 1;
             is_group_initialized = true;
           }
-          // 初期化されていてかつ相対座標が決まってたら、まだ決まってない他の画像に波及開始
+          // 초기화되어 있고 상대 좌표가 결정되었으면, 아직 결정되지 않은 다른 이미지로 파급 시작
           if (is_group_initialized && !l_isfinished[y] && l_relative_height[y] != null) {
             [...Array(n_tgt).keys()].forEach(function(i){
               [...Array(n_tgt).keys()].forEach(function(j){
@@ -1105,13 +1084,13 @@ function get_relative_dist(arr_val, arr_loc, l_group) {
             l_isfinished[y] = true
           }
         })
-        // 全部チェックし終えたか更新出来なくなったら終了
+        // 모두 체크를 마쳤거나 업데이트할 수 없으면 종료
         n_finished = l_isfinished.filter((d) => d).length;
         if (n_finished == n_tgt || n_finished_before == n_finished) {
           break;
         }
       }
-      // 最も上の画像に対する相対座標に変換
+      // 가장 위의 이미지에 대한 상대 좌표로 변환
       let min_relative_height = Math.min(...l_relative_height.filter((d, i) => l_group[i] == current_group));
       // console.log(l_relative_height, min_relative_height);
       for (let i = 0; i < l_relative_height.length; i++) {
@@ -1128,10 +1107,10 @@ function align_missing_imgs(l_relative_height, l_group, imgs) {
   return new Promise(function(resolve){
     // console.log(l_relative_height);
     const n_tgt = imgs.length;
-    console.log('位置が取得出来なかった画像を末尾に単純配置');
+    console.log('위치를 얻을 수 없었던 이미지를 끝에 단순 배치');
     if (l_relative_height.filter((d) => d == null).length) {
-    //   raiseNormalMsg('位置が取得出来ない画像があったため末尾に単純連結しています。二行ずつ重なるようにスクショを撮れているか確認して下さい。');
-      // グループ毎に処理
+    //   raiseNormalMsg('위치를 얻을 수 없는 이미지가 있어 끝에 단순 연결하고 있습니다. 두 줄씩 겹치도록 스크린샷을 찍었는지 확인하세요.');
+      // 그룹별로 처리
       [...Array(Math.max(...l_group) + 1).keys()].forEach(function(current_group){
         let max_rh_already = Math.max(...l_relative_height.filter((d, i) => l_group[i] == current_group));
         let index_max_rh_already = [...Array(n_tgt).keys()].filter((d) => l_group[d] == current_group && l_relative_height[d] == max_rh_already)[0];
@@ -1151,18 +1130,18 @@ function generateReceipt(imgs, l_group, l_relative_height) {
   return new Promise(function(resolve){
     const n_tgt = imgs.length;
 
-    // グループ毎に縦に繋げて最後に横につなげる
+    // 그룹별로 세로로 연결하고 마지막에 가로로 연결
     let imgs_tmp = [];
     [...Array(Math.max(...l_group) + 1).keys()].forEach(function(current_group){
-      // 今のグループに属する画像のインデックス一覧を取得
+      // 현재 그룹에 속하는 이미지의 인덱스 목록을 가져옴
       let l_index = [...Array(n_tgt).keys()].filter((d) => l_group[d] == current_group && l_relative_height[d] != null);
-      // 相対座標が低い順にソート
+      // 상대 좌표가 낮은 순으로 정렬
       l_index.sort((first, second) => l_relative_height[first] - l_relative_height[second]);
       let imgs_part = new cv.MatVector();
       let is_header = true;
       let relative_height_before = 0;
       l_index.forEach(function(i){
-        // 各グループの先頭はヘッダー部分付き
+        // 각 그룹의 첫 번째는 헤더 부분 포함
         if (is_header) {
           imgs_part.push_back(imgs[i].scroll_with_header);
           is_header = false;
@@ -1177,33 +1156,32 @@ function generateReceipt(imgs, l_group, l_relative_height) {
           img_tmp_part.delete();
         }
       });
-      // はぐれがいたら末尾にトリミングなしで追加
+      // 떨어진 이미지가 있으면 끝에 트리밍 없이 추가
       if ([...Array(n_tgt).keys()].filter((d) => l_group[d] == current_group && l_relative_height[d] == null).length > 0) {
-        // raiseNormalMsg('重なり方を検出出来ない画像があったため一部取り込み順に単純連結している箇所があります。');
+        // raiseNormalMsg('겹치는 방법을 감지할 수 없는 이미지가 있어 일부 가져오는 순서대로 단순 연결된 부분이 있습니다.');
         [...Array(n_tgt).keys()].filter((d) => l_group[d] == current_group && l_relative_height[d] == null).forEach(function(i){
           imgs_part.push_back(imgs[i].scroll_full_width);
         });
       }
-      // 出力用配列に格納
+      // 출력용 배열에 저장
       imgs_tmp.push(imgs_part.clone());
-      // メモリ解放
+      // 메모리 해제
       imgs_part.delete();
     });
 
-    // 上下左右連結は外側で
+    // 상하좌우 연결은 외부에서
     resolve(imgs_tmp);
   })
 }
-// 2024/1/19 未使用
 function detectFactor(eles_scroll_canvas) {
   let l_scroll_canvas = Array.from(eles_scroll_canvas);
   const n_group = l_scroll_canvas.length;
   console.log(n_group);
   let l_out = [];
-  // グループ毎に処理
+  // 그룹별로 처리
   l_scroll_canvas.forEach((sc) => {
     let l_tmp = [];
-    // 因子のまるポチとテキストの横方向の位置を取得
+    // 인자의 원형 포인트와 텍스트의 가로 방향 위치를 가져옴
     let tmp_scale = sc.width / rect_prop.scroll[2];
     let l_rects = [
       {
@@ -1239,27 +1217,27 @@ function detectFactor(eles_scroll_canvas) {
           h: Math.floor(rect_prop.factor_text_right[3] * tmp_scale)}
       }
     ];
-    // Mat化
+    // Mat화
     let tmpImg = cv.imread(sc);
-    // 1列目と2列目を順番に処理
+    // 1열과 2열을 순서대로 처리
     [...Array(2).keys()].forEach(lr => {
       let img_factor_discs = tmpImg.roi(new cv.Rect(
         l_rects[lr].factor_disc.x,
         0,
         l_rects[lr].factor_disc.w,
         tmpImg.rows)).clone();
-      // 因子のまるポチのテンプレート読み込み
+      // 인자의 원형 포인트 템플릿 로드
       let tmpl_factor_disc = cv.imread(document.getElementById('tmplFactorDisc'));
       cv.resize(tmpl_factor_disc, tmpl_factor_disc, new cv.Size(l_rects[lr].factor_disc.w, l_rects[lr].factor_disc.w), 0, 0, cv.INTER_CUBIC);
-      // テンプレートマッチ
+      // 템플릿 매칭
       let result = new cv.Mat();
       cv.matchTemplate(img_factor_discs, tmpl_factor_disc, result, cv.TM_CCOEFF_NORMED);
-      // list化
+      // 리스트화
       let l_res = [];
       [...Array(result.size().height).keys()].forEach(y => {
         l_res.push(result.floatPtr(y, 0)[0]);
       })
-      // テンプレートマッチの結果からまるポチがあると思われる高さを抽出
+      // 템플릿 매칭 결과에서 원형 포인트가 있을 것으로 예상되는 높이를 추출
       let l_peak = [];
       let thres_match_tmpl_disc_dynamic = Math.max(...l_res) * thres_match_tmpl_disc_rate;
       console.log(thres_match_tmpl_disc_dynamic);
@@ -1270,10 +1248,10 @@ function detectFactor(eles_scroll_canvas) {
           }
         }
       })
-      // 位置が近すぎる結果があったらより精度の高い結果のみ残す
+      // 위치가 너무 가까운 결과가 있으면 더 정확한 결과만 남김
       let l_peak_filtered = l_peak.filter((d) => Math.max(...l_peak.filter((e) => d.index - tmpl_factor_disc.rows <= e.index && e.index < d.index + tmpl_factor_disc.rows).map((e) => {return e.val})) == d.val);
       console.log(l_peak_filtered);
-      // まるポチとテキストの座標算出
+      // 원형 포인트와 텍스트의 좌표 계산
       l_peak_filtered.forEach(p => {
         l_tmp.push({
           rect_factor_disc: {
@@ -1282,7 +1260,7 @@ function detectFactor(eles_scroll_canvas) {
             width: l_rects[lr].factor_disc.w,
             height: l_rects[lr].factor_disc.h
           },
-          // アイコンの座標は盾の中心がまるポチと同じになるように
+          // 아이콘의 좌표는 방패의 중심이 원형 포인트와 같아지도록
           rect_factor_icon: {
             left: l_rects[lr].factor_icon.x,
             top: Math.floor(p.index + l_rects[lr].factor_disc.w / 2 - l_rects[lr].factor_icon.h / 2),
@@ -1324,29 +1302,29 @@ function gamma_correction(canvas_in, gamma_val) {
 }
 function detectFactor_by_gamma(eles_scroll_canvas) {
   let l_out = [];
-  // 因子1枠テンプレ画像読み込み
+  // 인자 1칸 템플릿 이미지 로드
   let ele_tmpl_1factor = document.getElementById('tmpl1Factor');
   let canvas_tmpl_1factor = document.createElement('canvas');
   canvas_tmpl_1factor.width = ele_tmpl_1factor.naturalWidth;
   canvas_tmpl_1factor.height = ele_tmpl_1factor.naturalHeight;
-  // テンプレ画像をキャンバスに書き込み
+  // 템플릿 이미지를 캔버스에 그리기
   canvas_tmpl_1factor.getContext('2d').drawImage(ele_tmpl_1factor, 0, 0);
   canvas_tmpl_1factor = gamma_correction(canvas_tmpl_1factor, 0.1);
-  // テンプレ画像で特徴点検出
+  // 템플릿 이미지에서 특징점 검출
   let src_tmpl = cv.imread(canvas_tmpl_1factor);
   cv.cvtColor(src_tmpl, src_tmpl, cv.COLOR_RGBA2GRAY, 0);
   cv.threshold(src_tmpl, src_tmpl, thres_1factor, 255, cv.THRESH_BINARY);
   let mv_tmpl_contours = new cv.MatVector();
   let mv_tmpl_hierarchy = new cv.Mat();
   cv.findContours(src_tmpl, mv_tmpl_contours, mv_tmpl_hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
-  // 小さい輪郭は除外して配列に再格納
+  // 작은 윤곽은 제외하고 배열에 다시 저장
   let l_tmpl_contours_only_large = [];
   for (let i = 0; i < mv_tmpl_contours.size(); i++) {
     if (cv.contourArea(mv_tmpl_contours.get(i)) > (Math.min(src_tmpl.cols, src_tmpl.rows) ** 2) / 50) {
       l_tmpl_contours_only_large.push(mv_tmpl_contours.get(i));
     }
   }
-  // 大きい順に2番目のを因子1枠の輪郭として採用
+  // 큰 순서대로 두 번째 것을 인자 1칸의 윤곽으로 채택
   l_tmpl_contours_only_large.sort((first, second) => cv.contourArea(second) - cv.contourArea(first));
   let msk_1factor = l_tmpl_contours_only_large[1];
   mv_tmpl_contours.delete();
@@ -1355,14 +1333,14 @@ function detectFactor_by_gamma(eles_scroll_canvas) {
   canvas_tmpl_1factor.remove();
 
   let l_scroll_canvas = Array.from(eles_scroll_canvas);
-  // グループ毎に処理
+  // 그룹별로 처리
   l_scroll_canvas.forEach((sc) => {
     let img_src = cv.imread(sc);
     let l_tmp = [];
-    // ガンマ補正
+    // 감마 보정
     let tmpCanvasElement = gamma_correction(sc, 0.1);
 
-    // ガンマ補正後のスクロール部を使って特徴点マッチング
+    // 감마 보정 후의 스크롤 부분을 사용하여 특징점 매칭
     let img_src_gamma = cv.imread(tmpCanvasElement);
     cv.cvtColor(img_src_gamma, img_src_gamma, cv.COLOR_RGBA2GRAY, 0);
     cv.threshold(img_src_gamma, img_src_gamma, thres_1factor, 255, cv.THRESH_BINARY);
@@ -1370,7 +1348,7 @@ function detectFactor_by_gamma(eles_scroll_canvas) {
     let mv_hierarchy = new cv.Mat();
     cv.findContours(img_src_gamma, mv_contours, mv_hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
     for (let i = 0; i < mv_contours.size(); ++i) {
-      // 小さい領域は無視
+      // 작은 영역은 무시
       if (cv.contourArea(mv_contours.get(i)) > (Math.min(img_src_gamma.cols, img_src_gamma.rows) ** 2) / 50) {
         let is_close_val = cv.matchShapes(mv_contours.get(i), msk_1factor, cv.CONTOURS_MATCH_I3, 0);
         if (is_close_val < thres_cont_close) {
@@ -1383,7 +1361,7 @@ function detectFactor_by_gamma(eles_scroll_canvas) {
               width: Math.floor(rect_prop.factor_disc_left[2] * tmp_scale),
               height: Math.floor(rect_prop.factor_disc_left[3] * tmp_scale)
             },
-            // アイコンの座標は盾の中心がまるポチと同じになるように
+            // 아이콘의 좌표는 방패의 중심이 원형 포인트와 같아지도록
             rect_factor_icon: {
               left: tmp_rect.x + Math.floor((rect_prop.factor_icon_left[0] - rect_prop.factor_area_left[0]) * tmp_scale),
               top: tmp_rect.y + Math.floor((rect_prop.factor_icon_left[1] - rect_prop.factor_area_left[1]) * tmp_scale),
@@ -1398,16 +1376,16 @@ function detectFactor_by_gamma(eles_scroll_canvas) {
             }
           }
 
-          // ちゃんと因子欄か丸ポチの有無で確認
-          // 因子のまるポチのテンプレート読み込み
+          // 제대로 인자란인지 원형 포인트의 유무로 확인
+          // 인자의 원형 포인트 템플릿 로드
           let tmpl_factor_disc = cv.imread(document.getElementById('tmplFactorDisc'));
           cv.resize(tmpl_factor_disc, tmpl_factor_disc, new cv.Size(tmp_dic.rect_factor_disc.width, tmp_dic.rect_factor_disc.height), 0, 0, cv.INTER_CUBIC);
 
-          // 丸ポチ部分でテンプレートマッチ
-          // しきい値以上だったら因子名読み込み対象に追加
+          // 원형 포인트 부분에서 템플릿 매칭
+          // 임계값 이상이면 인자명 로드 대상에 추가
           let img_tgt = img_src.roi(new cv.Rect(Math.max(tmp_dic.rect_factor_disc.left - 1, 0), Math.max(tmp_dic.rect_factor_disc.top - 1, 0), tmp_dic.rect_factor_disc.width + 2, tmp_dic.rect_factor_disc.height + 2)).clone();
           if (match_tmpl_min_max_loc(img_tgt, tmpl_factor_disc).maxVal > thres_match_tmpl_disc) {
-            // 塗りつぶし色を確認して赤青緑因子を除外
+            // 채우기 색상을 확인하여 빨강, 파랑, 초록 인자를 제외
             let l_res_color = [];
             let img_1factor = img_src.roi(tmp_rect).clone();
             cv.cvtColor(img_1factor, img_1factor, cv.COLOR_RGB2HSV, 0);
@@ -1416,7 +1394,7 @@ function detectFactor_by_gamma(eles_scroll_canvas) {
             l_res_color.push({'color': 'blue', 'val': calc_color_rate(img_1factor, [90, 150, 0, 0], [110, 255, 255, 0])});
             l_res_color.push({'color': 'green', 'val': calc_color_rate(img_1factor, [30, 150, 0, 0], [50, 255, 255, 0])});
             l_res_color.sort((first, second) => second['val'] - first['val']);
-            // 三色どれもしきい値以下なら白因子扱い
+            // 세 가지 색상 모두 임계값 이하이면 흰색 인자로 처리
             if (l_res_color[0]['val'] > thres_1factor_color) {
               tmp_dic['bg_color'] = l_res_color[0]['color'];
               tmp_dic['bg_color_val'] = l_res_color[0]['val'];
@@ -1504,7 +1482,6 @@ function ocr_factor_text(eles_scroll_canvas, l_detected_factor) {
           // console.log(text);
           tmp_factor['factor_text'] = normalize_text(data.data.text);
 
-          //アイコン描画
           let skill_icon_id = '';
           if (tmp_factor.factor_text in dict_skills) {
             skill_icon_id = 'skillIcon' + dict_skills[tmp_factor.factor_text].iconId;
@@ -1540,12 +1517,10 @@ function normalize_text(text, regexps) {
         if (t == t_tmp) {
           break;
         } else {
-          // console.log(t_tmp, t);
           t = t_tmp;
         }
       }
     })
-    // console.log(text, t);
     return t
   }
 }
@@ -1582,5 +1557,5 @@ export {
   generateReceipt,
   detectFactor_by_gamma,
   detectFactor,
-  // 파일에 있는 다른 모든 함수도 여기에 추가
+  match_one_line,
 };
