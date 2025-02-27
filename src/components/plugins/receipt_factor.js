@@ -1,6 +1,6 @@
 import cv from 'opencv.js';
 import Tesseract from 'tesseract.js';
-import {dict_skills} from './dict_skills';
+import dict_skills from './dict_skills.json';
 // 검출 범위 지정용 상수
 const width_full = 1124;
 const width_narrow = 1079;

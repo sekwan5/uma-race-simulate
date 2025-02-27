@@ -89,8 +89,8 @@
 							<el-button type="success" @click="saveOriginal('png')">PNG로 저장</el-button>
 							<el-button type="info" @click="saveToClipBoard">📋에 복사</el-button>
 						</el-form-item>
-						<p id="outputAreaText" class="overviewTitle">이곳에 결과가 표시됩니다</p>
-						<p id="toggleSizeText" class="overviewTitle hidden">이미지 탭으로 표시 크기 전환</p>
+						<!-- <p id="outputAreaText" class="overviewTitle">이곳에 결과가 표시됩니다</p> -->
+						<!-- <p id="toggleSizeText" class="overviewTitle hidden">이미지 탭으로 표시 크기 전환</p> -->
 						<img id="outputImage" src="" />
 					</el-form>
 				</section>
