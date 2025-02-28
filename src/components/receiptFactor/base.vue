@@ -9,7 +9,10 @@ import {
 	match_one_line,
 	get_relative_dist,
 	align_missing_imgs,
+	detectFactor_by_gamma,
+	ocr_factor_text,
 } from "../plugins/receipt_factor";
+import dict_skills from "../plugins/dict_skills.json";
 
 export default {
 	name: "ReceiptFactorBase",
@@ -77,7 +80,7 @@ export default {
 		},
 		async generatePhotos() {
 			try {
-				const is_show_skill_icon = false;
+				const is_show_skill_icon = this.form.showSkillIcon;
 				const limit_px = 2175;
 				if (this.isImgNotReady) {
 					throw new Error("이미지가 로드되지 않았습니다.");
@@ -165,32 +168,29 @@ export default {
 					"canvasScroll"
 				);
 
-				// if (is_show_skill_icon) {
-				// 	let l_detected_factor = this.detectFactorByGamma(document.getElementsByClassName("canvasScroll"));
-				// 	this.changePercentage(75);
-				// 	// await this.repaint();
-				// 	l_detected_factor = await this.ocrFactorText(
-				// 		document.getElementsByClassName("canvasScroll"),
-				// 		l_detected_factor
-				// 	);
-				// 	let ocr_result_text = l_detected_factor.map((d) =>
-				// 		d
-				// 			.filter((d) => "factor_text" in d && d.factor_text != "" && !(d.factor_text in dict_skills))
-				// 			.map((d) => d.factor_text)
-				// 			.join()
-				// 	);
-				// 	ocr_result_text = ocr_result_text.filter((d) => d != "").join();
-				// 	if (ocr_result_text !== "") {
-				// 		document.getElementById("overviewOCRResult").classList.remove("hidden");
-				// 		document.getElementById("outputOCRResult").value = ocr_result_text;
-				// 	} else {
-				// 		document.getElementById("overviewOCRResult").classList.add("hidden");
-				// 	}
-				// 	this.changePercentage(90);
-				// 	// await this.repaint();
-				// } else {
-				// 	document.getElementById("overviewOCRResult").classList.add("hidden");
-				// }
+				if (is_show_skill_icon) {
+					let l_detected_factor = detectFactor_by_gamma(document.getElementsByClassName("canvasScroll"));
+					this.changePercentage(75);
+					// await this.repaint();
+					l_detected_factor = await ocr_factor_text(document.getElementsByClassName("canvasScroll"), l_detected_factor);
+					let ocr_result_text = l_detected_factor.map((d) =>
+						d
+							.filter((d) => "factor_text" in d && d.factor_text != "" && !(d.factor_text in dict_skills))
+							.map((d) => d.factor_text)
+							.join()
+					);
+					ocr_result_text = ocr_result_text.filter((d) => d != "").join();
+					if (ocr_result_text !== "") {
+						// document.getElementById("overviewOCRResult").classList.remove("hidden");
+						// document.getElementById("outputOCRResult").value = ocr_result_text;
+					} else {
+						// document.getElementById("overviewOCRResult").classList.add("hidden");
+					}
+					this.changePercentage(90);
+					// await this.repaint();
+				} else {
+					// document.getElementById("overviewOCRResult").classList.add("hidden");
+				}
 
 				this.outputScrollCanvas2OneCanvas(
 					imgs,

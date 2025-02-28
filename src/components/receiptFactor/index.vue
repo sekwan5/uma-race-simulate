@@ -56,6 +56,7 @@
 						</div>
 						<div class="considerWrap">
 							<el-checkbox v-model="form.showHeader">헤더 표시</el-checkbox>
+							<el-checkbox v-model="form.showSkillIcon">스킬 아이콘 표시</el-checkbox>
 						</div>
 						<el-form-item>
 							<el-button
@@ -93,7 +94,9 @@
 						<!-- <p id="toggleSizeText" class="overviewTitle hidden">이미지 탭으로 표시 크기 전환</p> -->
 						<img id="outputImage" src="" />
 					</el-form>
+					<!-- <textarea id="outputOCRResult" cols="50" rows="3" @click="selectText"></textarea> -->
 				</section>
+
 				<hr />
 				<section id="howto">
 					<h3>사용 방법</h3>
@@ -361,6 +364,9 @@ export default {
 </script>
 
 <style scoped>
+body {
+	font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+}
 .container {
 	display: flex;
 	justify-content: center;

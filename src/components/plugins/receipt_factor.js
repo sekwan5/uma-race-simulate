@@ -1,6 +1,7 @@
 import cv from 'opencv.js';
 import Tesseract from 'tesseract.js';
 import dict_skills from './dict_skills.json';
+import { regexps } from './regexps.js';
 // 검출 범위 지정용 상수
 const width_full = 1124;
 const width_narrow = 1079;
@@ -1286,7 +1287,7 @@ function gamma_correction(canvas_in, gamma_val) {
   canvas_out.width = canvas_in.width;
   canvas_out.height = canvas_in.height;
 
-  let ctx = canvas_in.getContext('2d');
+  let ctx = canvas_in.getContext('2d', { willReadFrequently: true });
   let c_src = ctx.getImageData(0, 0, canvas_in.width, canvas_in.height);
   let c_dst = ctx.createImageData(canvas_in.width, canvas_in.height);
 //   let int_g = 0.1;
@@ -1451,14 +1452,12 @@ function ocr_factor_text(eles_scroll_canvas, l_detected_factor) {
     // char_whitelist = [...new Set(l_skillnames)].join('') + '◯〇';
     // console.log(char_whitelist);
 
-    const worker = await Tesseract.createWorker({
-      // corePath: '../../node_modules/tesseract.js-core',
-      workerPath: "https://unpkg.com/tesseract.js@4.1.1/dist/worker.min.js",
-      // logger: function(m){console.log(m);}
-    });
-    await worker.loadLanguage('jpn');
-    await worker.initialize('jpn', 3);
-    // await worker.setParameters({tessedit_char_whitelist: char_whitelist});
+    const worker = await Tesseract.createWorker('kor');
+    // await worker.setParameters({
+    //   tessedit_char_whitelist: char_whitelist
+    // });
+    
+    console.log('l_detected_factor',l_detected_factor);
     for (let i = 0; i < l_detected_factor.length; i++) {
       for (let j = 0; j < l_detected_factor[i].length; j++) {
         let tmp_factor = l_detected_factor[i][j];
@@ -1476,16 +1475,26 @@ function ocr_factor_text(eles_scroll_canvas, l_detected_factor) {
             tmp_factor.rect_factor_text.width,
             tmp_factor.rect_factor_text.height,
             0, 0, w, h);
-          const data = await worker.recognize(tmpCanvasElement, {});
+          const data = await worker.recognize(tmpCanvasElement);
           // console.log(data);
           tmpCanvasElement.remove();
           // console.log(text);
-          tmp_factor['factor_text'] = normalize_text(data.data.text);
+          tmp_factor['factor_text'] = normalize_text(data.data.text,regexps).trim();
 
           let skill_icon_id = '';
-          if (tmp_factor.factor_text in dict_skills) {
-            skill_icon_id = 'skillIcon' + dict_skills[tmp_factor.factor_text].iconId;
-          } else {
+          let trimmedFactorText = tmp_factor.factor_text.trim();
+          
+          // dict_skills의 키들을 순회하며 공백을 제거한 후 비교
+          let found = false;
+          for (const key in dict_skills) {
+            if (key.trim() === trimmedFactorText) {
+              skill_icon_id = 'skillIcon' + dict_skills[key].iconId;
+              found = true;
+              break;
+            }
+          }
+          
+          if (!found) {
             skill_icon_id = 'skillIconUnknown';
           }
           // console.log(skill_icon_id);
@@ -1506,22 +1515,23 @@ function ocr_factor_text(eles_scroll_canvas, l_detected_factor) {
 }
 function normalize_text(text, regexps) {
   if (typeof text === 'undefined') {
-    return ''
+    return '';
   } else {
-    let t = text;
-    t = hankaku2Zenkaku(t);
-    regexps.forEach(r => {
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        let t_tmp = t.replace(r.pattern, r.rep);
-        if (t == t_tmp) {
-          break;
-        } else {
-          t = t_tmp;
+    let t = hankaku2Zenkaku(text);
+    if (Array.isArray(regexps)) {
+      regexps.forEach(r => {
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          let t_tmp = t.replace(r.pattern, r.rep);
+          if (t == t_tmp) {
+            break;
+          } else {
+            t = t_tmp;
+          }
         }
-      }
-    })
-    return t
+      });
+    }
+    return t;
   }
 }
 function hankaku2Zenkaku(str) {
