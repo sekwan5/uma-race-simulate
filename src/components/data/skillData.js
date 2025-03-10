@@ -10280,6 +10280,7 @@ const uniqueSkillData = (thiz) => [
         heal: 150,
         conditions: {
           distance_rate: "<=50",
+          accumulatetime: 10
         },
       },
       {

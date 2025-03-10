@@ -102,6 +102,10 @@ function rewriteInheritValues(inherit) {
 			if (newValue == null) {
 				console.error(`Unknown ${effect} value ${value} in ${JSON.stringify(inherit)}`);
 			}
+			if (inherit.id == 100991) {
+				//빛나라☆토마코마이
+				newValue = 0.07;
+			}
 			variant[effect] = newValue;
 			delete inherit[effect];
 		}
