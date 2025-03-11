@@ -6815,7 +6815,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           holder: 110501,
-          id: 107601211,
+          id: 110501211,
           name: "星の海を駆けて",
           speedWithDecel: 0.35,
           duration: 4,
@@ -9242,13 +9242,25 @@ const uniqueSkillData = (thiz) => [
     id: 100651,
     holder: 106501,
     name: "アゲてアゲてぷちょへんざ！",
-    targetSpeed: 0.25,
-    duration: 6,
     tooltip: "短距離/マイルのみ、順位<=50%",
-    conditions: {
-      distance_type: [1, 2],
-      phase_laterhalf_random: 1,
-    },
+    targetSpeed: 0.25,
+    invokes: [
+      {
+          duration: 6,
+          conditions: {
+          distance_type: [1, 2],
+          phase_laterhalf_random: 1,
+        },
+      },
+      {
+          duration: 5,
+          conditions: {
+          distance_type: [3, 4],
+          phase_laterhalf_random: 1,
+        },
+      },
+    ],
+    type: "speed",
   },
   {
     id: 110271,
