@@ -632,13 +632,13 @@ function get_rects(l_mat) {
 }
 function get_unknown_rects(l_mat, l_rects) {
   return new Promise(function(resolve){
-    console.log('レイアウト不明画像について汎用処理でスクロール範囲特定');
+    console.log('레이아웃 불명 이미지에 대해 범용 처리로 스크롤 범위 특정');
     let l_index_tgt = [...Array(l_rects.length).keys()].filter((e) => l_rects[e].rayout_type == 'unknown')
     console.log(l_index_tgt);
-    // 画像中央の16:9部分だけ切り出し
+    // 이미지 중앙의 16:9 부분만 잘라내기
     let tmp_w = Math.min(l_mat[l_index_tgt[0]].cols, Math.floor(l_mat[l_index_tgt[0]].rows / 16 * 9));
     if (l_index_tgt.length == 1) {
-      // unknownが1枚だけなら全面スクロール範囲扱いで枠座標出力
+      // unknown이 1장만 있으면 전체 스크롤 범위로 취급하여 프레임 좌표 출력
       l_rects[l_index_tgt[0]].rayout_type = 'common_scroll_only';
       l_rects[l_index_tgt[0]].rects.scroll_full_width = {
         'x': Math.floor((l_mat[l_index_tgt[0]].cols - tmp_w) / 2),
@@ -647,10 +647,10 @@ function get_unknown_rects(l_mat, l_rects) {
         'height': l_mat[l_index_tgt[0]].rows
       };
     } else {
-      // unknownが2枚以上のとき
+      // unknown이 2장 이상일 때
       if (!(Math.min(...l_index_tgt.map((d) => {return l_mat[d].cols})) == Math.max(...l_index_tgt.map((d) => {return l_mat[d].cols})) &&
           Math.min(...l_index_tgt.map((d) => {return l_mat[d].rows})) == Math.max(...l_index_tgt.map((d) => {return l_mat[d].rows})))) {
-        throw new Error('取り込み画像の解像度が一致していません。');
+        throw new Error('가져온 이미지의 해상도가 일치하지 않습니다.');
       }
       let img_0_gray = l_mat[l_index_tgt[0]].clone();
       cv.cvtColor(img_0_gray, img_0_gray, cv.COLOR_RGBA2GRAY, 0);
@@ -659,7 +659,7 @@ function get_unknown_rects(l_mat, l_rects) {
       let tmp_y1 = img_0_gray.rows;
       let tmp_y2 = 0;
       l_index_tgt.slice(1).forEach(function(i){
-        // 2枚目以降を1枚目と比較し差分範囲を取得
+        // 2번째 이후 이미지를 1번째와 비교하여 차이 범위 획득
         tmp_diff = new cv.Mat();
         img_i_gray = l_mat[i].clone();
         cv.cvtColor(img_i_gray, img_i_gray, cv.COLOR_RGBA2GRAY, 0);
@@ -668,30 +668,30 @@ function get_unknown_rects(l_mat, l_rects) {
         let l_sum_diff_by_y = [];
         for (let i = 0; i < tmp_diff.rows; i++) {
           let tmp_sum = 0;
-          // 中央16:9範囲のみ検証
+          // 중앙 16:9 범위만 검증
           for (let j = Math.floor((tmp_diff.cols - tmp_w) / 2); j < Math.floor((tmp_diff.cols - tmp_w) / 2) + tmp_w; j++) {
-            // ucharAtは1px毎に0~255で出力
+            // ucharAt은 1px마다 0~255로 출력
             tmp_sum += tmp_diff.ucharAt(i, j);
           }
           l_sum_diff_by_y.push(tmp_sum / tmp_w);
         }
-        // 結果の平滑化
+        // 결과 평활화
         let l_sum_diff_by_y_smooth = smoothing_list(l_sum_diff_by_y, diff_window_size);
         // console.log(l_sum_diff_by_y.join('\n'));
         // console.log(l_sum_diff_by_y.map((e, i) => e + '\t' + l_sum_diff_by_y_smooth[Math.min(i, l_sum_diff_by_y_smooth.length - 1)]).join('\n'));
         // console.log(l_sum_diff_by_y_smooth.join('\n'));
-        // 平滑化した結果を参考に外れ値を除外しつつスクロール範囲をぴったり検索
+        // 평활화한 결과를 참고하여 이상치를 제외하면서 스크롤 범위를 정확히 검색
         let tmp_area = detect_common_scroll_area(l_sum_diff_by_y, l_sum_diff_by_y_smooth, diff_window_size);
         // console.log(tmp_area);
         if (tmp_area.y1 != -1) {
-          // スクロール範囲が見つかったら上書き、見つからなければ完全一致画像として何もしない
+          // 스크롤 범위가 발견되면 덮어쓰기, 발견되지 않으면 완전 일치 이미지로 아무것도 하지 않음
           tmp_y1 = Math.min(tmp_y1, tmp_area.y1);
           tmp_y2 = Math.max(tmp_y2, tmp_area.y2);
         }
       })
       // console.log(tmp_y1, tmp_y2);
 
-      // 全部のunknown画像で一番広いスクロール範囲を採用して各画像のrectsを生成
+      // 모든 unknown 이미지에서 가장 넓은 스크롤 범위를 채택하여 각 이미지의 rects 생성
       l_index_tgt.forEach(function(i){
         if (tmp_y1 == 0) {
           l_rects[i].rayout_type = 'common_scroll_only';
@@ -710,7 +710,7 @@ function get_unknown_rects(l_mat, l_rects) {
           'width': tmp_w,
           'height': tmp_y2 - tmp_y1
         };
-        // フッターはスクロール部の下全部
+        // 푸터는 스크롤 부분 아래 전체
         l_rects[i].rects.footer = {
           'x': Math.floor((l_mat[i].cols - tmp_w) / 2),
           'y': tmp_y2,
@@ -723,18 +723,18 @@ function get_unknown_rects(l_mat, l_rects) {
       img_i_gray.delete();
       tmp_diff.delete();
     }
-    // scroll_full_width以外を生成
+    // scroll_full_width 외의 항목 생성
     l_index_tgt.forEach(function(i){
-      // scrollはscroll_full_widthと同じ扱い
+      // scroll은 scroll_full_width와 동일하게 취급
       l_rects[i].rects.scroll = l_rects[i].rects.scroll_full_width;
-      // bottom_rowは全体の下部1/8
+      // bottom_row는 전체의 하단 1/8
       l_rects[i].rects.bottom_row = {
         'x': l_rects[i].rects.scroll_full_width.x,
         'y': l_rects[i].rects.scroll_full_width.y + l_rects[i].rects.scroll_full_width.height - Math.floor(l_rects[i].rects.scroll_full_width.height / 8),
         'width': l_rects[i].rects.scroll_full_width.width,
         'height': Math.floor(l_rects[i].rects.scroll_full_width.height / 8)
       };
-      // bottom_row_higherは全体の下部1/4
+      // bottom_row_higher는 전체의 하단 1/4
       l_rects[i].rects.bottom_row_higher = {
         'x': l_rects[i].rects.scroll_full_width.x,
         'y': l_rects[i].rects.scroll_full_width.y + l_rects[i].rects.scroll_full_width.height - Math.floor(l_rects[i].rects.scroll_full_width.height / 4),
@@ -1447,15 +1447,15 @@ function ocr_factor_text(eles_scroll_canvas, l_detected_factor) {
     let l_scroll_canvas = Array.from(eles_scroll_canvas);
     const min_height_factor_text = 30;
 
-    // let l_skillnames = Object.keys(dict_skills);
-    // l_skillnames = l_skillnames.map(d => d.split('')).flat();
-    // char_whitelist = [...new Set(l_skillnames)].join('') + '◯〇';
-    // console.log(char_whitelist);
+    let l_skillnames = Object.keys(dict_skills);
+    l_skillnames = l_skillnames.map(d => d.split('')).flat();
+    const char_whitelist = [...new Set(l_skillnames)].join('') + '◯〇';
+    console.log(char_whitelist);
 
     const worker = await Tesseract.createWorker('kor');
-    // await worker.setParameters({
-    //   tessedit_char_whitelist: char_whitelist
-    // });
+    await worker.setParameters({
+      tessedit_char_whitelist: char_whitelist
+    });
     
     console.log('l_detected_factor',l_detected_factor);
     for (let i = 0; i < l_detected_factor.length; i++) {
