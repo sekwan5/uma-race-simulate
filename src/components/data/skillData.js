@@ -9870,14 +9870,27 @@ const uniqueSkillData = (thiz) => [
     id: 110641,
     holder: 106402,
     name: "jingle all the way", //클파머
-    duration: 7,
-    targetSpeed: 0.25,
-    acceleration: 0.1,
-    conditions: {
-      distance_rate: ">=50",
-      corner: 0,
-      track_id: 10005,
-    },
+    invokes: [
+      {
+        targetSpeed: 0.25,
+        duration: 7,
+        conditions: {
+          distance_rate: ">=40",
+          corner: 0,
+        },
+      },
+      {
+        acceleration: 0.1,
+        targetSpeed: 0.25,
+        conditions: {
+          distance_rate: ">=40",
+          corner: 0,
+          track_id: 10005,
+          is_used_skill_id: 202051,
+        },
+      },
+    ],
+    type: "speed",
     tooltip: "나카야마 대도주일때 발동",
   },
   {
