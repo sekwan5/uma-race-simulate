@@ -9978,18 +9978,18 @@ const uniqueSkillData = (thiz) => [
     id: 120681,
     holder: 106803,
     name: "ミンナノアタシへ！", //키타산(애니)
-    duration: 5,
     invokes: [
       {
         invokeNo: 1,
         targetSpeed: 0.35,
+        duration: 3,
         conditions: {
           phase_random: 0,
         },
       },
       {
         invokeNo: 2,
-        duration: 10,
+        duration: 6,
         targetSpeed: 0.25,
         conditions: {
           distance_type: 4,
@@ -10134,11 +10134,11 @@ const uniqueSkillData = (thiz) => [
     id: 101081,
     holder: 110801,
     name: "羅刹、赤翼にて天上へ至らん", //두라
-    duration: 5,
     invokes: [
       {
         invokeNo: 1,
         targetSpeed: 0.35,
+        duration: 5,
         conditions: {
           distance_rate_random: [50, 51],
           distance_type: 2,
@@ -10147,7 +10147,7 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 2,
         speedWithDecel: 0.15,
-        duration: 5,
+        duration: 3,
         conditions: {
           phase: ">=2",
           is_finalcorner: 1,
@@ -10189,11 +10189,11 @@ const uniqueSkillData = (thiz) => [
     id: 101091,
     holder: 101091,
     name: "繋ぐ・繋がる×夢・未来", //라인크라프트
-    duration: 6,
     invokes: [
       {
         invokeNo: 1,
         targetSpeed: 0.25,
+        duration: 6,
         conditions: {
           distance_type: [1, 2],
           distance_rate: "<=50",
@@ -10203,7 +10203,7 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 2,
         targetSpeed: 0.25,
-        duration: 8.3,
+        duration: 5,
         conditions: {
           ex_distance_type: [1, 2],
           distance_rate: "<=50",
@@ -10231,7 +10231,6 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 2,
         targetSpeed: 0.35,
-        duration: 5,
         conditions: {
           ex_distance_type: 2,
           phase_random: 0,
@@ -10244,12 +10243,11 @@ const uniqueSkillData = (thiz) => [
     id: 110851,
     holder: 108502,
     name: "蒼炎", //루비 (무도회)
-    duration: 5,
     invokes: [
       {
         invokeNo: 1,
         targetSpeed: 0.35,
-        duration: 10,
+        duration: 6,
         conditions: {
           distance_type: 2,
           distance_rate: [45, 50],
@@ -10258,6 +10256,7 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 2,
         targetSpeed: 0.25,
+        duration: 5,
         conditions: {
           ex_distance_type: 2,
           distance_rate: [45, 50],
@@ -10270,12 +10269,11 @@ const uniqueSkillData = (thiz) => [
     id: 120351,
     holder: 103503,
     name: "GO! Full-send", //위닝티켓 (uaf)
-    duration: 4,
     invokes: [
       {
         invokeNo: 1,
         targetSpeed: 0.35,
-        duration: 10,
+        duration: 6,
         conditions: {
           phase_random: 1,
           corner: 3,
@@ -10299,7 +10297,6 @@ const uniqueSkillData = (thiz) => [
     id: 101021,
     holder: 101021,
     name: "ヴィヴァーチェ・ヴォラーレ", //사운즈 오브 어스
-    duration: 4,
     invokes: [
       {
         invokeNo: 1,
@@ -10312,6 +10309,7 @@ const uniqueSkillData = (thiz) => [
       {
         invokeNo: 2,
         targetSpeed: 0.45,
+        duration: 4,
         conditions: {
           distance_rate: [45, 60],
           corner: 0,
@@ -10324,12 +10322,12 @@ const uniqueSkillData = (thiz) => [
     id: 120451,
     holder: 104503,
     name: "忍法・ほほえみ心結の印", //슈퍼 크릭 (Warfare)
-    duration: 6,
     invokes: [
       {
         invokeNo: 1,
         heal: 550,
         targetSpeed: 0.25,
+        duration: 6,
         conditions: {
           phase: 1,
           corner: 1,

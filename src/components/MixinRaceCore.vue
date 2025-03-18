@@ -874,7 +874,10 @@ export default {
         // 지속 시간이 끝난 스킬 제거
         for (let i = 0; i < this.operatingSkills.length; i++) {
           const operatingSkill = this.operatingSkills[i];
-          const duration = operatingSkill.data.durationOverwrite ?? operatingSkill.data.duration;
+          let duration = operatingSkill.data.durationOverwrite ?? operatingSkill.data.duration;
+          if (operatingSkill.data.rarity === "inherit") {
+            duration = duration * 0.6;
+          }
           // const duration = (operatingSkill.data.duration * this.courseLength) / 1000;
           // if (duration < 100) {
           // 	console.log("operatingSkill", operatingSkill);
