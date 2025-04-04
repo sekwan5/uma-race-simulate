@@ -4575,18 +4575,8 @@ function normalSkillData(thiz) {
           rarity: "evo",
           id: 105302111,
           holder: 105302,
+          acceleration: 0.4,
           name: "熱血進化ライディング！",
-          variants: [
-            {
-              acceleration: 0.4,
-              duration: 1.8,
-              conditions: { running_style: 3, phase_firsthalf_random: 2 },
-            },
-            {
-              conditions: { running_style: 3, remain_distance: [199, 201] },
-              targetSpeed: 0.15,
-            },
-          ],
         },
         {
           rarity: "evo",
@@ -4724,16 +4714,7 @@ function normalSkillData(thiz) {
           id: 105302211,
           holder: 105302,
           name: "必殺！爆速スプリント！",
-          variants: [
-            {
-              acceleration: 0.4,
-              conditions: { distance_type: 1, phase_random: 2 },
-            },
-            {
-              conditions: { distance_type: 1, remain_distance: [199, 201] },
-              targetSpeed: 0.15,
-            },
-          ],
+          acceleration: 0.4,
         },
         {
           rarity: "rare",

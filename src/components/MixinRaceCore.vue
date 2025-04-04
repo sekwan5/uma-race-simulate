@@ -880,8 +880,8 @@ export default {
 					}
 					// const duration = (operatingSkill.data.duration * this.courseLength) / 1000;
 					if (duration < 100) {
-						console.log("operatingSkill", operatingSkill);
-						console.log("duration", (operatingSkill.data.duration * this.courseLength) / 1000);
+						// console.log("operatingSkill", operatingSkill);
+						// console.log("duration", (operatingSkill.data.duration * this.courseLength) / 1000);
 					}
 
 					if ((this.frameElapsed - operatingSkill.startFrame) * this.frameLength > duration * this.timeCoef) {

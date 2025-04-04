@@ -402,14 +402,49 @@ export default {
 				} else {
 					invokes.push(skill);
 				}
+
 				for (const invoke of invokes) {
+					console.log("invoke", invoke);
 					if (Math.random() * 100 < invokeRate) {
 						const copy = { ...invoke };
+						const temp = [
+							{
+								duration: 3,
+								conditions: {
+									running_style: 3,
+									remain_distance: [199, 201],
+								},
+								rarity: "evo",
+								id: 105302111,
+								holder: 105302,
+								targetSpeed: 0.15,
+								name: "열혈 진화 라이딩!",
+							},
+							{
+								duration: 3,
+								conditions: {
+									remain_distance: [199, 201],
+								},
+								rarity: "evo",
+								id: 105302211,
+								holder: 105302,
+								targetSpeed: 0.15,
+								name: "필살! 폭속 스프린트!",
+							},
+						];
 						if (copy.init) {
 							copy.init();
 						}
 						this.initSkillConditions(copy);
 						this.invokedSkills.push(copy);
+						if (copy.id === 105302111) {
+							this.initSkillConditions(temp[0]);
+							this.invokedSkills.push(temp[0]);
+						}
+						if (copy.id === 105302211) {
+							this.initSkillConditions(temp[1]);
+							this.invokedSkills.push(temp[1]);
+						}
 					}
 				}
 			}
@@ -740,6 +775,7 @@ export default {
 		},
 		checkSkillTrigger(startPosition) {
 			const skillTriggered = [];
+			console.log("invokedSkills", this.invokedSkills);
 			for (const skill of this.invokedSkills) {
 				if (this.isInCoolDown(skill)) {
 					continue;
@@ -768,6 +804,9 @@ export default {
 					data: skill,
 					startFrame: this.frameElapsed,
 				});
+				if (skill.id == 105302111) {
+					console.log("skill", skill);
+				}
 			}
 			if (skill.systematic !== true) {
 				this.skillTriggerCount[this.currentPhase]++;
