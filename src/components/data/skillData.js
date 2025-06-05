@@ -3021,6 +3021,11 @@ function normalSkillData(thiz) {
           name: "パール流ダンスバトル",
           targetSpeed: 0.35,
           duration: 4,
+          conditions: {
+            distance_type: [1,2],
+            phase_random: 1,
+            accumulatetime: 5,
+        }
         },
         {
           rarity: "evo",
