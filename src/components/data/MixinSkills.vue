@@ -775,7 +775,6 @@ export default {
 		},
 		checkSkillTrigger(startPosition) {
 			const skillTriggered = [];
-			console.log("invokedSkills", this.invokedSkills);
 			for (const skill of this.invokedSkills) {
 				if (this.isInCoolDown(skill)) {
 					continue;

@@ -10168,7 +10168,7 @@ const uniqueSkillData = (thiz) => [
   },
   {
     id: 101091,
-    holder: 101091,
+    holder: 110901,
     name: "繋ぐ・繋がる×夢・未来", //라인크라프트
     invokes: [
       {
