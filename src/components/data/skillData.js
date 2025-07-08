@@ -3843,6 +3843,28 @@ function normalSkillData(thiz) {
           targetSpeed: 0.35,
           heal: 150,
         },
+        {
+          rarity: "evo",
+          id: 103203211,
+          holder: "[Σ Experiment] 아그네스 타키온",
+          name: "被験体観察",
+          invokes: [
+            {
+              targetSpeed: 0.35,
+              conditions: {
+                accumulatetime: 5,
+                ex_course_distance_range: [2000, 2000],
+              },
+            },
+            {
+              targetSpeed: 0.45,
+              conditions: {
+                accumulatetime: 5,
+                course_distance: 2000,
+              },
+            },
+          ],
+        },
         { rarity: "rare", id: 201592, name: "ウママニア", targetSpeed: 0.35 },
         {
           rarity: "normal",
@@ -6794,6 +6816,52 @@ function normalSkillData(thiz) {
         running_style: 3,
         phase_firsthalf_random: 2,
         lastspurt: 2,
+      },
+    },
+    {
+      variants: [
+        {
+          rarity: "evo",
+          holder: "[Σ Experiment] 아그네스 타키온",
+          id: 103203111,
+          name: "光速を超える粒子",
+          targetSpeed: 0.45,
+          invokes: [
+            {
+              targetSpeed: 0.5,
+              conditions: {
+                running_style: 2,
+                phase_laterhalf_random: 1,
+                distance_type:3
+              },
+            },
+            {
+              targetSpeed: 0.45,
+              conditions: {
+                running_style: 2,
+                phase_laterhalf_random: 1,
+                ex_distance_type: 3,
+              },
+            },
+          ],
+        },
+        {
+          rarity: "rare",
+          id: 202981,
+          name: "流星光底",
+          targetSpeed: 0.35,
+        },
+        {
+          rarity: "normal",
+          id: 202982,
+          name: "飛躍の予感",
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        running_style: 2,
+        phase_laterhalf_random: 1,
       },
     },
     {
@@ -10344,8 +10412,8 @@ const uniqueSkillData = (thiz) => [
   },
   {
     id: 120321,
-    holder: "[Σ Experiment]アグネスタキオン",
-    name: "超光速微粒子の可能性", //아그네스 타키온 (Σ Experiment)
+    holder: "[Σ Experiment] 아그네스 타키온",
+    name: "超光速微粒子の可能性",
     invokes: [
       {
         invokeNo: 1,
