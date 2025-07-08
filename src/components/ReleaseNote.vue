@@ -57,7 +57,7 @@ export default {
 					timestamp: "2025-04-04",
 				},
 				{
-					content: "신의상 스킬추가, 마신표 기본스탯 수정",
+					content: "신의상 스킬추가, 마신표 기본스탯 수정,누락흰딱추가",
 					timestamp: "2025-07-09",
 				},
 			],
