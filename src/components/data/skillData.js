@@ -1373,7 +1373,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           id: 106301111,
-          holder: 106301,
+          holder: "이쿠노 딕터스",
           name: "徹底管理プラン",
           heal: 550,
           targetSpeed: 0.15,
@@ -5622,7 +5622,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           id: 106301211,
-          holder: 106301,
+          holder: "이쿠노 딕터스",
           name: "鉄火花",
           targetSpeed: 0.55,
           heal: -200,
@@ -10106,7 +10106,7 @@ const uniqueSkillData = (thiz) => [
   },
   {
     id: 100631,
-    holder: 100631,
+    holder: "이쿠노 딕터스",
     name: "百錬成鋼", //이쿠노 딕터스
     duration: 6,
     targetSpeed: 0.25,
@@ -10342,7 +10342,34 @@ const uniqueSkillData = (thiz) => [
       distance_rate_after_random: 50,
     },
   },
-
+  {
+    id: 120321,
+    holder: "[Σ Experiment]アグネスタキオン",
+    name: "超光速微粒子の可能性", //아그네스 타키온 (Σ Experiment)
+    invokes: [
+      {
+        invokeNo: 1,
+        duration: 4,
+        speedWithDecel: 0.45,
+        conditions: {
+          phase: ">=2",
+          is_finalcorner: 1,
+          distance_type: 3,
+        },
+      },
+      {
+        invokeNo: 2,
+        duration: 4,
+        targetSpeed: 0.45,
+        conditions: {
+          phase: ">=2",
+          is_finalcorner: 1,
+          ex_distance_type: 3,
+        },
+      },
+    ],
+    type: "speed",
+  },
   // End of unique skills
 ];
 
