@@ -545,23 +545,21 @@ export default {
 			this.umaStatus.styleFit = "A";
 			this.umaStatus.surfaceFit = "A";
 			this.umaStatus.condition = "0";
+			this.umaStatus.speed = 1700;
 			if (this.courseLength < 2000) {
-				this.umaStatus.speed = 1500;
 				this.umaStatus.stamina = 1200;
-				this.umaStatus.power = 1300;
-				this.umaStatus.guts = 1200;
+				this.umaStatus.power = 1400;
+				this.umaStatus.guts = 1300;
 				this.umaStatus.wisdom = 1300;
 			} else if (this.courseLength <= 2400) {
-				this.umaStatus.speed = 1500;
 				this.umaStatus.stamina = 1200;
-				this.umaStatus.power = 1250;
-				this.umaStatus.guts = 1200;
+				this.umaStatus.power = 1400;
+				this.umaStatus.guts = 1300;
 				this.umaStatus.wisdom = 1250;
 			} else {
-				this.umaStatus.speed = 1500;
 				this.umaStatus.stamina = 1300;
-				this.umaStatus.power = 1250;
-				this.umaStatus.guts = 1200;
+				this.umaStatus.power = 1300;
+				this.umaStatus.guts = 1300;
 				this.umaStatus.wisdom = 1250;
 			}
 		},
