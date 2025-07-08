@@ -56,6 +56,10 @@ export default {
 					content: "~2025.08.19 출시스킬 추가,일부 스킬발동조건 수정",
 					timestamp: "2025-04-04",
 				},
+				{
+					content: "신의상 스킬추가",
+					timestamp: "2025-07-08",
+				},
 			],
 		};
 	},
