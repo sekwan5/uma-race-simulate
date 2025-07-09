@@ -1375,8 +1375,8 @@ function normalSkillData(thiz) {
           id: 106301111,
           holder: "이쿠노 딕터스",
           name: "徹底管理プラン",
-          heal: 550,
-          targetSpeed: 0.15,
+          heal: 750,
+          conditions: { running_style: [2, 3], distance_rate: [50, 51] }
         },
         {
           rarity: "rare",
@@ -5089,7 +5089,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           id: 108001111,
-          holder: 108001,
+          holder: "[ZOKU-ZOKU GIZMO] 트랜센드",
           name: "情報強者",
           acceleration: 0.5,
           conditions: {
@@ -7680,7 +7680,7 @@ function normalSkillData(thiz) {
         {
           rarity: "evo",
           id: 108001211,
-          holder: 108001,
+          holder: "[ZOKU-ZOKU GIZMO] 트랜센드",
           name: "『未知』を求めて",
           targetSpeed: 0.45,
         },
@@ -10213,8 +10213,8 @@ const uniqueSkillData = (thiz) => [
   },
   {
     id: 100801,
-    holder: 100801,
-    name: "Info: Acquired", //트레센드
+    holder: "[ZOKU-ZOKU GIZMO] 트랜센드",
+    name: "Info: Acquired", //트랜센드
     duration: 5,
     invokes: [
       {
