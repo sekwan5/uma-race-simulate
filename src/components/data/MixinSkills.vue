@@ -404,7 +404,6 @@ export default {
 				}
 
 				for (const invoke of invokes) {
-					console.log("invoke", invoke);
 					if (Math.random() * 100 < invokeRate) {
 						const copy = { ...invoke };
 						const temp = [
