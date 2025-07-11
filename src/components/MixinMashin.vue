@@ -4,7 +4,6 @@ import MixinSkills from "./data/MixinSkills.vue";
 import MixinCourseData from "./data/MixinCourseData.vue";
 import MixinConstants from "./data/MixinConstants.vue";
 import { tsvToJson } from "./plugins/utils";
-import skillDbTsv from "./data/skillDbBefore2.5Year.tsv";
 
 export default {
 	name: "MixinMashin",
@@ -25,7 +24,14 @@ export default {
 	methods: {
 		async getSkillDB() {
 			try {
-				return tsvToJson(skillDbTsv);
+				const response = await fetch(
+					"https://raw.githubusercontent.com/sekwan5/Auto-Table-Generator/main/skillDbBefore2.5Year.tsv"
+				);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				const skillDB_tsv = await response.text();
+				return tsvToJson(skillDB_tsv); // JSON 배열 반환
 			} catch (error) {
 				console.error("스킬 DB를 불러오는 중 오류가 발생했습니다:", error);
 				return []; // 오류 발생 시 빈 배열 반환
@@ -249,7 +255,6 @@ export default {
 			const { style, speed, power, stamina, guts, wisdom, styleFit, distanceFit, surfaceFit } = this.umaStatus;
 			const hasSkillNames = [];
 
-			console.log("hasSkills", this.hasSkills);
 			const skillCategories = ["speed", "acceleration", "composite", "passive"];
 			const skillRates = ["all", "rare", "normal", "inherit"];
 			skillCategories.forEach((category) => {
@@ -288,11 +293,8 @@ export default {
 		},
 
 		async makeSkillMashin(skillId, skillType, rarity, custom_skillName = "", sOnes = false, resetUnique = true) {
-			console.log("skillId", skillId);
-			// console.log("hasSkills", this.hasSkills);
 			this.$refs.executeBlock.completedSkills++;
 			const skillDataArray = this.skillDB.filter((skill) => skill["스킬 id"] == Math.abs(skillId)) ?? [];
-			// console.log("skillDataArray", skillDataArray);
 			const resultSkillDataArray = [];
 
 			const upperSkillIds = this.skillDB

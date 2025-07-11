@@ -95,7 +95,7 @@
 100761	81	2	고유	속도		꽃피는, 세계	꽃피는, 세계	花開き、世界	사쿠라 로렐								distance_type==4 &distance_rate>=50 &distance_rate<=51 &order_rate>=30 &order_rate<=80		즉발		0.25		7.5	6												2024년 7월 29일				
 100771	30	2	고유	속도		Road to Glory	Road to Glory	Road to Glory	나리타 탑 로드						distance_rate>=60 &phase==1 &order>=2 &order_rate<=40		remain_distance<=401 &remain_distance>=399 &distance_diff_top_float<=25 &distance_type==4		즉발		0.55			5												2024년 12월 12일				
 100781	113	2	고유	가속		빛나는 바람	빛나는 바람	風光る	야마닌 제퍼						distance_rate>=50 &order_rate_out20_continue==1		is_finalcorner_laterhalf==1 &distance_diff_rate<=50 &order==2		즉발			0.2		8												2024년 2월 7일				
-100801	155	2	고유	속도		Info: Acquired	Info: Acquired	Info: Acquired	트랜센드						distance_rate>=50 &order_rate_in20_continue==1 &track_id>=10001 &track_id<=10010 &ground_type==2		is_other_character_activate_advantage_skill==31			0.25	0.15			5												2025년 7월 1일				
+100801	155	2	고유	속도		Info: Acquired	Info: Acquired	Info: Acquired	Transcend						distance_rate>=50 &order_rate_in20_continue==1 &track_id>=10001 &track_id<=10010 &ground_type==2		is_other_character_activate_advantage_skill==31			0.25	0.15			5												2025년 7월 1일				
 100831	105	2	고유	속도		Mission: Triumph	Mission: Triumph	Mission: Triumph	심볼리 크리스 에스								distance_rate>=40 &corner==0 &slope==2 &order_rate>=40 &order_rate<=80		즉발		0.35			6												2024년 7월 8일				
 100841	144	2	고유	속도		벽력의 아우프헤벤	벽력의 아우프헤벤	霹靂のアウフヘーベン	타니노 김렛						phase>=2 &order_rate>=50		is_last_straight==1 &track_id==10006 &distance_type==3		즉발	0.55				5												2024년 9월 6일				
 100851	38	2	고유	속도		최상이어라	최상이거라	至上であれ	다이이치 루비								distance_rate>=66 &distance_rate<=68 &order_rate>=60 &order_rate<=90 &temptation_count==0		즉발	0.25				5												2024년 6월 28일				
@@ -118,7 +118,7 @@
 101061	164	2	고유	속도		Bang☆전 미라클!	Bang☆기적 같은 결과!	Bang☆ミラクるわせ！	히시 미라클								distance_type==4 &order_rate>=40 &order_rate<=70 &is_finalcorner_laterhalf==1 &popularity>=4		즉발		0.45			6												2024년 8월 28일				
 101071	149	2	고유	속도		Billions of stars	Billions of stars	Billions of stars	탭 댄스 시티								phase>=2 &is_last_straight==1 &order==1				0.25			5												2025년 3월 10일				
 101081	42	2	고유	속도			나찰, 붉은 날개로 천상에 이르나니	羅刹、赤翼にて天上へ至らん	두라멘테								distance_rate>=50 &distance_rate<=51 &order_rate>=50				0.35			5		phase>=2 &is_activate_other_skill_detail==1 &is_finalcorner==1 &corner!=0 &is_overtake==1	0.15				3					2025년 6월 14일				
-101091	45	2	고유	속도			이어가다・이어지는×꿈・미래	繋ぐ・繋がる×夢・未来	라인크라프트								distance_type==1 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70 @distance_type==2 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70				0.25			6												2025년 7월 10일				
+101091	45	2	고유	속도			이어가다・이어지는×꿈・미래	繋ぐ・繋がる×夢・未来	Rhein Kraft								distance_type==1 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70 @distance_type==2 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70				0.25			6												2025년 7월 10일				
 110011	98	2	고유	회복		겁나게 귀엽네♪머린 다이브	겁나게 귀엽네♪ 머린 다이브	わやかわ♪マリンダイヴ	스페셜 위크 (여름)								phase==1 &order>=2 &order_rate<=70 &activate_count_middle>=2						5.5													2022년 11월 17일			TRUE	
 110021	80	2	고유	속도		수평선 저 너머로	수평선 그 너머에	水平線のその先へ	사일런스 스즈카 (여름)						phase==1 &bashin_diff_behind>=3 &order==1		distance_rate>=66 &distance_rate<=68 &corner==3 &order==1		즉발	0.45				5												2024년 11월 18일				
 110031	153	2	고유	속도		절대는, 나야	절대는, 나야	絶対は、ボクだ	토카이 테이오 (애니 콜라보)						is_finalcorner==1 &is_overtake==1 &order<=5 &order_rate<=50 &overtake_target_no_order_up_time>=2		is_last_straight==1				0.45			5												2022년 7월 19일				
@@ -855,7 +855,7 @@
 900761	81	1	계승	속도		꽃피는, 세계	꽃피는, 세계	花開き、世界	사쿠라 로렐								distance_type==4 &distance_rate>=50 &distance_rate<=51 &order_rate>=30 &order_rate<=80		즉발		0.05		3.5	3.6								200				2024년 7월 29일				
 900771	30	1	계승	속도		Road to Glory	Road to Glory	Road to Glory	나리타 탑 로드						distance_rate>=60 &phase==1 &order>=2 &order_rate<=40		remain_distance<=401 &remain_distance>=399		즉발		0.25			3								200				2024년 12월 12일				
 900781	113	1	계승	가속		빛나는 바람	빛나는 바람	風光る	야마닌 제퍼						distance_rate>=50 &order_rate_out20_continue==1		is_finalcorner_laterhalf==1 &distance_diff_rate<=50 &order==2		즉발			0.07		4.8								200				2024년 2월 7일				
-900801	155	1	계승	속도		Info: Acquired	Info: Acquired	Info: Acquired	트랜센드						distance_rate>=50 &order_rate_in20_continue==1		is_other_character_activate_advantage_skill==31			0.05				3								200				2025년 7월 1일				
+900801	155	1	계승	속도		Info: Acquired	Info: Acquired	Info: Acquired	Transcend						distance_rate>=50 &order_rate_in20_continue==1		is_other_character_activate_advantage_skill==31			0.05				3								200				2025년 7월 1일				
 900831	105	1	계승	속도		Mission: Triumph	Mission: Triumph	Mission: Triumph	심볼리 크리스 에스								distance_rate>=40 &corner==0 &slope==2 &order_rate>=40 &order_rate<=80		즉발		0.15			3.6								200				2024년 7월 8일				
 900841	144	1	계승	속도		벽력의 아우프헤벤	벽력의 아우프헤벤	霹靂のアウフヘーベン	타니노 김렛						phase>=2 &order_rate>=50		is_last_straight==1		즉발	0.15				3								200				2024년 9월 6일				
 900851	38	1	계승	속도		최상이어라	최상이거라	至上であれ	다이이치 루비								distance_rate>=66 &distance_rate<=68 &order_rate>=60 &order_rate<=90 &temptation_count==0		즉발	0.05				3								200				2024년 6월 28일				
@@ -874,7 +874,7 @@
 901061	164	1	계승	속도		Bang☆전 미라클!	Bang☆기적 같은 결과!	Bang☆ミラクるわせ！	히시 미라클								distance_type==4 &order_rate>=40 &order_rate<=70 &is_finalcorner_laterhalf==1 &popularity>=4		즉발		0.25			3.6								200				2024년 8월 28일				
 901071	149	1	계승	속도		Billions of stars	Billions of stars	Billions of stars	탭 댄스 시티								phase>=2 &is_last_straight==1 &order==1				0.05			3								200				2025년 3월 10일				
 901081	42	1	계승	속도			나찰, 붉은 날개로 천상에 이르나니	羅刹、赤翼にて天上へ至らん	두라멘테								distance_rate>=50 &distance_rate<=51 &order_rate>=50				0.15			3		phase>=2 &is_activate_other_skill_detail==1 &is_finalcorner==1 &corner!=0 &is_overtake==1	0.035				1.8	200				2025년 6월 14일				
-901091	45	1	계승	속도			이어가다・이어지는×꿈・미래	繋ぐ・繋がる×夢・未来	라인크라프트								distance_type==1 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70 @distance_type==2 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70				0.05			3.6								200				2025년 7월 10일				
+901091	45	1	계승	속도			이어가다・이어지는×꿈・미래	繋ぐ・繋がる×夢・未来	Rhein Kraft								distance_type==1 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70 @distance_type==2 &distance_rate<=50 &corner!=0 &order>=3 &order_rate<=70				0.05			3.6								200				2025년 7월 10일				
 910011	98	1	계승	회복		겁나게 귀엽네♪머린 다이브	겁나게 귀엽네♪ 머린 다이브	わやかわ♪マリンダイヴ	스페셜 위크 (여름)								phase==1 &order>=2 &order_rate<=70 &activate_count_middle>=2						1.5									200				2022년 11월 17일			TRUE	
 910021	80	1	계승	속도		수평선 저 너머로	수평선 그 너머에	水平線のその先へ	사일런스 스즈카 (여름)						phase==1 &bashin_diff_behind>=3 &order==1		distance_rate>=66 &distance_rate<=68 &corner==3 &order==1		즉발	0.25				3								200				2024년 11월 18일				
 910031	153	1	계승	속도		절대는, 나야	절대는, 나야	絶対は、ボクだ	토카이 테이오 (애니 콜라보)						is_finalcorner==1 &is_overtake==1 &order<=5 &order_rate<=50 &overtake_target_no_order_up_time>=2		is_last_straight==1				0.25			3								200				2022년 7월 19일				
@@ -993,7 +993,7 @@
 100703111	1064	9	진화	복합			몰려드는 쥬뗌므	押し寄せるジュテーム	골드 쉽 (프로젝트 L'Arc)								running_style==4 &is_lastspurt==1 &corner==0		즉발			0.4		0.9		is_activate_other_skill_detail==1 &is_last_straight==1		0.15			3					2024년 12월 19일	육박하는 그림자			
 100703211	1016	9	진화	녹딱			거친 해안을 좋아하는 황금 배	荒磯好みの黄金船	골드 쉽 (프로젝트 L'Arc)								ground_condition==2 ＠ground_condition==3 ＠ground_condition==4		즉발																	2024년 12월 19일	진창길의 귀신			
 100801111	1038	9	진화	속도		스키틀 브레이크	스키틀 브레이크	スキットルブレイク	보드카								phase==1 &corner==0		즉발		0.15		5.5	3												2022년 6월 15일	호전일식			
-100801211	1070	9	진화	가속		뛰ㅋ어난 다리	뛰어난 다리	抜群の豪脚	보드카								distance_type==2 &phase_random==2 &order_rate>50					0.5		3												2022년 6월 15일	강인한 다리			
+100801211	1070	9	진화	가속		뛰어난 다리	뛰어난 다리	抜群の豪脚	보드카								distance_type==2 &phase_random==2 &order_rate>50					0.5		3												2022년 6월 15일	강인한 다리			
 100802111	1049	9	진화	가속		앞질러 주겠어!	마구 앞질러 주지!	ぶっ差してやるぜ！	보드카 (크리스마스)								infront_near_lane_time>=1 &is_lastspurt==1 &hp_per>=1		즉발			0.4	1.5	3												2024년 3월 18일	논스톱 걸			
 100802211	1245	9	진화	속도		최속의 톱기어	최속의 톱기어	最速のトップギア	보드카 (크리스마스)								running_style==3 &is_last_straight==1 &order>=2 &distance_diff_top<=10		즉발		0.55			2.4												2024년 3월 18일	톱기어			
 100901111	1072	9	진화	속도		퍼펙트 튠	퍼펙트 튠	パーフェクトチューン	다이와 스칼렛								distance_type==3 &phase_random==1 &order_rate<=50				0.35		1.5	2.4												2022년 6월 15일	킬러 튠			
@@ -1271,8 +1271,8 @@
 107801111	1105	9	진화	속도		급변풍	윈드시어	ウインドシアー	야마닌 제퍼								distance_type==2 &phase_random==1 &order_rate<=50				0.35			4												2024년 2월 7일	기어 체인지			
 107801211	1241	9	진화	속도		하늬바람	신을 보내는 바람	神渡し	야마닌 제퍼								running_style==2 &order>=2 &distance_diff_top<=5 &distance_rate>=60 &phase==1				0.35			4												2024년 2월 7일	풍운의 뜻			
 107801221	1241	9	진화	속도			하늘에 부는 바람	天つ風	야마닌 제퍼								running_style==2 &order>=3 &distance_rate>=50				0.35			4												2024년 2월 7일	풍운의 뜻			
-108001111	1160	9	진화	가속			정보 강자	情報強者	트랜센드								distance_type==2 &activate_count_start>=3 @distance_type==3 &activate_count_start>=3		즉발			0.5		3												2025년 7월 1일	만반의 준비			
-108001211	1295	9	진화	속도			『미지』를 찾아서	『未知』を求めて	트랜센드								ground_type==2 &phase_laterhalf_random==0 &order_rate<=50				0.45			3												2025년 7월 1일	모래의 개척자			
+108001111	1160	9	진화	가속			정보 강자	情報強者	Transcend								distance_type==2 &activate_count_start>=3 @distance_type==3 &activate_count_start>=3		즉발			0.5		3												2025년 7월 1일	만반의 준비			
+108001211	1295	9	진화	속도			『미지』를 찾아서	『未知』を求めて	Transcend								ground_type==2 &phase_laterhalf_random==0 &order_rate<=50				0.45			3												2025년 7월 1일	모래의 개척자			
 108301111	1242	9	진화	가속		질실강건	질실강건	質実剛健	심볼리 크리스 에스								distance_type==4 &running_style==3 &is_lastspurt==1 &order_rate>=40 &track_id==10005		즉발			0.4	1.5	1.5												2024년 7월 8일	무아몽중			
 108301211	1256	9	진화	속도		혁명을 부르는 위용	혁명을 불러오는 위용	革命をもたらす威容	심볼리 크리스 에스								distance_type==3 &phase_laterhalf_random==1 &order_rate>=50 @distance_type==4 &phase_laterhalf_random==1 &order_rate>=50				0.35		1.5	2.4												2024년 7월 8일	일발필중			
 108302111	1209	9	진화	속도		Burn Down	Burn Down	Burn Down	심볼리 크리스 에스 (할로윈)								distance_type==3 &phase==1 &order_rate<=80 &order_rate>=30 &blocked_side_continuetime>=2				0.15 (팀 멤버 전체)															2025년 1월 17일	기염만장			
@@ -1314,11 +1314,5 @@
 110701211	1161	9	진화	속도		Smooth Sailing!	Smooth Sailing!	Smooth Sailing!	탭 댄스 시티								activate_count_middle>=3 &order==1				0.45			3												2025년 3월 10일	꼬리 솟구쳐 오르기	200472, 200482, 210022		
 110801111	1272	9	진화	속도			마천철현	磨穿鉄硯	두라멘테								phase_corner_random==1				0.35			4												2025년 6월 14일	네버 기브 업			
 110801211	1287	9	진화	복합			혁언	赫焉	두라멘테								distance_type==3 &track_id!=10005 &running_style==4 &phase>=2 &is_finalcorner==1 &corner!=0 &order_rate>=40 @distance_type==3 &track_id==10005 &running_style==4 &phase>=2 &corner!=0 &order_rate>=40					0.4		0.9		is_activate_other_skill_detail==1 &is_last_straight==1		0.15			3					2025년 6월 14일	군림			
-110901111	1250	9	진화	속도			미래를 열어라!	未来を拓け！	라인크라프트								distance_type==2 &phase_laterhalf_random==1 &order_rate<=50				0.45			2.4												2025년 7월 10일	마구마구			
-110901211	1190	9	진화	복합			절~대로 질 수 없어!	ぜーったい負けられない！	라인크라프트								running_style==2 &phase_firsthalf_random==2 &order_rate<=50					0.4		1.8		is_activate_other_skill_detail==1 &remain_distance<=201 &remain_distance>=199		0.15			3					2025년 7월 10일				
-103203211	1159	9	진화	속도			피험자 관찰	被験体観察	아그네스 타키온 (Σ Experiment)								running_style==2 &phase_firsthalf_random==2 &order_rate<=50					0.4		1.8		is_activate_other_skill_detail==1 &remain_distance<=201 &remain_distance>=199		0.15			3					2025년 7월 10일				
-103203111	20298	9	진화	속도			광속을 초월하는 입자	光速を超える粒子	아그네스 타키온 (Σ Experiment)								running_style==2 &phase_firsthalf_random==2 &order_rate<=50					0.4		1.8		is_activate_other_skill_detail==1 &remain_distance<=201 &remain_distance>=199		0.15			3					2025년 7월 10일				
-202981	20298	2	레어/상위	속도			유성광저	流星光底									running_style==2 &phase_firsthalf_random==2 &order_rate<=50					0.4		1.8		is_activate_other_skill_detail==1 &remain_distance<=201 &remain_distance>=199		0.15			3					2025년 7월 10일				
-202982	20298	1	일반/하위	속도			비약의 예감	飛躍の予感									running_style==2 &phase_firsthalf_random==2 &order_rate<=50					0.4		1.8		is_activate_other_skill_detail==1 &remain_distance<=201 &remain_distance>=199		0.15			3					2025년 7월 10일				
-120321	12032	2	고유	속도			초광속 미립자의 가능성	超光速微粒子の可能性	아그네스 타키온 (Σ Experiment)								phase<=1 &change_order_onetime>0 &accumulatetime>=5 &order_rate<=50 @phase<=1 &blocked_side_continuetime>=2 &accumulatetime>=5 &order_rate<=50				0.35			3												2025년 8월 30일				
-920321	12032	1	계승	속도			초광속 미립자의 가능성	超光速微粒子の可能性	아그네스 타키온 (Σ Experiment)								phase<=1 &change_order_onetime>0 &accumulatetime>=5 &order_rate<=50 @phase<=1 &blocked_side_continuetime>=2 &accumulatetime>=5 &order_rate<=50				0.15			1.8								200				2025년 8월 30일				
+110901111	1250	9	진화	속도			미래를 열어라!	未来を拓け！	Rhein Kraft								distance_type==2 &phase_laterhalf_random==1 &order_rate<=50				0.45			2.4												2025년 7월 10일	마구마구			
+110901211	1190	9	진화	복합			절~대로 질 수 없어!	ぜーったい負けられない！	Rhein Kraft								running_style==2 &phase_firsthalf_random==2 &order_rate<=50					0.4		1.8		is_activate_other_skill_detail==1 &remain_distance<=201 &remain_distance>=199		0.15			3					2025년 7월 10일	치열한 승부			
