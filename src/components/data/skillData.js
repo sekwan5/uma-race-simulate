@@ -2705,8 +2705,7 @@ function normalSkillData(thiz) {
           id: 102201111,
           holder: 102201,
           name: "ロイヤルスター",
-          targetSpeed: 0.35,
-          heal: 150,
+          targetSpeed: 0.45,
         },
         {
           rarity: "evo",
@@ -7855,6 +7854,8 @@ const uniqueSkillData = (thiz) => [
     holder: 100102,
     name: "わやかわ♪マリンダイヴ",
     heal: 550,
+    targetSpeed: 0.25,
+    duration: 5,
     check: function () {
       return thiz.skillTriggerCount[1] >= 2;
     },
@@ -8436,7 +8437,7 @@ const uniqueSkillData = (thiz) => [
     id: 100401,
     holder: 104001,
     name: "KEEP IT REAL．",
-    acceleration: 0.3,
+    targetSpeed: 0.25,
     duration: 6,
     tooltip: "50%地点で即発動として扱う",
     check: function () {
@@ -8537,8 +8538,7 @@ const uniqueSkillData = (thiz) => [
     id: 100281,
     holder: 102801,
     name: "I’M☆FULL☆SPEED!!",
-    targetSpeed: 0.25,
-    acceleration: 0.3,
+    speedWithDecel: 0.25,
     duration: 5,
     conditions: {
       distance_rate: [45, 60],
