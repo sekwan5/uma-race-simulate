@@ -6817,52 +6817,52 @@ function normalSkillData(thiz) {
         lastspurt: 2,
       },
     },
-    // {
-    //   variants: [
-    //     {
-    //       rarity: "evo",
-    //       holder: "[Σ Experiment] 아그네스 타키온",
-    //       id: 103203111,
-    //       name: "光速を超える粒子",
-    //       targetSpeed: 0.45,
-    //       invokes: [
-    //         {
-    //           targetSpeed: 0.5,
-    //           conditions: {
-    //             running_style: 2,
-    //             phase_laterhalf_random: 1,
-    //             distance_type:3
-    //           },
-    //         },
-    //         {
-    //           targetSpeed: 0.45,
-    //           conditions: {
-    //             running_style: 2,
-    //             phase_laterhalf_random: 1,
-    //             ex_distance_type: 3,
-    //           },
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       rarity: "rare",
-    //       id: 202981,
-    //       name: "流星光底",
-    //       targetSpeed: 0.35,
-    //     },
-    //     {
-    //       rarity: "normal",
-    //       id: 202982,
-    //       name: "飛躍の予感",
-    //       targetSpeed: 0.15,
-    //     },
-    //   ],
-    //   duration: 2.4,
-    //   conditions: {
-    //     running_style: 2,
-    //     phase_laterhalf_random: 1,
-    //   },
-    // },
+    {
+      variants: [
+        {
+          rarity: "evo",
+          holder: "[Σ Experiment] 아그네스 타키온",
+          id: 103203111,
+          name: "光速を超える粒子",
+          targetSpeed: 0.45,
+          invokes: [
+            {
+              targetSpeed: 0.5,
+              conditions: {
+                running_style: 2,
+                phase_laterhalf_random: 1,
+                distance_type:3
+              },
+            },
+            {
+              targetSpeed: 0.45,
+              conditions: {
+                running_style: 2,
+                phase_laterhalf_random: 1,
+                ex_distance_type: 3,
+              },
+            },
+          ],
+        },
+        {
+          rarity: "rare",
+          id: 202981,
+          name: "流星光底",
+          targetSpeed: 0.35,
+        },
+        {
+          rarity: "normal",
+          id: 202982,
+          name: "飛躍の予感",
+          targetSpeed: 0.15,
+        },
+      ],
+      duration: 2.4,
+      conditions: {
+        running_style: 2,
+        phase_laterhalf_random: 1,
+      },
+    },
     {
       variants: [
         {
@@ -10410,34 +10410,34 @@ const uniqueSkillData = (thiz) => [
       distance_rate_after_random: 50,
     },
   },
-  // {
-  //   id: 120321,
-  //   holder: "[Σ Experiment] 아그네스 타키온",
-  //   name: "超光速微粒子の可能性",
-  //   invokes: [
-  //     {
-  //       invokeNo: 1,
-  //       duration: 4,
-  //       speedWithDecel: 0.45,
-  //       conditions: {
-  //         phase: ">=2",
-  //         is_finalcorner: 1,
-  //         distance_type: 3,
-  //       },
-  //     },
-  //     {
-  //       invokeNo: 2,
-  //       duration: 4,
-  //       targetSpeed: 0.45,
-  //       conditions: {
-  //         phase: ">=2",
-  //         is_finalcorner: 1,
-  //         ex_distance_type: 3,
-  //       },
-  //     },
-  //   ],
-  //   type: "speed",
-  // },
+  {
+    id: 120321,
+    holder: "[Σ Experiment] 아그네스 타키온",
+    name: "超光速微粒子の可能性",
+    invokes: [
+      {
+        invokeNo: 1,
+        duration: 4,
+        speedWithDecel: 0.45,
+        conditions: {
+          phase: ">=2",
+          is_finalcorner: 1,
+          distance_type: 3,
+        },
+      },
+      {
+        invokeNo: 2,
+        duration: 4,
+        targetSpeed: 0.45,
+        conditions: {
+          phase: ">=2",
+          is_finalcorner: 1,
+          ex_distance_type: 3,
+        },
+      },
+    ],
+    type: "speed",
+  },
   // End of unique skills
 ];
 

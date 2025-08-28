@@ -297,6 +297,17 @@ export default {
 			const skillDataArray = this.skillDB.filter((skill) => skill["스킬 id"] == Math.abs(skillId)) ?? [];
 			const resultSkillDataArray = [];
 
+			//스킬DB에 없는 스킬이면 데이터 새로 만듦
+			if (skillDataArray.length === 0) {
+				const newSkillData = {
+					"스킬 id": skillId,
+					"스킬명(한섭)": custom_skillName,
+					분류: skillType,
+				};
+				console.log("스킬DB에 없는 스킬");
+				skillDataArray.push(newSkillData);
+			}
+
 			const upperSkillIds = this.skillDB
 				.filter((v) => v["그룹"] === skillDataArray[0]["그룹"] && v["단계"] > skillDataArray[0]["단계"])
 				.map((v) => v["스킬 id"]);
@@ -329,17 +340,6 @@ export default {
 					console.log("유저가 선택한 계승기의 고유기면 스킵");
 					return [];
 				}
-			}
-
-			//스킬DB에 없는 스킬이면 데이터 새로 만듦
-			if (skillDataArray.length === 0) {
-				const newSkillData = {
-					"스킬 id": skillId,
-					"스킬명(한섭)": custom_skillName,
-					분류: skillType,
-				};
-				console.log("스킬DB에 없는 스킬");
-				skillDataArray.push(newSkillData);
 			}
 
 			for (const skillData of skillDataArray) {
